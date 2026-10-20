@@ -1,0 +1,14 @@
+{
+  "name": "mincetong-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "民策通：政策共创与主动关怀双端 Agent 本机原型",
+  "engines": {
+    "node": ">=22.9.0"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server/index.cjs",
+    "test": "node --test tests/agent.test.cjs tests/deepseek.test.cjs",
+    "check": "node scripts/check.cjs"
+  }
+}
