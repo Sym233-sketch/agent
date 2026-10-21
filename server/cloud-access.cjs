@@ -7,10 +7,11 @@ const equal = (a, b) => crypto.timingSafeEqual(digest(a), digest(b));
 
 module.exports = function cloudAccess(env = process.env) {
   const cloud = env.MINCETONG_CLOUD === 'true' || env.RENDER === 'true';
+  const requirePassword = env.MINCETONG_TEAM_AUTH === 'true';
   const password = env.MINCETONG_TEAM_PASSWORD || '';
   let origin;
   if (cloud) {
-    if (password.length < 16) throw Error('Cloud mode requires MINCETONG_TEAM_PASSWORD with at least 16 characters');
+    if (requirePassword && password.length < 16) throw Error('Cloud mode requires MINCETONG_TEAM_PASSWORD with at least 16 characters');
     const url = new URL(env.MINCETONG_PUBLIC_ORIGIN || env.RENDER_EXTERNAL_URL || '');
     if (url.protocol !== 'https:' || url.username || url.password || url.pathname !== '/' || url.search || url.hash) {
       throw Error('Cloud mode requires an HTTPS public origin without a path');
@@ -42,9 +43,10 @@ module.exports = function cloudAccess(env = process.env) {
       return true;
     }
     // Ignore proxy-supplied host/origin hints: only the configured HTTPS origin is trusted.
-    if (req.headers.host !== new URL(origin).host || (req.headers.origin && req.headers.origin !== origin) || req.headers['sec-fetch-site'] === 'cross-site') {
+    if (req.headers.host !== new URL(origin).host || (req.headers.origin && req.headers.origin !== origin) || (req.headers['sec-fetch-site'] === 'cross-site' && (url.pathname.startsWith('/api/') || !['GET','HEAD'].includes(req.method)))) {
       reject(res, 403, '来源不受信任'); return true;
     }
+    if (!requirePassword) return false;
     if (url.pathname === '/team-login' && req.method === 'POST') {
       if (Date.now() > windowEnd) { attempts = 0; windowEnd = Date.now() + 60000; }
       if (++attempts > 30) { res.setHeader('Retry-After','60'); reject(res,429,'尝试次数过多，请稍后再试'); return true; }

@@ -8,7 +8,7 @@ Word / Excel / PDF 拖入后自动转换并审查，点击问题定位正文或�
 
 **与朋友线上共创：** 使用 [Render 部署说明](DEPLOYMENT.md) 部署同一套政府端、居民端与模型后端。GitHub `main` 更新后自动构建，构建检查通过才会发布新版。当前选择免费演示：服务会休眠，重启或部署后演示数据可能丢失。`127.0.0.1` 链接仅用于本机开发，不能分享给其他电脑。线上部署完成后使用 Render 实际生成的 HTTPS 地址；此仓库包含部署配置不代表站点已经上线。
 
-现有线上入口：[共创站](https://mincetong-agent.onrender.com/team.html) · [政府端](https://mincetong-agent.onrender.com/#policy) · [居民端](https://mincetong-agent.onrender.com/user.html) · [模型配置](https://mincetong-agent.onrender.com/agent-settings.html)。首次访问输入管理员私下提供的共创口令。当前运行版本可在共创站中核对。
+现有线上入口：[共创站](https://mincetong-agent.onrender.com/team.html) · [政府端](https://mincetong-agent.onrender.com/#policy) · [居民端](https://mincetong-agent.onrender.com/user.html) · [模型配置](https://mincetong-agent.onrender.com/agent-settings.html)。无需共创口令，可直接访问。当前运行版本可在共创站中核对。
 
 需要 **Node.js 22.13 或更新版本，推荐 Node.js 24**。首次运行安装文档解析依赖；SheetJS 官方构建已保存在 `vendor/`，运行时不依赖外部 CDN。
 
@@ -58,7 +58,7 @@ npm start
 - 官方网页读取支持 HTML，保留 PDF / Word 附件链接；尚未自动下载并填写这些附件原件。居民端下载的是辅助 HTML 草稿，不自动提交、签名、支付或承诺待遇。
 - 人工协助目前在本机创建接手任务，没有真实人员或热线接入。
 - 政府端右上角的消息入口保留送达回执、居民回复、演示关怀事件与人工任务；主工作台仅聚焦文件审查、匹配与递送。
-- 默认开发模式只监听 `127.0.0.1`。线上共创模式使用 HTTPS 来源限制、团队口令和安全会话保护整个站点，团队内部共享管理权限；尚无正式双端账户权限体系，只供受邀团队使用虚构数据。
+- 默认开发模式只监听 `127.0.0.1`。线上共创模式保留 HTTPS 来源限制，默认不需要共创口令，访问者共享演示管理权限；尚无正式双端账户权限体系，只使用虚构数据。
 
 ## 目录
 

@@ -1,4 +1,4 @@
-# Invite-only free demo. Idle sleep and ephemeral data are accepted for this deployment.
+# Public free demo. Idle sleep and ephemeral data are accepted for this deployment.
 # GitHub must be connected to Render for automatic Git deploys.
 services:
   - type: web
@@ -19,5 +19,3 @@ services:
         value: "true"
       - key: MINCETONG_DATA_DIR
         value: /tmp/mincetong
-      - key: MINCETONG_TEAM_PASSWORD
-        generateValue: true

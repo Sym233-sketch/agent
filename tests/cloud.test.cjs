@@ -7,7 +7,7 @@ const fixturePassword = 'unit-test-only-team-password';
 
 test('cloud startup fails closed without a strong password and HTTPS origin', () => {
   assert.equal(createAccess({}).cloud, false);
-  assert.throws(() => createAccess({MINCETONG_CLOUD:'true'}), /PASSWORD/);
+  assert.throws(() => createAccess({MINCETONG_CLOUD:'true',MINCETONG_TEAM_AUTH:'true'}), /PASSWORD/);
   for (const origin of ['http://example.test','https://example.test/sub','https://u:p@example.test','https://example.test/?x=1']) {
     assert.throws(() => createAccess({MINCETONG_CLOUD:'true',MINCETONG_TEAM_PASSWORD:fixturePassword,MINCETONG_PUBLIC_ORIGIN:origin}));
   }
@@ -21,10 +21,10 @@ async function freePort() {
   await new Promise(resolve => server.close(resolve));
   return port;
 }
-async function start(dir, password = fixturePassword) {
+async function start(dir, password = fixturePassword, requirePassword = true) {
   const port = await freePort();
   const child = spawn(process.execPath,['server/index.cjs'],{cwd:path.resolve(__dirname,'..'),env:{...process.env,
-    PORT:String(port),MINCETONG_CLOUD:'true',MINCETONG_PUBLIC_ORIGIN:'https://team.example.test',
+    PORT:String(port),MINCETONG_CLOUD:'true',MINCETONG_TEAM_AUTH:String(requirePassword),MINCETONG_PUBLIC_ORIGIN:'https://team.example.test',
     MINCETONG_TEAM_PASSWORD:password,MINCETONG_DATA_DIR:dir,RENDER_GIT_COMMIT:'e324005',RENDER_GIT_BRANCH:'main',
     OPENAI_API_KEY:'',DEEPSEEK_API_KEY:''},stdio:['ignore','pipe','pipe']});
   try {
@@ -58,7 +58,21 @@ async function login(server) {
   return cookie.split(';')[0];
 }
 
-test('cloud team login protects files and APIs, preserves resident tokens, and persists shared state across deploys', {timeout:30000}, async t => {
+test('public cloud opens pages and government APIs without a team cookie while retaining resident identity and origin checks', {timeout:15000}, async t => {
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'mincetong-public-'));
+  const server=await start(dir,fixturePassword,false);
+  t.after(async()=>{await server.stop();fs.rmSync(dir,{recursive:true,force:true})});
+  for(const target of ['/','/user.html','/agent-settings.html','/team.html']){
+    const response=await server.request(target);assert.equal(response.status,200);assert.ok(!response.text.includes('id="password"'));
+  }
+  assert.equal((await server.request('/api/government')).status,200);
+  assert.equal((await server.request('/',{headers:{'sec-fetch-site':'cross-site'}})).status,200);
+  assert.equal((await server.request('/api/version')).status,200);
+  assert.equal((await server.request('/api/inbox')).status,401);
+  assert.equal((await server.request('/api/government',{headers:{origin:'https://untrusted.test'}})).status,403);
+});
+
+test('optional cloud team login protects files and APIs, preserves resident tokens, and persists shared state across deploys', {timeout:30000}, async t => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(),'mincetong-cloud-'));
   let server;
   t.after(async () => {await server?.stop();fs.rmSync(dir,{recursive:true,force:true})});
