@@ -16,7 +16,9 @@ function deliveredPolicy(p){return{...p,recipientIds:undefined,requestKey:undefi
 function preview(input){const kind=input.kind==='publication'?'publication':'consultation',audience=['all','matched','selected'].includes(input.audience)?input.audience:kind==='publication'?'all':'matched';return{kind,domain:['education','elder','employment','general'].includes(input.domain)?input.domain:'general',deadline:clean(input.deadline,10),audience,recipientIds:Array.isArray(input.recipientIds)?input.recipientIds.filter(x=>typeof x==='string').slice(0,1000):[]}}
 function govSummary(){return{demo:true,revision:db.revision,residents:db.residents.map(({token,...r})=>r),policies:db.policies.slice().reverse().map(p=>({...deliveredPolicy(p),receipts:db.messages.filter(m=>m.policyId===p.id).map(m=>({...m,displayName:db.residents.find(r=>r.id===m.residentId)?.displayName||'演示居民'}))}))}}
 const agents=require('./agent/server.cjs')({db,changed,send,body,resident,eligible});
+const workbench=require('./workbench.cjs')({agents,send,body});
 const server=http.createServer(async(req,res)=>{try{const u=new URL(req.url,'http://127.0.0.1:5173');const pathname=u.pathname;res.setHeader('X-Content-Type-Options','nosniff');if(pathname.startsWith('/api/')){const host=req.headers.host||'';if(!['127.0.0.1:'+port,'localhost:'+port].includes(host))fail(403,'仅允许本机演示访问');if(req.headers.origin&&!['http://127.0.0.1:'+port,'http://localhost:'+port].includes(req.headers.origin))fail(403,'不接受其他来源的写入');
+if(await workbench.handle(req,res,u))return;
 if(await agents.handle(req,res,u))return;
 if(pathname==='/api/health')return send(res,200,{ok:true,demo:true,revision:db.revision});
 if(pathname==='/api/events'&&req.method==='GET'){res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache','Connection':'keep-alive'});res.write('data: '+JSON.stringify({revision:db.revision})+'\n\n');streams.add(res);req.on('close',()=>streams.delete(res));return}

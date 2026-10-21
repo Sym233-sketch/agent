@@ -4,11 +4,18 @@
   "private": true,
   "description": "民策通：政策共创与主动关怀双端 Agent 本机原型",
   "engines": {
-    "node": ">=22.9.0"
+    "node": ">=22.13.0"
   },
   "scripts": {
+    "prestart": "node scripts/sync-workbench.cjs",
     "start": "node --env-file-if-exists=.env server/index.cjs",
-    "test": "node --test tests/agent.test.cjs tests/deepseek.test.cjs",
+    "test": "node --test tests/agent.test.cjs tests/deepseek.test.cjs tests/workbench.test.cjs tests/pdf-research.test.cjs",
     "check": "node scripts/check.cjs"
+  },
+  "dependencies": {
+    "jszip": "3.10.1",
+    "mammoth": "1.13.0",
+    "pdfjs-dist": "6.4.299",
+    "word-extractor": "1.0.4"
   }
 }
