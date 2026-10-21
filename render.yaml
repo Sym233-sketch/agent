@@ -1,0 +1,23 @@
+# Invite-only free demo. Idle sleep and ephemeral data are accepted for this deployment.
+# GitHub must be connected to Render for automatic Git deploys.
+services:
+  - type: web
+    name: mincetong-agent
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    numInstances: 1
+    buildCommand: npm ci && npm test && npm run check && node scripts/sync-workbench.cjs
+    startCommand: node --env-file-if-exists=.env server/index.cjs
+    autoDeployTrigger: commit
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: MINCETONG_CLOUD
+        value: "true"
+      - key: MINCETONG_DATA_DIR
+        value: /tmp/mincetong
+      - key: MINCETONG_TEAM_PASSWORD
+        generateValue: true
