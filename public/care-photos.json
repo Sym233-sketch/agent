@@ -1,0 +1,85 @@
+[
+  {
+    "id": "family",
+    "name": "暮光同行",
+    "desc": "暖金色调，亲子散步作底，生活感更强。",
+    "author": "Seljan Salim",
+    "photo": "https://images.unsplash.com/photo-1756982477661-107a1c72c8fd?auto=format&fit=crop&w=2000&q=85",
+    "source": "https://unsplash.com/photos/family-walking-on-path-with-trees-at-sunset-El0yVRiFbxs",
+    "category": "家庭陪伴",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "heart",
+    "name": "双手成心",
+    "desc": "浅杏色调，手势爱心作底，暖意更直接。",
+    "author": "Matt Nelson",
+    "photo": "https://images.unsplash.com/photo-1513193563746-fac77a988f8d?auto=format&fit=crop&w=2000&q=85",
+    "source": "https://unsplash.com/photos/two-person-combine-hand-forming-a-heart-hand-gesture-2Rb2I8TZ6O8",
+    "category": "手势爱心",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "care",
+    "name": "牵手相伴",
+    "desc": "米灰色调，长辈牵手作底，更安静、朴实。",
+    "author": "Thomas Griggs",
+    "photo": "https://images.unsplash.com/photo-1773234005177-191d2e6d0077?auto=format&fit=crop&w=2000&q=85",
+    "source": "https://unsplash.com/photos/two-elderly-hands-clasped-together-showing-connection-nX8uzTIfysY",
+    "category": "长辈陪伴",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "tiny",
+    "name": "掌心里的家",
+    "author": "Heike Mintel",
+    "photo": "https://images.unsplash.com/photo-1562494794-d59c886e2bf2?auto=format&fit=crop&w=1800&q=80",
+    "source": "https://unsplash.com/photos/family-holding-hands-i_Gns0ELnLw",
+    "category": "亲子牵手",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "friends",
+    "name": "彼此相拥",
+    "author": "Hannah Busing",
+    "photo": "https://images.unsplash.com/photo-1721059050927-dfad8ff13e07?auto=format&fit=crop&w=1800&q=80",
+    "source": "https://unsplash.com/photos/a-group-of-young-women-hugging-each-other-JbBG-qh4Ylg",
+    "category": "朋友陪伴",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "together",
+    "name": "伸手相助",
+    "author": "Roman Kraft",
+    "photo": "https://images.unsplash.com/photo-1495653797063-114787b77b23?auto=format&fit=crop&w=1800&q=80",
+    "source": "https://unsplash.com/photos/woman-and-man-holding-hands-0EVKn3-5JSU",
+    "category": "相互支持",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "garden",
+    "name": "绿意心意",
+    "author": "Redicul Pict",
+    "photo": "https://images.unsplash.com/photo-1687165984893-6634e4990d52?auto=format&fit=crop&w=1800&q=80",
+    "source": "https://unsplash.com/photos/a-person-making-a-heart-shape-with-their-hands-7OJSmE47ioo",
+    "category": "手势爱心",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "sunheart",
+    "name": "光里的心",
+    "author": "Kristina Litvjak",
+    "photo": "https://images.unsplash.com/photo-1449495169669-7b118f960251?auto=format&fit=crop&w=1800&q=80",
+    "source": "https://unsplash.com/photos/person-forming-heart-shape-with-their-hands-FO18LpXMlvk",
+    "category": "手势爱心",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  }
+]
