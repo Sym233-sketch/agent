@@ -8,6 +8,8 @@ Word / Excel / PDF 拖入后自动转换并审查，点击问题定位正文或�
 
 **与朋友线上共创：** 使用 [Render 部署说明](DEPLOYMENT.md) 部署同一套政府端、居民端与模型后端。GitHub `main` 更新后自动构建，构建检查通过才会发布新版。当前选择免费演示：服务会休眠，重启或部署后演示数据可能丢失。`127.0.0.1` 链接仅用于本机开发，不能分享给其他电脑。线上部署完成后使用 Render 实际生成的 HTTPS 地址；此仓库包含部署配置不代表站点已经上线。
 
+现有线上入口：[共创站](https://mincetong-agent.onrender.com/team.html) · [政府端](https://mincetong-agent.onrender.com/#policy) · [居民端](https://mincetong-agent.onrender.com/user.html) · [模型配置](https://mincetong-agent.onrender.com/agent-settings.html)。首次访问输入管理员私下提供的共创口令。当前运行版本可在共创站中核对。
+
 需要 **Node.js 22.13 或更新版本，推荐 Node.js 24**。首次运行安装文档解析依赖；SheetJS 官方构建已保存在 `vendor/`，运行时不依赖外部 CDN。
 
 ```powershell
