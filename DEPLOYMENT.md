@@ -8,6 +8,8 @@
 
 团队口令保存在服务的环境变量里，本机另有 Git 忽略的 `.env.cloud` 供管理员查看，不会写入仓库或公开文档。请私下交给受邀团队。
 
+自动更新还依赖 GitHub App 对 `Sym233-sketch/agent` 的授权。仅有 Render 登录授权或服务上的 Auto-Deploy 开关不够；若主线推送后没有出现 `new_commit` 部署，先检查 [Render GitHub App 仓库权限](https://github.com/apps/render/installations/new)，再检查服务 Settings 的 Git Credentials。用户已为本次部署授权该仓库；后续取消授权会中断自动更新。
+
 ## 首次部署
 
 1. 在 Render 连接拥有本仓库权限的 GitHub 账号。必须通过连接的 GitHub 提供方选择仓库；仅填写公开 Git URL 的服务不支持自动部署。
