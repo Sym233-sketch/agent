@@ -1,0 +1,5 @@
+'use strict';
+// Fetch public official texts only; never contacts a model API.
+const fs=require('fs'),path=require('path'),crypto=require('crypto'),{retrieve}=require('../server/agent/documents.cjs');
+async function main(){const dir=path.resolve(__dirname,'../resources/national-policies');fs.mkdirSync(dir,{recursive:true});let failed=0;for(const p of require('../server/national-policy-sources.json')){try{const doc=await retrieve(p.url);if(doc.text.length<1000||!doc.text.includes(p.title.replace('（2015年修正）','').replace('（2018年修正）','')))throw Error('正文长度或标题校验未通过');const record={...doc,...p,scope:'全国；政府转载站点所在地区不限制该全国性文件的适用范围',verification:'已抓取官方全文快照；截至抓取日期未完成全部修订废止关系核验，办理前复核',sha256:crypto.createHash('sha256').update(doc.text).digest('hex')};fs.writeFileSync(path.join(dir,p.key+'.json'),JSON.stringify(record,null,2));console.log(p.key+' OK '+doc.text.length)}catch(e){failed++;console.error(p.key+' FAILED '+e.message)}}if(failed)process.exitCode=1}
+main();
