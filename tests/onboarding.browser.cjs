@@ -1,0 +1,52 @@
+/* Optional browser regression: PLAYWRIGHT_MODULE=/path/to/playwright node tests/onboarding.browser.cjs */
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),net=require('node:net'),{spawn}=require('node:child_process');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const root=path.resolve(__dirname,'..'),output=path.join(root,'test-results/onboarding');
+async function freePort(){const socket=net.createServer();await new Promise(r=>socket.listen(0,'127.0.0.1',r));const port=socket.address().port;await new Promise(r=>socket.close(r));return port;}
+(async()=>{
+ fs.mkdirSync(output,{recursive:true});
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'mincetong-onboarding-')),port=await freePort();
+ const server=spawn(process.execPath,['server/index.cjs'],{cwd:root,env:{...process.env,PORT:String(port),MINCETONG_PORT:String(port),MINCETONG_DATA_DIR:dir,MINCETONG_CLOUD:'false',RENDER:'false',DEEPSEEK_API_KEY:'',OPENAI_API_KEY:''},stdio:['ignore','pipe','pipe']});
+ let browser;const errors=[],requests=[];
+ try{
+  await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Server startup timed out')),10000);server.once('exit',c=>{clearTimeout(timer);reject(Error('Server exited '+c))});server.stdout.on('data',d=>{if(d.toString().includes('Mincetong local:')){clearTimeout(timer);resolve()}})});
+  browser=await chromium.launch({headless:true,...(process.env.BROWSER_PATH?{executablePath:process.env.BROWSER_PATH}:{})});
+  async function context(viewport,reducedMotion='no-preference'){
+   const ctx=await browser.newContext({viewport,reducedMotion,recordVideo:{dir:path.join(output,'video'),size:{width:1280,height:800}}});
+   await ctx.route('https://images.unsplash.com/**',r=>r.abort());
+   const page=await ctx.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.url().includes('/api/residents')&&r.postData())requests.push(JSON.parse(r.postData()))});
+   await page.goto(`http://127.0.0.1:${port}/user.html`,{waitUntil:'networkidle'});
+   return {ctx,page};
+  }
+  async function next(page,step){await page.locator('#welcomeNext').click();await page.locator(`.ob-shell[data-step="${step}"]`).waitFor();await page.waitForTimeout(700)}
+  async function shot(page,name){await page.waitForTimeout(700);await page.screenshot({path:path.join(output,name+'.png'),fullPage:true});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),name+' horizontal overflow');}
+  async function basics(page){await next(page,1);await page.locator('#welcomeName').fill('林小禾');await next(page,2);await page.getByRole('radio',{name:'女',exact:true}).click();await page.locator('#welcomeAge').fill('28');await next(page,3);await page.locator('#welcomeIdentity').fill('DEMO-ID-001');await next(page,4);}
+  const desktop=await context({width:1440,height:960}),p=desktop.page;
+  const negative=await p.evaluate(()=>window.MincetongOnboarding.extractTags('我不是学生。我不需要照护或学习支持。',30));assert.equal(negative.job,'暂未提供');assert.equal(negative.matchingFacts.needStudy,false);assert.equal(negative.matchingFacts.disability,'unknown');
+  await shot(p,'01-welcome-desktop');
+  await next(p,1);await p.locator('#welcomeName').fill('林小禾');await shot(p,'02-name-desktop');
+  await next(p,2);await p.getByRole('radio',{name:'女',exact:true}).click();await p.locator('#welcomeAge').fill('28');await shot(p,'03-age-desktop');
+  await next(p,3);await p.locator('#welcomeIdentity').fill('DEMO-ID-001');assert.equal(await p.locator('#welcomeIdentity').getAttribute('type'),'password');await p.locator('#toggleIdentity').click();assert.equal(await p.locator('#welcomeIdentity').getAttribute('type'),'text');await shot(p,'04-identity-desktop');await next(p,4);
+  const bio='我是一名教师，喜欢阅读。希望了解教育支持与学习支持。测试介绍不会被持久保存。';
+  await p.locator('#welcomeIntroduction').fill(bio);await p.locator('[name=proactive]').check();await p.locator('.ob-help-toggle').hover();await p.getByRole('tooltip').waitFor({state:'visible'});await shot(p,'05-introduction-desktop');
+  await next(p,5);await shot(p,'06-hongtong-desktop');await next(p,6);
+  await p.locator('#welcomeLearn').click();await p.locator('#pioneerDetails').waitFor({state:'visible'});await shot(p,'07-pioneer-details-desktop');await p.keyboard.press('Escape');
+  await p.locator('#welcomeNext').click();await assert.rejects(()=>p.locator('.app-sidebar').waitFor({timeout:200}));await p.getByText('加入前请确认自愿参与；也可以选择暂不参加。',{exact:true}).waitFor();
+  await p.locator('[name=welcomeTopic][value=教育服务]').check();await p.locator('[name=pioneerConsent]').check();await shot(p,'08-pioneer-desktop');
+  await p.locator('#welcomeNext').click();await p.locator('.app-sidebar').waitFor();await p.waitForTimeout(800);
+  const stored=await p.evaluate(()=>({session:sessionStorage.getItem('mince-resident-session-v1'),choice:localStorage.getItem('mince-pioneer-choice-v1')}));
+  assert.ok(!stored.session.includes('DEMO-ID-001'));assert.ok(!stored.session.includes(bio));assert.equal(JSON.parse(stored.session).profile.age,28);assert.equal(JSON.parse(stored.session).profile.gender,'女');assert.equal(JSON.parse(stored.session).profile.job,'教师');assert.equal(JSON.parse(stored.choice).joined,true);assert.ok(!JSON.stringify(requests).includes(bio));assert.ok(!JSON.stringify(requests).includes('DEMO-ID-001'));
+  const account=JSON.parse(stored.session).profile.remote;assert.ok(account?.token,'Resident must register with the backend');
+  const govt=await p.request.get(`http://127.0.0.1:${port}/api/government`);assert.ok((await govt.json()).residents.some(r=>r.id===account.id&&r.joined));
+  await p.reload();await p.locator('.app-sidebar').waitFor();assert.equal(await p.locator('.ob-shell').count(),0);await desktop.ctx.close();await p.video().saveAs(path.join(output,'desktop-flow.webm'));
+  const mobile=await context({width:390,height:844}),m=mobile.page;
+  await shot(m,'09-welcome-mobile');await basics(m);await shot(m,'10-introduction-mobile');await m.locator('.ob-help-toggle').click();assert.equal(await m.locator('.ob-help-toggle').getAttribute('aria-expanded'),'true');await m.locator('.ob-help-toggle').click();
+  await m.locator('#welcomeSkip').click();await m.locator('.ob-shell[data-step="6"]').waitFor();assert.equal(await m.locator('text=MEET YOUR COMPANION').count(),0);await shot(m,'11-pioneer-mobile');await m.locator('#welcomeBack').click();await m.locator('.ob-shell[data-step="4"]').waitFor();await m.waitForTimeout(700);assert.equal(await m.locator('#welcomeIntroduction').inputValue(),'');await m.locator('#welcomeSkip').click();await m.locator('.ob-shell[data-step="6"]').waitFor();await m.waitForTimeout(700);await m.locator('#welcomeDecline').click();await m.locator('.app-sidebar').waitFor();assert.equal(JSON.parse(await m.evaluate(()=>localStorage.getItem('mince-pioneer-choice-v1'))).joined,false);await mobile.ctx.close();await m.video().saveAs(path.join(output,'mobile-flow.webm'));
+  const quiet=await context({width:1366,height:768},'reduce'),q=quiet.page;
+  await q.keyboard.press('Enter');await q.locator('.ob-shell[data-step="1"]').waitFor();await q.locator('#welcomeName').fill('小林');await q.locator('#welcomeName').press('Enter');await q.locator('.ob-shell[data-step="2"]').waitFor();
+  const radio=q.getByRole('radio',{name:'男',exact:true});await radio.focus();await radio.press('ArrowRight');assert.equal(await q.getByRole('radio',{name:'女',exact:true}).getAttribute('aria-checked'),'true');await q.locator('#welcomeAge').fill('18');await q.locator('#welcomeAge').press('Enter');await q.locator('.ob-shell[data-step="3"]').waitFor();await q.locator('#welcomeDemoId').click();await q.locator('#welcomeIdentity').press('Enter');await q.locator('.ob-shell[data-step="4"]').waitFor();await q.locator('#welcomeSkip').click();await q.locator('.ob-shell[data-step="6"]').waitFor();await q.locator('#welcomeDecline').click();await q.locator('.app-sidebar').waitFor();await quiet.ctx.close();
+  assert.deepEqual(errors,[]);
+  const report={desktop:true,mobile:true,reducedMotion:true,fullIntroductionPath:true,skipIntroductionPath:true,optionalPioneerConsent:true,tooltipAndDialog:true,keyboardNavigation:true,maskedIdentity:true,rawIdentityAndBiographyNotPersisted:true,residentGovernmentSync:true,consoleErrors:errors};fs.writeFileSync(path.join(output,'verification.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+ }finally{await browser?.close();await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve);server.kill()});if(!path.resolve(dir).startsWith(path.resolve(os.tmpdir())+path.sep))throw Error('Unexpected temporary directory');fs.rmSync(dir,{recursive:true,force:true});}
+})().catch(e=>{console.error(e);process.exitCode=1});
