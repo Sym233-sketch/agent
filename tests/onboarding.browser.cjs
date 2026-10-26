@@ -12,9 +12,10 @@ async function freePort(){const socket=net.createServer();await new Promise(r=>s
  try{
   await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Server startup timed out')),10000);server.once('exit',c=>{clearTimeout(timer);reject(Error('Server exited '+c))});server.stdout.on('data',d=>{if(d.toString().includes('Mincetong local:')){clearTimeout(timer);resolve()}})});
   browser=await chromium.launch({headless:true,...(process.env.BROWSER_PATH?{executablePath:process.env.BROWSER_PATH}:{})});
-  async function context(viewport,reducedMotion='no-preference'){
+  async function context(viewport,reducedMotion='no-preference',disableWebgl=false){
    const ctx=await browser.newContext({viewport,reducedMotion,recordVideo:{dir:path.join(output,'video'),size:{width:1280,height:800}}});
    await ctx.route('https://images.unsplash.com/**',r=>r.abort());
+   if(disableWebgl)await ctx.addInitScript(()=>{const native=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(kind,...args){return kind==='webgl'?null:native.call(this,kind,...args)}});
    const page=await ctx.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.url().includes('/api/residents')&&r.postData())requests.push(JSON.parse(r.postData()))});
    await page.goto(`http://127.0.0.1:${port}/user.html`,{waitUntil:'networkidle'});
    return {ctx,page};
@@ -25,7 +26,13 @@ async function freePort(){const socket=net.createServer();await new Promise(r=>s
   const desktop=await context({width:1440,height:960}),p=desktop.page;
   const negative=await p.evaluate(()=>window.MincetongOnboarding.extractTags('我不是学生。我不需要照护或学习支持。',30));assert.equal(negative.job,'暂未提供');assert.equal(negative.matchingFacts.needStudy,false);assert.equal(negative.matchingFacts.disability,'unknown');
   await shot(p,'01-welcome-desktop');
-  await next(p,1);await p.locator('#welcomeName').fill('林小禾');await shot(p,'02-name-desktop');
+  assert.equal(await p.locator('.ob-shell').getAttribute('data-renderer'),'webgl');
+  assert.ok((await p.locator('#welcomeStage').innerText()).replace(/\s/g,'').length<30,'Welcome must not contain decorative copy');
+  await p.mouse.move(1000,300,{steps:20});await p.waitForTimeout(450);assert.equal(await p.locator('.ob-cursor').isVisible(),true);
+  assert.ok(Number(await p.locator('.ob-shell').evaluate(e=>e.style.getPropertyValue('--pointer-x')))>0,'Scene must respond to pointer movement');
+  const button=await p.locator('#welcomeNext').boundingBox();await p.mouse.move(button.x+button.width*.8,button.y+button.height*.5,{steps:15});await p.waitForTimeout(400);
+  assert.ok(parseFloat(await p.locator('#welcomeNext').evaluate(e=>e.style.getPropertyValue('--mx')))>1,'CTA must magnetically follow the pointer');assert.equal(await p.locator('.ob-cursor').evaluate(e=>e.classList.contains('is-hover')),true);await shot(p,'button-hover-desktop');
+  await p.mouse.down();assert.equal(await p.locator('#welcomeNext .ob-ripple').count(),1);await p.mouse.up();await p.waitForTimeout(80);assert.equal(await p.locator('.ob-shell').getAttribute('data-motion-phase'),'transition');await p.screenshot({path:path.join(output,'transition-desktop.png')});await p.locator('.ob-shell[data-step="1"]').waitFor();await p.waitForTimeout(800);await p.locator('#welcomeName').fill('林小禾');await shot(p,'02-name-desktop');
   await next(p,2);await p.getByRole('radio',{name:'女',exact:true}).click();await p.locator('#welcomeAge').fill('28');await shot(p,'03-age-desktop');
   await next(p,3);await p.locator('#welcomeIdentity').fill('DEMO-ID-001');assert.equal(await p.locator('#welcomeIdentity').getAttribute('type'),'password');await p.locator('#toggleIdentity').click();assert.equal(await p.locator('#welcomeIdentity').getAttribute('type'),'text');await shot(p,'04-identity-desktop');await next(p,4);
   const bio='我是一名教师，喜欢阅读。希望了解教育支持与学习支持。测试介绍不会被持久保存。';
@@ -46,7 +53,8 @@ async function freePort(){const socket=net.createServer();await new Promise(r=>s
   const quiet=await context({width:1366,height:768},'reduce'),q=quiet.page;
   await q.keyboard.press('Enter');await q.locator('.ob-shell[data-step="1"]').waitFor();await q.locator('#welcomeName').fill('小林');await q.locator('#welcomeName').press('Enter');await q.locator('.ob-shell[data-step="2"]').waitFor();
   const radio=q.getByRole('radio',{name:'男',exact:true});await radio.focus();await radio.press('ArrowRight');assert.equal(await q.getByRole('radio',{name:'女',exact:true}).getAttribute('aria-checked'),'true');await q.locator('#welcomeAge').fill('18');await q.locator('#welcomeAge').press('Enter');await q.locator('.ob-shell[data-step="3"]').waitFor();await q.locator('#welcomeDemoId').click();await q.locator('#welcomeIdentity').press('Enter');await q.locator('.ob-shell[data-step="4"]').waitFor();await q.locator('#welcomeSkip').click();await q.locator('.ob-shell[data-step="6"]').waitFor();await q.locator('#welcomeDecline').click();await q.locator('.app-sidebar').waitFor();await quiet.ctx.close();
+  const fallback=await context({width:390,height:844},'reduce',true);assert.equal(await fallback.page.locator('.ob-shell').getAttribute('data-renderer'),'fallback');await basics(fallback.page);await fallback.page.locator('#welcomeSkip').click();await fallback.page.locator('#welcomeDecline').click();await fallback.page.locator('.app-sidebar').waitFor();await fallback.ctx.close();
   assert.deepEqual(errors,[]);
-  const report={desktop:true,mobile:true,reducedMotion:true,fullIntroductionPath:true,skipIntroductionPath:true,optionalPioneerConsent:true,tooltipAndDialog:true,keyboardNavigation:true,maskedIdentity:true,rawIdentityAndBiographyNotPersisted:true,residentGovernmentSync:true,consoleErrors:errors};fs.writeFileSync(path.join(output,'verification.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+  const report={desktop:true,mobile:true,reducedMotion:true,webglMaterial:true,gpuFallback:true,reactivePointer:true,magneticButtons:true,clickRipples:true,fullScreenTransition:true,minimalWelcomeCopy:true,fullIntroductionPath:true,skipIntroductionPath:true,optionalPioneerConsent:true,tooltipAndDialog:true,keyboardNavigation:true,maskedIdentity:true,rawIdentityAndBiographyNotPersisted:true,residentGovernmentSync:true,consoleErrors:errors};fs.writeFileSync(path.join(output,'verification.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
  }finally{await browser?.close();await new Promise(resolve=>{if(server.exitCode!==null)return resolve();server.once('exit',resolve);server.kill()});if(!path.resolve(dir).startsWith(path.resolve(os.tmpdir())+path.sep))throw Error('Unexpected temporary directory');fs.rmSync(dir,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1});
