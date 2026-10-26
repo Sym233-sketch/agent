@@ -19,7 +19,7 @@
 5. 等待部署状态变为 Live。访问服务生成的真实 HTTPS 地址，直接打开 `/team.html`，确认运行的 commit 与 GitHub 主线相符。
 6. 同一域名下：`/#policy` 为政府端，`/user.html` 为居民端，`/agent-settings.html` 为模型配置。不要再分享 `127.0.0.1` 地址。
 
-模板不会配置或调用真实模型。可在模型配置页填写 API key，或在 Render 环境变量中设置服务商配置。站点部署和自动测试都不会调用付费模型。
+模型固定使用 DeepSeek Flash，API 与官方文件搜索持续启用。请在 Render Environment 设置 `DEEPSEEK_API_KEY`，重启和重新部署后自动加载；模型状态页只展示状态，不提供选择或开关。部署和自动测试不调用付费模型。
 
 ## 自动同步
 
