@@ -1,4 +1,5 @@
 'use strict';
+const demo=require('../demo-context.cjs');
 const {official}=require('./documents.cjs');
 // These are consultation / intention-registration demonstrations, never real approvals.
 const MATTERS={
@@ -27,14 +28,15 @@ function detect(message){
 function statedRegion(message){return String(message||'').match(/(?:我在|住在|家在|居住在|地区(?:改成|是)?|所在地(?:是)?|^)[\s：:]*([\p{Script=Han}]{2,8}市[\p{Script=Han}]{1,8}?(?:区|县))/u)?.[1]||null}
 const regionOf=c=>{const r=c.facts.district?.value;if(!r||/^(?:暂未|未知|未提供|演示|测试)/.test(r))return null;return statedRegion(r)||(/^[\p{Script=Han}]{2,8}(?:市|省|自治区|县|区)$/u.test(r)?r:null)};
 const metadata=d=>({key:d.key||d.catalogKey,title:d.title,url:d.url,issued:d.issued,scope:d.scope,sourceNote:d.sourceNote,verification:d.verification});
-module.exports=function createDiscovery({catalog,search,read,clock=Date.now}){
+module.exports=function createDiscovery({catalog,search,read,clock=Date.now,fictionalDemo=false}){
  async function discover(c,message,{force=false}={}){
   const found=detect(message),previous=c.recommendations;if(!found&&!previous)return null;
-  const event=found||{event:previous.event,phase:previous.phase,subject:previous.subject,evidence:previous.evidence},region=regionOf(c),year=found?(found.requestedYear||new Date(clock()).getFullYear()+(found.yearOffset||0)):previous.year,fingerprint=JSON.stringify([event.event,event.phase,event.subject,region,year]);
+  const event=found||{event:previous.event,phase:previous.phase,subject:previous.subject,evidence:previous.evidence},region=fictionalDemo?demo.context.region:regionOf(c),year=found?(found.requestedYear||new Date(clock()).getFullYear()+(found.yearOffset||0)):previous.year,fingerprint=JSON.stringify([event.event,event.phase,event.subject,region,year]);
   if(!force&&previous?.fingerprint===fingerprint&&clock()-Date.parse(previous.researchedAt)<(previous.research.status==='failed'?60000:86400000))return previous;
   const entries=Object.entries(MATTERS).filter(([id,m])=>m.event===event.event&&(event.event!=='primary-school'||(event.phase==='planned'?id!=='school-status':id!=='school-enrollment')));
   const items=entries.map(([id,m])=>({id,title:m.title,help:m.help,condition:m.condition,virtual:true,materials:m.materials,sources:catalog().filter(d=>m.keys.includes(d.key||d.catalogKey)&&official(d.url)).map(metadata)})).filter(m=>m.sources.length);
   const plan={...event,title:NAMES[event.event],region,year,fingerprint,researchedAt:new Date(clock()).toISOString(),localRulesVerified:false,items,research:{status:'searching',sources:[],notice:'地方办理条件仍须核实。'}};
+  if(fictionalDemo){plan.demoContext=demo.context;plan.items=plan.items.map(m=>({...m,condition:'虚构演示：自愿登记，示例材料由系统准备，最后由本人确认提交。',demo:true,materials:[...m.materials.map(x=>x+'（虚构演示样例）')]}));plan.research={status:'simulated',sources:[],notice:demo.context.notice};c.recommendations=plan;for(const d of items.flatMap(m=>m.sources))if(!c.sources.some(s=>s.url===d.url))c.sources.push(metadata(d));return plan}
   // Query only topic and city/district, never the message, names or medical details.
   const topic={'primary-school':event.phase==='planned'?'小学 入学报名 课后服务 学生资助':'小学 课后服务 学籍 学生资助',employment:'公共就业服务 办理指南',eldercare:'社区养老 助餐 居家服务 办理','mental-support':'心理健康公共服务 服务指南'}[event.event];
   plan.research.query=[region||'全国',year,topic,'官方政策'].join(' ');

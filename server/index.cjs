@@ -17,7 +17,7 @@ function deliver(r,p){if(db.messages.some(m=>m.residentId===r.id&&m.policyId===p
 function deliveredPolicy(p){return{...p,recipientIds:undefined,requestKey:undefined}}
 function preview(input){const kind=input.kind==='publication'?'publication':'consultation',audience=['all','matched','selected'].includes(input.audience)?input.audience:kind==='publication'?'all':'matched';return{kind,domain:['education','elder','employment','general'].includes(input.domain)?input.domain:'general',deadline:clean(input.deadline,10),audience,recipientIds:Array.isArray(input.recipientIds)?input.recipientIds.filter(x=>typeof x==='string').slice(0,5000):[]}}
 function govSummary(){return{demo:true,revision:db.revision,residents:db.residents.map(({token,birthDate,birthdayGreeting,...r})=>r),policies:db.policies.slice().reverse().map(p=>({...deliveredPolicy(p),receipts:db.messages.filter(m=>m.policyId===p.id).map(m=>({...m,displayName:db.residents.find(r=>r.id===m.residentId)?.displayName||'演示居民'}))}))}}
-const agents=require('./agent/server.cjs')({db,changed,send,body,resident,eligible},{policyOnly:true,getServices:()=>services,getDiscovery:()=>discovery});
+const agents=require('./agent/server.cjs')({db,changed,send,body,resident,eligible},{policyOnly:true,fictionalDemo:process.env.MINCETONG_FICTIONAL_DEMO!=='false',getServices:()=>services,getDiscovery:()=>discovery});
 const discovery=require('./policy-discovery.cjs').createDiscovery({db,changed,send,body,resident});
 const workbench=require('./workbench.cjs')({agents,send,body});
 const services=require('./service-agents.cjs').createServices({db,changed,send,body,resident,provider:agents.provider});

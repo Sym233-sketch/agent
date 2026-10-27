@@ -1,5 +1,6 @@
 /* Browser-test process only. Replaces ALL outbound fetches before app startup. */
 'use strict';
+process.env.MINCETONG_FICTIONAL_DEMO||='false';
 process.env.DEEPSEEK_API_KEY='browser-test-only-never-live';
 const failures=new Set();let serial=0;
 const action=(name,args)=>({type:'function_call',id:'f'+(++serial),call_id:'c'+serial,name,arguments:JSON.stringify(args)});

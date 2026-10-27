@@ -1,0 +1,20 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),create=require('../server/agent/server.cjs');
+function fixture(){const r={id:'a',displayName:'演示居民',age:null,district:'暂未提供',job:'',facts:{}},db={residents:[r],policies:[],messages:[]},inputs=[],provider={key:'test-only',provider:'deepseek',model:'test',response:async input=>{inputs.push(input);return{output:[{type:'message',content:[{type:'output_text',text:'我已按汉东省武畔市的虚构演示安排整理好办理事项。'}]}]}},search:async()=>{throw Error('禁止搜索虚构地区')}};const deps={db,changed(){},body:async req=>req.payload,resident:()=>r,send:(res,status,value)=>Object.assign(res,{status,value}),eligible:()=>({ok:true})},service=create(deps,{provider,fictionalDemo:true,getDiscovery:()=>({catalog:require('../server/policy-discovery.cjs').loadCatalog()})}),request=async(path,payload)=>{const res={};await service.handle({method:payload?'POST':'GET',payload},res,new URL(path,'http://localhost'));return res.value},chat=message=>service.chat(r,{channel:'hall',message,allowLLM:true});return{r,db,service,request,chat,inputs}}
+test('fictional location removes locality questions and prepares a ready business draft without inventing personal facts',async()=>{
+ const f=fixture(),result=await f.chat('帮我准备资料并提交');const a=result.case.application;
+ assert.equal(a.status,'ready');assert.equal(a.fields.find(x=>x.id==='district').value,'汉东省武畔市');assert.equal(a.fields.find(x=>x.id==='district').source,'demo');assert.equal(a.fields.find(x=>x.id==='age').value,null);assert.equal(a.fields.find(x=>x.id==='income').value,null);assert.equal(a.materials.filter(x=>x.kind==='demo_sample').length,2);assert.match(a.template.notice,/虚构/);assert.equal(f.r.district,'暂未提供');
+ const payload=JSON.parse(f.inputs[0].input[0].content);assert.equal(payload.profile.district,'汉东省武畔市');assert.match(f.inputs[0].instructions,/不要再询问省、市、区/);
+ const submitted=await f.request('/api/agent/applications/'+a.id+'/submit',{userConfirmed:true,revision:a.revision});assert.equal(submitted.application.receipt.receivingOffice,'武畔市虚拟政务服务中心');assert.equal(submitted.application.receipt.virtual,true);
+});
+test('life-event recommendations use virtual local conditions without searching the fictional city',async()=>{
+ const f=fixture();const result=await f.chat('我儿子上小学了，有什么推荐？'),p=result.case.recommendations;
+ assert.equal(p.region,'汉东省武畔市');assert.equal(p.research.status,'simulated');assert.ok(p.items.every(x=>x.demo&&x.condition.includes('虚构演示')));assert.equal(p.research.sources.length,0);
+ const prepared=await f.request('/api/agent/desk/'+result.case.id+'/matters/school-aftercare/prepare',{});assert.equal(prepared.case.application.missing.length,0);assert.equal(prepared.case.application.fields.find(x=>x.id==='age').value,null);assert.equal(prepared.case.application.fields.find(x=>x.id==='district').value,'汉东省武畔市');
+});
+test('care options use fictional organizations without asking for city or disclosing chat externally',async()=>{
+ const f=fixture();await f.chat('这个申请表怎么填？');const result=await f.chat('材料还是不明白怎么准备。'),offer=result.care.offers[0];const options=await f.request('/api/agent/care/'+result.case.id+'/'+offer.id+'/options',{});assert.equal(options.simulated,true);assert.equal(options.sources.length,0);assert.match(options.organizations[0].name,/武畔.*虚构/);assert.ok(!JSON.stringify(options).includes('https://'));
+ const prepared=await f.request('/api/agent/care/'+result.case.id+'/'+offer.id+'/prepare',{confirm:true,preference:'visit',summary:'虚构演示：了解帮办上门安排'});assert.equal(prepared.task.simulated,true);assert.equal(prepared.task.region,'汉东省武畔市');assert.equal(prepared.task.delivery,'local_queue_only');
+});
+
+test('demo replies remove requests for real locality or evidence while retaining technical errors',()=>{const demo=require('../server/demo-context.cjs');const text=demo.adaptReply('已整理课后服务。孩子在哪个市、哪个区上学？请提供收入证明。模型连接超时，请重试。');assert.ok(!text.includes('哪个市'));assert.ok(!text.includes('收入证明'));assert.match(text,/汉东省武畔市/);assert.match(text,/模型连接超时/)});

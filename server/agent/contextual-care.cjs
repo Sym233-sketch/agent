@@ -1,5 +1,5 @@
 'use strict';
-const crypto=require('node:crypto');
+const crypto=require('node:crypto'),demo=require('../demo-context.cjs');
 const KINDS={paperwork:{title:'找个人一起理清材料',question:'这几轮我们一直在核对材料。要不要先帮你整理成一张清单，或者了解社区帮办服务？',query:'社区 帮办代办 社工 服务'},companionship:{title:'让身边多一份支持',question:'要不要了解社区社工的电话关怀或探访服务？可以先聊聊，再决定是否希望有人上门。',query:'社区 社工 探访关爱 服务'},caregiver:{title:'也给照护者一点喘息',question:'要不要了解短时照护或社区支持，让你有机会歇一歇？我们先查服务安排和费用。',query:'社区 照护者 喘息 服务'},meals:{title:'让吃饭这件事轻松一些',question:'要不要了解附近的社区助餐或送餐服务？先看看费用和配送范围，不用马上决定。',query:'社区 助餐 送餐 服务'},mobility:{title:'少跑一点，有人搭把手',question:'要不要了解帮办、助行或上门咨询？可以先确认哪些事情能在家准备。',query:'社区 助行 上门 帮办 服务'},emotional:{title:'给自己留一点支持',question:'这几轮聊下来，我想轻轻问一句：你愿不愿意了解可以倾听的社工或专业支持？也可以只继续办眼前的事。',query:'社区 社工 心理 支持 服务'}};
 const fail=(status,message)=>Object.assign(Error(message),{status});
 const ownContext=text=>!/^\s*(假如|假设|举例|小说|帮朋友|他|她)/.test(text)&&!/(?:我朋友|我同事|我的朋友|我的同事|我妈妈|我爸爸|我儿子|我女儿|我母亲|我父亲)/.test(text);
@@ -15,10 +15,10 @@ function validate(candidate,messages){
  const used=new Set();for(const q of quotes){const i=messages.findIndex((m,i)=>!used.has(i)&&m.includes(q));if(i<0)throw Error('依据必须分别来自不同轮次的本人对话');used.add(i)}
  return{kind:candidate.kind,evidence:quotes,reason:'从最近几轮对话发现可能需要额外支持；这只是待你确认的服务建议。',basis:'llm-context'};
 }
-module.exports=function create({data,db,changed,provider,run,schema,redact,fetchDocument,clock=Date.now}){
+module.exports=function create({data,db,changed,provider,run,schema,redact,fetchDocument,clock=Date.now,fictionalDemo=false}){
  const state=c=>c.supportCare||={offers:[],muted:[],paused:false,lastShownAt:0};
  const owned=(r,id)=>{const c=data.cases.find(c=>c.id===id&&c.residentId===r.id);if(!c)throw fail(404,'没有找到这件事');return c};
- const visible=(c)=>{const s=state(c);return{caseId:c.id,paused:s.paused,offers:s.offers.filter(o=>o.status==='suggested'&&!s.muted.includes(o.kind)).slice(-1),notice:'依据本事项对话发现的支持选择，不是诊断或资格认定。'}};
+ const visible=(c)=>{const s=state(c);return{caseId:c.id,demoContext:fictionalDemo?demo.context:null,paused:s.paused,offers:s.offers.filter(o=>o.status==='suggested'&&!s.muted.includes(o.kind)).slice(-1),notice:'依据本事项对话发现的支持选择，不是诊断或资格认定。'}};
  async function contextualRun(p,args){
   if(!args.input?.case?.id)return run(p,args);
   const c=data.cases.find(c=>c.id===args.input.case.id);if(!c)return run(p,args);
@@ -41,6 +41,7 @@ module.exports=function create({data,db,changed,provider,run,schema,redact,fetch
   if(m[3]==='choice'){if(!['not_now','wrong','decline'].includes(a.choice))throw fail(400,'请选择处理方式');o.status=a.choice;if(a.choice!=='not_now')s.muted=[...new Set([...s.muted,o.kind])];o.evidence=[];changed();send(res,200,visible(c));return true}
   if(s.paused||o.status!=='suggested'||s.muted.includes(o.kind))throw fail(409,'该建议已暂停或关闭');
   if(m[3]==='options'){
+   if(fictionalDemo){o.options={region:demo.context.region,simulated:true,organizations:[demo.organization(o.kind)],sources:[],checkedAt:new Date(clock()).toISOString(),verifiedService:false,notice:demo.context.notice};changed();send(res,200,o.options);return true}
    const region=redact(a.region||c.facts.district?.value||'').trim().slice(0,80);if(!region||/暂未|未知/.test(region))throw fail(400,'请先提供市、区或街道，不需要详细住址');
    if(!provider.key)throw fail(503,'模型搜索尚未连接，请稍后重试');
    const found=await require('./documents.cjs').search(provider,region+' '+KINDS[o.kind].query);const sources=[];
@@ -49,9 +50,9 @@ module.exports=function create({data,db,changed,provider,run,schema,redact,fetch
    o.options={region,sources,checkedAt:new Date(clock()).toISOString(),verifiedService:false,notice:sources.length?'查询到的是官方服务资料；是否服务你所在社区、费用和可预约时间，还需向机构核实。':'没有读到可核验的当地官方资料；暂不提供机构或预约承诺。'};changed();send(res,200,o.options);return true;
   }
   if(a.confirm!==true||!['phone','visit','online'].includes(a.preference)||typeof a.summary!=='string'||!a.summary.trim()||a.summary.length>300||redact(a.summary)!==a.summary)throw fail(400,'请确认联系方式与不含敏感号码的分享摘要');
-  if(!o.options?.sources.length)throw fail(409,'请先查询并阅读官方服务资料');
+  if(!o.options?.simulated&&!o.options?.sources.length)throw fail(409,'请先查询并阅读官方服务资料');
   let task=data.handoffs.find(t=>t.residentId===r.id&&t.careOfferId===o.id);
-  if(!task){task={id:crypto.randomUUID(),residentId:r.id,name:r.displayName,careOfferId:o.id,reason:a.summary.trim(),preference:a.preference,region:o.options.region,sources:o.options.sources.map(({title,url})=>({title,url})),status:'waiting',delivery:'local_queue_only',createdAt:new Date(clock()).toISOString()};data.handoffs.push(task)}
+  if(!task){task={id:crypto.randomUUID(),residentId:r.id,name:r.displayName,careOfferId:o.id,reason:a.summary.trim(),preference:a.preference,region:o.options.region,sources:o.options.sources.map(({title,url})=>({title,url})),status:'waiting',delivery:'local_queue_only',simulated:o.options.simulated===true,createdAt:new Date(clock()).toISOString()};data.handoffs.push(task)}
   o.status='prepared';o.evidence=[];changed();send(res,200,{task,message:'联系准备单已保存到站内人工队列；尚未联系社工、分享给外部机构或预约上门。请通过核实后的官方渠道联系。'});return true;
  }
  return{run:contextualRun,wrapDesk,handle};
