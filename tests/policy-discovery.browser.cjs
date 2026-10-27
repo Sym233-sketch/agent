@@ -11,7 +11,7 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),net=
   p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(r.url().includes('/api/residents')&&r.postData())payloads.push(r.postData());if(r.url().includes('/api/agent/chat'))modelCalls.push(r.url())});
   await p.goto(base+'/user.html');
   async function next(step){await p.locator('#welcomeNext').click();await p.locator('.ob-shell[data-step="'+step+'"]').waitFor()}
-  await next(1);await p.locator('#welcomeName').fill('回归居民');await next(2);await p.getByRole('radio',{name:'暂不透露'}).click();await p.locator('#welcomeAge').fill('60');await next(3);await p.locator('#welcomeIdentity').fill('DEMO-ID-TEST');await next(4);
+  await next(1);await p.locator('#welcomeName').fill('回归居民');await next(2);await p.getByRole('radio',{name:'暂不透露'}).click();await p.locator('#welcomeBirthDate').fill('1966-01-01');await next(3);await p.locator('#welcomeIdentity').fill('DEMO-ID-TEST');await next(4);
   await p.locator('#welcomeIntroduction').fill('我已经退休，患有抑郁症，希望得到专业帮助。');await p.getByText('如果愿意，可以勾选下方心理支持，让我帮你找就近服务与费用核实线索。',{exact:true}).waitFor();await p.locator('[name=mentalMatching]').check();await p.locator('[name=proactive]').check();await next(5);await next(6);await p.locator('#welcomeDecline').click();
   await p.locator('[data-view=hall]').waitFor();await p.locator('[data-view=hall]').click();await p.locator('.desk-policy-library > summary').click();await p.locator('#policyRecommendations .policy-result-card').first().waitFor();
   const session=await p.evaluate(()=>JSON.parse(sessionStorage.getItem('mince-resident-session-v1')));const headers={Authorization:'Bearer '+session.profile.remote.token};
