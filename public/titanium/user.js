@@ -58,8 +58,9 @@ function renderApp(){
   if(!threads.some(t=>t.id===active))active=threads[0]?.id||'';
   window.MincetongTree.render({
     view,profile,unread:threads.filter(t=>t.unread).length,
-    html:view==='messages'?messageView():view==='pilot'?pilotView():(view==='search'||view==='desk')?hallView():view==='services'?'<iframe id="serviceFrame" title="服务事项与提醒" src="services.html?embedded=1"></iframe>':'',
-    navigate:next=>{view=next;selectedDifficulties=[];location.hash=next;renderApp()}
+    html:view==='messages'?messageView():view==='pilot'?pilotView():(view==='search'||view==='desk')?hallView():view==='services'?'<iframe id="serviceFrame" title="服务事项与提醒" src="/titanium/services.html?embedded=1"></iframe>':'',
+    navigate:next=>{view=next;selectedDifficulties=[];location.hash=next;renderApp()},
+    afterModeChange:bindApp
   });
   bindApp();persist();
   window.MincetongBirthday?.check({api:residentApi,profile:()=>profile});

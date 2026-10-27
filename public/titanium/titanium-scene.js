@@ -119,7 +119,7 @@ function create(host, { reduced }) {
   const initialEnv = keep(new THREE.CanvasTexture(envCanvas)); initialEnv.mapping = THREE.EquirectangularReflectionMapping; initialEnv.colorSpace = THREE.SRGBColorSpace;
   const pmrem = new THREE.PMREMGenerator(renderer);
   environmentTarget = pmrem.fromEquirectangular(initialEnv); scene.environment = environmentTarget.texture; scene.environmentIntensity = .75;
-  new HDRLoader().load('assets/studio-small-09-1k.hdr', hdr => {
+  new HDRLoader().load('/titanium/assets/studio-small-09-1k.hdr', hdr => {
     if (disposed) { hdr.dispose(); return; }
     const target = pmrem.fromEquirectangular(hdr); hdr.dispose(); environmentTarget.dispose(); environmentTarget = target;
     scene.environment = target.texture; dirty = true;
@@ -310,7 +310,7 @@ function create(host, { reduced }) {
     destroy() {
       if (disposed) return; disposed = true; abort.abort(); observer.disconnect(); cancelAnimationFrame(frame);
       nodes.forEach(n => { n.frontMaterial.map?.dispose(); n.backMaterial.map?.dispose(); });
-      reflection.dispose(); key.shadow.dispose(); environmentTarget.dispose(); pmrem.dispose(); resources.forEach(r => r.dispose?.()); renderer.dispose();
+      reflection.dispose(); key.shadow.dispose(); environmentTarget.dispose(); pmrem.dispose(); resources.forEach(r => r.dispose?.()); renderer.dispose(); renderer.forceContextLoss();
       view.remove(); stage.classList.remove('titanium-ready'); host.classList.remove('titanium-active'); old.removeAttribute('aria-hidden'); old.querySelectorAll('button,a').forEach(b => b.removeAttribute('tabindex'));
       if (activeEngine === api) activeEngine = null;
     }

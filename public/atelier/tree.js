@@ -23,7 +23,7 @@
   const groups=[
     {id:'living',n:'01',label:'生活服务',note:'从日常需要出发',x:45,y:17,color:'ice',leaves:[
       {id:'care',label:'养老与关怀',note:'照护、助餐与日常支持',icon:'care',view:'services',group:'care',x:80,y:8},
-      {id:'benefits',label:'补贴与待遇',note:'查看事项，逐项确认条件',icon:'benefits',view:'services',group:'benefits',x:80,y:25}]},
+      {id:'benefits',label:'办事服务',note:'材料、办理与申请进度',icon:'benefits',view:'desk',group:'',x:80,y:25}]},
     {id:'policy',n:'02',label:'政策与共创',note:'有出处，也听得见您',x:45,y:50,color:'violet',leaves:[
       {id:'search',label:'查找政策',note:'官方原文与适用条件',icon:'policy',view:'search',x:80,y:42},
       {id:'pilot',label:'参与政策共创',note:'分享经验，自愿参与',icon:'people',view:'pilot',x:80,y:59}]},
@@ -31,7 +31,7 @@
       {id:'messages',label:'我的服务消息',note:'查看提醒与服务进展',icon:'message',view:'messages',x:80,y:76},
       {id:'human',label:'找人帮一把',note:'了解人工协助方式',icon:'help',view:'human',x:80,y:93}]}
   ];
-  const titles={hall:'服务图谱',search:'查找政策',messages:'我的服务消息',pilot:'政策共创',services:'生活服务'};
+  const titles={hall:'服务图谱',desk:'办事服务',search:'查找政策',messages:'我的服务消息',pilot:'政策共创',services:'生活服务'};
   const motionQuery=matchMedia('(prefers-reduced-motion: reduce)');
   let host,scene,sceneShell,abort,navigate,current='',sequence=0,transition,lastLeaf=null,serviceGroup='',paused=motionQuery.matches,selectedGroup='',drag=null,pan={x:0,y:0},pointerFrame=0,rootScrollY=0;
   const reduced=()=>paused||motionQuery.matches;
@@ -161,7 +161,7 @@
     if(was==='hall')rootScrollY=window.scrollY;
     sheet.hidden=false;sheet.inert=false;content.innerHTML=options.html;content.scrollTop=0;$('#sheetTitle').textContent=titles[next];prepareContent(next);
     if(next==='services'){
-      const frame=$('#serviceFrame');if(serviceGroup)frame.src=`services.html?embedded=1&group=${encodeURIComponent(serviceGroup)}`;
+      const frame=$('#serviceFrame');if(serviceGroup)frame.src=`/titanium/services.html?embedded=1&group=${encodeURIComponent(serviceGroup)}`;
     }
     const origin=geometry(lastLeaf,sheet);
     document.body.classList.add('tree-focused');world.inert=true;$('.tree-footer').inert=true;scene?.step({search:2,services:3,messages:1,pilot:5}[next]||2);scene?.burst();
@@ -183,7 +183,7 @@
     }
   }
   function leave(){
-    ++sequence;transition?.cancel();abort?.abort();scene?.destroy();if(pointerFrame)cancelAnimationFrame(pointerFrame);sceneShell?.remove();document.body.classList.remove('tree-active','tree-focused','tree-still');delete document.body.dataset.treeView;host=null;current='';lastLeaf=null;selectedGroup='';
+    ++sequence;transition?.cancel();abort?.abort();scene?.destroy();sceneShell?.querySelector('canvas')?.getContext('webgl')?.getExtension('WEBGL_lose_context')?.loseContext();scene=null;if(pointerFrame)cancelAnimationFrame(pointerFrame);sceneShell?.remove();document.body.classList.remove('tree-active','tree-focused','tree-still');delete document.body.dataset.treeView;host=null;current='';lastLeaf=null;selectedGroup='';
   }
-  window.MincetongTree={render,leave};
+  window.MincetongAtelierTree={render,leave};
 })();

@@ -164,7 +164,7 @@
     if(was==='hall')rootScrollY=window.scrollY;
     sheet.hidden=false;sheet.inert=false;content.innerHTML=options.html;content.scrollTop=0;$('#sheetTitle').textContent=titles[next];prepareContent(next);
     if(next==='services'){
-      const frame=$('#serviceFrame');if(serviceGroup)frame.src=`services.html?embedded=1&group=${encodeURIComponent(serviceGroup)}`;
+      const frame=$('#serviceFrame');if(serviceGroup)frame.src=`/titanium/services.html?embedded=1&group=${encodeURIComponent(serviceGroup)}`;
     }
     const origin=geometry(lastLeaf,sheet);
     document.body.classList.add('tree-focused');world.inert=true;$('.tree-footer').inert=true;scene?.step({search:2,services:3,messages:1,pilot:5}[next]||2);scene?.burst();
@@ -188,5 +188,5 @@
   function leave(){
     ++sequence;transition?.cancel();abort?.abort();scene?.destroy();if(pointerFrame)cancelAnimationFrame(pointerFrame);sceneShell?.remove();document.body.classList.remove('tree-active','tree-focused','tree-still');delete document.body.dataset.treeView;host=null;current='';lastLeaf=null;selectedGroup='';
   }
-  window.MincetongTree={render,leave};
+  window.MincetongTitaniumTree={render,leave};
 })();
