@@ -1,6 +1,7 @@
 import * as THREE from '../reels/vendor/three.module.js';
 import { HDRLoader } from './vendor/HDRLoader.js';
 import { Reflector } from './vendor/Reflector.js';
+import { SceneNavigation, cameraPose, angleDelta, wrapAngle } from './scene-navigation.js';
 
 const ITEMS = [
   { id: 'care', title: '养老关怀', w: 2.70, h: 3.18, y: 1.00, turn: -.42 },
@@ -36,11 +37,13 @@ function create(host, { reduced }) {
   const hits = document.createElement('nav'); hits.className = 'titanium-hits'; hits.setAttribute('aria-label', '选择服务');
   view.append(canvas, hits); stage.append(view);
   let disposed = false, opened = false, frame = 0, last = 0, time = 0, flow = 1, dirty = true;
-  let mobile = false, width = 1, height = 1, hovered = '', focused = '', drag = null;
-  let manualYaw = 0, manualPitch = .13, targetYaw = 0, cameraYaw = 0, manualUntil = 0, suppressClickUntil = 0;
+  let mobile = false, width = 1, height = 1, hovered = '', focused = '';
+  let moduleYaw = 0, modulePitch = 0, manualUntil = 0, suppressClickUntil = 0;
+  const navigation = new SceneNavigation();
   let radiusX = 5.8, radiusZ = 3.7, distance = 21, environmentTarget;
   const mouse = new THREE.Vector2(), projected = new THREE.Vector3(), targetPosition = new THREE.Vector3();
   const targetRotation = new THREE.Quaternion(), rotationEuler = new THREE.Euler();
+  const facingRotation = new THREE.Quaternion(), facingDirection = new THREE.Vector3(), exhibitBounds = new THREE.Box3();
   const cornerVectors = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
   let renderer;
   try {
@@ -53,27 +56,27 @@ function create(host, { reduced }) {
     return { host, refresh() {}, step() {}, burst() {}, reset() {}, getBounds() { return null; }, destroy() { abort.abort(); view.remove(); stage.classList.remove('titanium-ready'); } };
   }
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.08;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.06;
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.VSMShadowMap;
-  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x181d24);
-  scene.fog = new THREE.FogExp2(0x181d24, .018);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x111923);
+  scene.fog = new THREE.FogExp2(0x141d27, .016);
   const camera = new THREE.PerspectiveCamera(38, 1, .1, 110);
   const look = new THREE.Vector3(0, .10, 0), raycaster = new THREE.Raycaster();
   const rig = new THREE.Group(); scene.add(rig);
 
   // A continuous floor and curved wall, rather than a flat background image.
-  const profile = [[-4.22, 35], [-4.22, -4]];
+  const profile = [[-4.22, 40], [-4.22, -9]];
   for (let i = 1; i <= 30; i++) {
     const a = i / 30 * Math.PI / 2;
-    profile.push([-4.22 + 4 * (1 - Math.cos(a)), -4 - 4 * Math.sin(a)]);
+    profile.push([-4.22 + 5 * (1 - Math.cos(a)), -9 - 5 * Math.sin(a)]);
   }
-  profile.push([18, -8]);
+  profile.push([18, -14]);
   const positions = [], indices = [];
   profile.forEach(([y, z]) => positions.push(-45, y, z, 45, y, z));
   for (let i = 0; i < profile.length - 1; i++) { const a = i * 2; indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
   const roomGeometry = keep(new THREE.BufferGeometry());
   roomGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3)); roomGeometry.setIndex(indices); roomGeometry.computeVertexNormals();
-  const roomMaterial = keep(new THREE.MeshStandardMaterial({ color: 0x252a32, metalness: .28, roughness: .52, side: THREE.DoubleSide }));
+  const roomMaterial = keep(new THREE.MeshStandardMaterial({ color: 0x1c2633, metalness: .42, roughness: .40, side: THREE.DoubleSide }));
   const room = new THREE.Mesh(roomGeometry, roomMaterial); room.receiveShadow = true; scene.add(room);
   scene.add(new THREE.HemisphereLight(0xd8e4f2, 0x292621, 1.35));
   const key = new THREE.DirectionalLight(0xffe9c9, 3.4); key.position.set(-7, 11, 8); key.castShadow = true;
@@ -81,10 +84,15 @@ function create(host, { reduced }) {
   key.shadow.camera.top = 10; key.shadow.camera.bottom = -10; key.shadow.camera.near = 1; key.shadow.camera.far = 35;
   key.shadow.bias = -.0003; key.shadow.normalBias = .035; key.shadow.radius = 5; key.shadow.blurSamples = 8;
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0xc2d5e9, 1.5); fill.position.set(8, 4, 7); scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xffeee0, 2.0); rim.position.set(-4, 6, -5); scene.add(rim);
+  const fill = new THREE.DirectionalLight(0xb8d7ff, 1.9); fill.position.set(8, 4, 7); scene.add(fill);
+  const rim = new THREE.DirectionalLight(0xc9e6ff, 2.4); rim.position.set(-4, 6, -5); scene.add(rim);
   const wallLight = new THREE.SpotLight(0xffd9ac, 190, 45, .77, 1, 1.5);
-  wallLight.position.set(-11, 9, 3); wallLight.target.position.set(-4, 2.5, -7); scene.add(wallLight, wallLight.target);
+  wallLight.position.set(-11, 9, 3); wallLight.target.position.set(-4, 3.5, -13.8); scene.add(wallLight, wallLight.target);
+
+  const arcPoints = [];
+  for (let i = 0; i <= 160; i++) { const a = .18 + i / 160 * TAU * .82; arcPoints.push(new THREE.Vector3(Math.cos(a) * 8.4, -4.18, Math.sin(a) * 6.6)); }
+  const arcMaterial = keep(new THREE.LineBasicMaterial({ color: 0x76acd0, transparent: true, opacity: .19, toneMapped: false }));
+  const floorArc = new THREE.Line(keep(new THREE.BufferGeometry().setFromPoints(arcPoints)), arcMaterial); scene.add(floorArc);
 
   // Low-strength, softly sampled planar reflections share the same real objects.
   const reflection = new Reflector(keep(new THREE.PlaneGeometry(70, 65)), { textureWidth: 512, textureHeight: 512, clipBias: .003, multisample: 0 });
@@ -110,15 +118,17 @@ function create(host, { reduced }) {
   }
   const initialEnv = keep(new THREE.CanvasTexture(envCanvas)); initialEnv.mapping = THREE.EquirectangularReflectionMapping; initialEnv.colorSpace = THREE.SRGBColorSpace;
   const pmrem = new THREE.PMREMGenerator(renderer);
-  environmentTarget = pmrem.fromEquirectangular(initialEnv); scene.environment = environmentTarget.texture; scene.environmentIntensity = .65;
+  environmentTarget = pmrem.fromEquirectangular(initialEnv); scene.environment = environmentTarget.texture; scene.environmentIntensity = .75;
   new HDRLoader().load('assets/studio-small-09-1k.hdr', hdr => {
     if (disposed) { hdr.dispose(); return; }
     const target = pmrem.fromEquirectangular(hdr); hdr.dispose(); environmentTarget.dispose(); environmentTarget = target;
     scene.environment = target.texture; dirty = true;
   }, undefined, () => { dirty = true; });
 
-  const titanium = keep(new THREE.MeshPhysicalMaterial({ color: 0x98a1ac, metalness: .94, roughness: .29, clearcoat: .30, clearcoatRoughness: .22, envMapIntensity: 1.05 }));
-  const glass = keep(new THREE.MeshPhysicalMaterial({ color: 0xcbd6de, metalness: .08, roughness: .12, transparent: true, opacity: .115, clearcoat: 1, clearcoatRoughness: .07, depthWrite: false, envMapIntensity: .7 }));
+  const titanium = keep(new THREE.MeshPhysicalMaterial({ color: 0x9eaebb, metalness: .96, roughness: .23, clearcoat: .45, clearcoatRoughness: .18, envMapIntensity: 1.15 }));
+  const glass = keep(new THREE.MeshPhysicalMaterial({ color: 0xc8e0ed, metalness: .08, roughness: .09, transparent: true, opacity: .075, clearcoat: 1, clearcoatRoughness: .055, depthWrite: false, envMapIntensity: .85 }));
+  const beaconGeometry = keep(new THREE.SphereGeometry(.027, 10, 8));
+  const beaconMaterial = keep(new THREE.MeshBasicMaterial({ color: 0xcce8ff, toneMapped: false }));
 
   function photoTexture(node, back = false) {
     const c = document.createElement('canvas'); c.width = 1024; c.height = Math.round(1024 * node.item.h / node.item.w);
@@ -156,8 +166,12 @@ function create(host, { reduced }) {
     const front = new THREE.Mesh(plane, frontMaterial); front.position.z = .101; group.add(front);
     const coating = new THREE.Mesh(plane, glass); coating.position.z = .115; group.add(coating);
     const back = new THREE.Mesh(plane, backMaterial); back.position.z = -.181; back.rotation.y = Math.PI; group.add(back);
+    const edgePoints = roundedShape(item.w + .015, item.h + .015, .15).getPoints(72).map(p => new THREE.Vector3(p.x, p.y, .085));
+    const edgeMaterial = keep(new THREE.LineBasicMaterial({ color: 0x8bc5e6, transparent: true, opacity: .32, toneMapped: false }));
+    const edge = new THREE.LineLoop(keep(new THREE.BufferGeometry().setFromPoints(edgePoints)), edgeMaterial); edge.raycast = () => {}; group.add(edge);
+    const beacon = new THREE.Mesh(beaconGeometry, beaconMaterial); beacon.position.set(item.w / 2 - .19, item.h / 2 - .18, .13); beacon.raycast = () => {}; group.add(beacon);
     const button = document.createElement('button'); button.type = 'button'; button.className = 'titanium-hit'; button.dataset.titaniumId = item.id; button.setAttribute('aria-label', item.title); button.innerHTML = `<span>${item.title}</span>`; hits.append(button);
-    const node = { item, index, group, button, frontMaterial, backMaterial, image: null };
+    const node = { item, index, group, button, frontMaterial, backMaterial, edgeMaterial, image: null };
     nodes.push(node); refreshTextures(node);
     const image = new Image(); image.decoding = 'async';
     image.onload = () => { if (!disposed) { node.image = image; refreshTextures(node); dirty = true; } };
@@ -166,6 +180,7 @@ function create(host, { reduced }) {
 
   function resize() {
     const r = view.getBoundingClientRect(), previous = mobile; width = r.width; height = r.height; mobile = width < 650;
+    navigation.setMobile(mobile);
     radiusX = mobile ? 1.95 : 7.1; radiusZ = mobile ? 1.8 : 5.5;
     const requiredH = mobile ? 14.8 : 13.6, requiredW = mobile ? 7.9 : 22.0;
     camera.aspect = width / Math.max(1, height); camera.updateProjectionMatrix();
@@ -185,32 +200,37 @@ function create(host, { reduced }) {
     let object = found.object; while (object && !object.userData.id) object = object.parent;
     return object?.userData.id || '';
   }
+  function finishGesture(result) {
+    if (!result) return;
+    view.classList.remove('is-dragging');
+    if (view.hasPointerCapture(result.pointerId)) view.releasePointerCapture(result.pointerId);
+    if (result.suppressClick) { suppressClickUntil = performance.now() + 400; manualUntil = performance.now() + 900; }
+    hovered = ''; dirty = true;
+  }
+  const cancelGesture = () => finishGesture(navigation.cancel());
   view.addEventListener('pointerdown', event => {
-    if (event.button > 0 || opened) return;
-    if (event.pointerType === 'mouse') event.preventDefault();
-    drag = { x: event.clientX, y: event.clientY, moved: 0, id: event.pointerId }; flow = 0;
-  }, { signal });
+    if (event.button > 0 || event.isPrimary === false || opened) return;
+    if (!navigation.begin(event.pointerId, event.clientX, event.clientY)) return;
+    event.preventDefault();
+    try { view.setPointerCapture(event.pointerId); } catch { cancelGesture(); return; }
+    flow = 0; dirty = true;
+  }, { signal, passive: false });
   view.addEventListener('pointermove', event => {
-    if (drag) {
-      const dx = event.clientX - drag.x, dy = event.clientY - drag.y; drag.x = event.clientX; drag.y = event.clientY; drag.moved += Math.abs(dx) + Math.abs(dy);
-      if (drag.moved > 7) {
-        if (!view.hasPointerCapture(event.pointerId)) view.setPointerCapture(event.pointerId);
-        manualYaw += dx * .003; manualPitch = clamp(manualPitch + dy * .0015, .02, .32); hovered = ''; view.classList.add('is-dragging');
-      }
+    if (navigation.drag) {
+      const result = navigation.move(event.pointerId, event.clientX, event.clientY, event.buttons, event.pointerType);
+      if (result?.ended) finishGesture(result.ended);
+      else if (result?.moved) { hovered = ''; view.classList.add('is-dragging'); }
     } else if (event.pointerType === 'mouse') hovered = hit(event);
     dirty = true;
   }, { signal });
-  const finish = event => {
-    if (!drag) return;
-    const moved = drag.moved;
-    if (view.hasPointerCapture(drag.id)) view.releasePointerCapture(drag.id);
-    drag = null; view.classList.remove('is-dragging');
-    if (moved > 7) { suppressClickUntil = performance.now() + 350; manualUntil = performance.now() + 1200; }
-    if (event.pointerType !== 'mouse') hovered = ''; dirty = true;
-  };
-  view.addEventListener('pointerup', finish, { signal }); view.addEventListener('pointercancel', finish, { signal });
-  view.addEventListener('click', event => { if (performance.now() < suppressClickUntil) return; const id = hit(event); if (id) { event.stopPropagation(); activate(id); } }, { signal });
-  view.addEventListener('pointerleave', () => { if (!drag) hovered = ''; dirty = true; }, { signal });
+  const finish = event => finishGesture(navigation.end(event.pointerId, event.type !== 'pointerup'));
+  window.addEventListener('pointerup', finish, { signal, capture: true });
+  window.addEventListener('pointercancel', finish, { signal, capture: true });
+  view.addEventListener('lostpointercapture', finish, { signal });
+  window.addEventListener('blur', cancelGesture, { signal });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) cancelGesture(); }, { signal });
+  view.addEventListener('click', event => { if (opened || navigation.drag || performance.now() < suppressClickUntil) return; const id = hit(event); if (id) { event.stopPropagation(); activate(id); } }, { signal });
+  view.addEventListener('pointerleave', () => { if (!navigation.drag) hovered = ''; dirty = true; }, { signal });
   hits.addEventListener('focusin', event => { const b = event.target.closest('[data-titanium-id]'); focused = b?.matches(':focus-visible') ? b.dataset.titaniumId : ''; if (focused) flow = 0; dirty = true; }, { signal });
   hits.addEventListener('focusout', () => { focused = ''; dirty = true; }, { signal });
   hits.addEventListener('keydown', event => {
@@ -223,45 +243,58 @@ function create(host, { reduced }) {
 
   function projectButton(node) {
     const { group, item, button } = node, w = (item.w + .02) / 2, h = (item.h + .02) / 2;
-    let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity;
+    let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity, valid = true;
     [[-w, h], [w, h], [w, -h], [-w, -h]].forEach(([x, y], i) => {
       const p = cornerVectors[i].set(x, y, .02).applyMatrix4(group.matrixWorld).project(camera);
+      if (![p.x, p.y, p.z].every(Number.isFinite) || p.z < -1 || p.z > 1) valid = false;
       p.x = (p.x + 1) * width / 2; p.y = (1 - p.y) * height / 2;
       left = Math.min(left, p.x); right = Math.max(right, p.x); top = Math.min(top, p.y); bottom = Math.max(bottom, p.y);
     });
     const bw = Math.max(1, right - left), bh = Math.max(1, bottom - top);
+    button.hidden = !valid || bw > width * 1.5 || bh > height * 1.5;
+    if (button.hidden) return;
     button.style.width = bw.toFixed(2) + 'px'; button.style.height = bh.toFixed(2) + 'px'; button.style.transform = `translate3d(${left.toFixed(2)}px,${top.toFixed(2)}px,0)`;
     button.style.clipPath = 'polygon(' + cornerVectors.map(p => `${((p.x - left) / bw * 100).toFixed(2)}% ${((p.y - top) / bh * 100).toFixed(2)}%`).join(',') + ')';
-    projected.copy(group.position).project(camera); button.style.zIndex = String(Math.max(1, Math.round((1 - projected.z) * 10000)));
+    group.getWorldPosition(projected).project(camera); button.style.zIndex = String(Math.max(1, Math.round((1 - projected.z) * 10000)));
   }
-  function reset() { time = 0; manualYaw = targetYaw = cameraYaw = 0; manualPitch = .13; hovered = focused = ''; manualUntil = 0; flow = 1; dirty = true; }
+  function reset() { cancelGesture(); navigation.reset(); time = 0; moduleYaw = modulePitch = 0; hovered = focused = ''; manualUntil = 0; flow = 1; dirty = true; }
   function update(now) {
     if (disposed) return;
     frame = requestAnimationFrame(update);
     if (document.hidden) { last = now; return; }
     const dt = Math.min(.05, Math.max(0, (now - (last || now)) / 1000)); last = now;
     const still = reduced(); if ((still || opened) && !dirty) return;
-    const stopped = still || opened || !!hovered || !!focused || !!drag || now < manualUntil;
+    const stopped = still || opened || !!hovered || !!focused || !!navigation.drag || now < manualUntil;
     const ease = still ? 1 : 1 - Math.exp(-dt * 6);
-    flow += ((stopped ? 0 : 1) - flow) * ease; if (!still && !drag && !opened) time += dt * flow;
-    targetYaw = manualYaw + (still ? 0 : Math.sin(time * .055) * .025); cameraYaw += (targetYaw - cameraYaw) * ease;
-    camera.position.set(Math.sin(cameraYaw) * distance, distance * manualPitch + 1.25, Math.cos(cameraYaw) * distance);
+    flow += ((stopped ? 0 : 1) - flow) * ease; if (!still && !navigation.drag && !opened) time += dt * flow;
+    const pose = cameraPose(distance);
+    camera.position.set(pose.x, pose.y, pose.z);
     camera.lookAt(look); camera.updateMatrixWorld();
+    const dragEase = navigation.drag || still ? 1 : ease;
+    moduleYaw = wrapAngle(moduleYaw + angleDelta(moduleYaw, navigation.yaw) * dragEase);
+    modulePitch += (navigation.pitch - modulePitch) * dragEase;
+    rig.rotation.set(modulePitch, moduleYaw, 0, 'YXZ');
+    facingRotation.copy(rig.quaternion).invert().multiply(camera.quaternion);
+    facingDirection.set(0, 0, 1).applyQuaternion(facingRotation);
     nodes.forEach((node, i) => {
-      const a = time * .085 + i * TAU / 6 + .32 + Math.sin(time * .025 + i * .7) * .025;
+      const a = time * .13 + i * TAU / 6 + .32 + Math.sin(time * .025 + i * .7) * .025;
       const y = mobile ? [3.6, .8, -2.3, 1.8, -.8, -2.65][i] + Math.sin(a * 1.4 + i) * .24 : node.item.y + Math.sin(a * 1.73 + i * .6) * .38 + Math.cos(time * .027 + i) * .14;
-      targetPosition.set(Math.cos(a) * radiusX, y, Math.sin(a) * radiusZ + Math.cos(time * .036 + i) * .22);
+      targetPosition.set(Math.cos(a) * radiusX, mobile ? Math.max(y, -2.45) : y, Math.sin(a) * radiusZ + Math.cos(time * .036 + i) * .22);
       const active = !opened && (node.item.id === hovered || node.item.id === focused);
-      if (active) targetPosition.z += .20;
+      node.edgeMaterial.opacity = active ? .92 : .32;
+      if (active) targetPosition.addScaledVector(facingDirection, .20);
       node.group.position.lerp(targetPosition, dirty && !last ? 1 : Math.max(.08, ease));
       const automaticTurn = node.item.turn + Math.sin(time * (.028 + i * .003) + i * .8) * .36 + (i === 3 && !mobile ? time * .023 : 0);
       const ownTurn = mobile ? clamp(automaticTurn, -.45, .45) : automaticTurn;
       rotationEuler.set(Math.sin(time * .039 + i) * .12 + (i % 2 ? .07 : -.07), ownTurn, Math.sin(i * 1.8) * .055 + Math.sin(time * .031 + i) * .035);
       targetRotation.setFromEuler(rotationEuler);
-      if (active) targetRotation.copy(camera.quaternion);
+      if (active) targetRotation.copy(facingRotation);
       node.group.quaternion.slerp(targetRotation, Math.max(.08, ease));
       const scale = (mobile ? .90 : 1) * (active ? 1.045 : 1); node.group.scale.setScalar(scale);
     });
+    rig.position.y = 0; scene.updateMatrixWorld();
+    exhibitBounds.setFromObject(rig);
+    rig.position.y = Math.max(0, -4.05 - exhibitBounds.min.y);
     scene.updateMatrixWorld(); nodes.forEach(projectButton);
     renderer.render(scene, camera); dirty = false;
   }
@@ -272,7 +305,7 @@ function create(host, { reduced }) {
   resize(); frame = requestAnimationFrame(update);
   const api = {
     host, reset, refresh() { dirty = true; }, burst() { dirty = true; },
-    step(value) { opened = value !== 0; hits.inert = opened; if (opened) hovered = focused = ''; dirty = true; },
+    step(value) { opened = value !== 0; hits.inert = opened; if (opened) { cancelGesture(); hovered = focused = ''; } dirty = true; },
     getBounds(id) { const b = nodes.find(n => n.item.id === id)?.button; if (!b) return null; const r = b.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; },
     destroy() {
       if (disposed) return; disposed = true; abort.abort(); observer.disconnect(); cancelAnimationFrame(frame);

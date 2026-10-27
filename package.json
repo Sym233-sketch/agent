@@ -9,7 +9,7 @@
   "scripts": {
     "prestart": "node scripts/sync-workbench.cjs",
     "start": "node --env-file-if-exists=.env server/index.cjs",
-    "test": "node --test tests/fictional-demo.test.cjs tests/contextual-care.test.cjs tests/birthday.test.cjs tests/agent.test.cjs tests/deepseek.test.cjs tests/workbench.test.cjs tests/pdf-research.test.cjs tests/cloud.test.cjs tests/pioneer-data.test.cjs tests/service-agents.test.cjs tests/policy-discovery.test.cjs tests/click-sounds.test.cjs tests/service-desk.test.cjs tests/virtual-applications.test.cjs tests/service-discovery.test.cjs tests/agent-precision.test.cjs tests/workbench-precision.test.cjs",
+    "test": "node --test tests/fictional-demo.test.cjs tests/contextual-care.test.cjs tests/birthday.test.cjs tests/agent.test.cjs tests/deepseek.test.cjs tests/workbench.test.cjs tests/pdf-research.test.cjs tests/cloud.test.cjs tests/pioneer-data.test.cjs tests/service-agents.test.cjs tests/policy-discovery.test.cjs tests/click-sounds.test.cjs tests/service-desk.test.cjs tests/virtual-applications.test.cjs tests/service-discovery.test.cjs tests/agent-precision.test.cjs tests/workbench-precision.test.cjs tests/titanium-navigation.test.cjs",
     "check": "node scripts/check.cjs",
     "eval:agent": "node scripts/evaluate-agent.cjs"
   },

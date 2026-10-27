@@ -1,5 +1,5 @@
 /* The photographs, exhibits and room are illuminated inside one scene. */
-body.tree-active{background:#181c22;color:#f0ede6}
+body.tree-active{background:#111923;color:#f0ede6}
 html:has(body.tree-active){scrollbar-gutter:auto}
 .tree-active .tree-scene,.tree-shell:before{display:none}
 .tree-header{height:80px;margin:0 4.4%;border:0;z-index:20}
@@ -13,10 +13,10 @@ html:has(body.tree-active){scrollbar-gutter:auto}
 .tree-eyebrow,.tree-intro p,.tree-intro-aside,.tree-footer,.tree-drag-hint,.tree-reset{display:none!important}
 .tree-stage.titanium-ready{height:calc(100svh - 140px);min-height:520px;max-height:none;perspective:none;cursor:auto}
 .tree-stage.titanium-ready .tree-world{display:none;pointer-events:none}
-.titanium-view{position:fixed;inset:0;z-index:0;transition:opacity .65s,filter .65s;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.titanium-canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:pan-y}
+.titanium-view{position:fixed;inset:0;z-index:0;transition:opacity .65s,filter .65s;touch-action:none;user-select:none;-webkit-user-select:none;overscroll-behavior:contain}
+.titanium-canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
 .titanium-view.is-dragging,.titanium-view.is-dragging .titanium-canvas{cursor:grabbing;touch-action:none}
-.titanium-hits{position:absolute;inset:0;pointer-events:none}
+.titanium-hits{position:absolute;inset:0;pointer-events:none;overflow:clip}
 .titanium-hit{position:absolute;left:0;top:0;padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;pointer-events:auto;cursor:pointer;color:transparent;will-change:transform;opacity:1}
 .titanium-hit span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .titanium-hit:focus-visible{outline:none!important}
