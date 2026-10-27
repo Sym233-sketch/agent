@@ -14,9 +14,9 @@ controller = controller.slice(0, start) + `function renderApp(){
     view,profile,unread:threads.filter(t=>t.unread).length,
     html:view==='messages'?messageView():view==='pilot'?pilotView():(view==='search'||view==='desk')?hallView():view==='services'?'<iframe id="serviceFrame" title="服务事项与提醒" src="/titanium/services.html?embedded=1"></iframe>':'',
     navigate:next=>{view=next;selectedDifficulties=[];location.hash=next;renderApp()},
-    afterModeChange:bindApp
+    afterModeChange:()=>{bindApp();window.MINCETONG_CARE?.mount()}
   });
-  bindApp();persist();
+  bindApp();window.MINCETONG_CARE?.mount();persist();
   window.MincetongBirthday?.check({api:residentApi,profile:()=>profile});
 }
 ` + controller.slice(end);

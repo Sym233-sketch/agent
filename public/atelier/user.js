@@ -60,9 +60,9 @@ function renderApp(){
     view,profile,unread:threads.filter(t=>t.unread).length,
     html:view==='messages'?messageView():view==='pilot'?pilotView():(view==='search'||view==='desk')?hallView():view==='services'?'<iframe id="serviceFrame" title="服务事项与提醒" src="/titanium/services.html?embedded=1"></iframe>':'',
     navigate:next=>{view=next;selectedDifficulties=[];location.hash=next;renderApp()},
-    afterModeChange:bindApp
+    afterModeChange:()=>{bindApp();window.MINCETONG_CARE?.mount()}
   });
-  bindApp();persist();
+  bindApp();window.MINCETONG_CARE?.mount();persist();
   window.MincetongBirthday?.check({api:residentApi,profile:()=>profile});
 }
 function messageView(){const t=threads.find(t=>t.id===active);return `<div class="page-heading"><div><span class="eyebrow">服务消息</span><h1>政策与服务消息</h1><p>查看政策文件、推荐依据及往来回复。</p></div><button class="btn light" data-action="matchProfile">${icon('spark')}更新匹配资料</button></div><div class="message-layout"><section class="panel inbox"><div class="inbox-heading"><h3>我的消息</h3><span class="tag">${threads.length} 个会话</span></div><input class="inbox-search" id="threadSearch" value="${esc(search)}" aria-label="搜索消息" placeholder="搜索服务消息"><div id="threadList" style="display:contents">${threadCards()}</div></section><section class="panel chat-panel">${t?`<div class="chat-head"><div><span class="agent-avatar">${icon('spark')}</span><div><h3>${esc(t.title)}</h3><small>${t.live?'实际模型对话 · 工具执行可追溯':'规则回复 · 自由对话需连接模型'}</small></div></div><span class="tag">${t.status==='paused'?'已暂停消息接收':t.status==='human'?'已记录人工协助意愿':'服务会话'}</span></div>${matchPanel(t)}<div class="chat-area" id="chatArea"><div class="chat-day">今天 · 本机双端服务消息</div>${t.messages.map(m=>`<div class="bubble-row ${m.role==='user'?'user':''}"><span class="bubble-label">${m.role==='user'?'我':m.engine==='unavailable'?'系统连接提示':m.engine==='live-llm'?'服务助手 · 模型回复':'服务助手 · 规则回复'} · ${esc(m.time)}</span><div class="bubble">${esc(m.text)}</div>${m.file?fileCard(m.file):''}</div>`).join('')}</div><div class="composer">${composer(t)}<p class="chat-privacy">${icon('shield')}无需在聊天里发送身份证、银行卡号或详细住址。</p></div>`:'<div class="small-note" style="padding:30px">暂无服务消息。</div>'}</section></div><p class="message-foot">政策卡片包含官方文件快照和标明虚构的示例文件，可打开查看来源。填写身份信息不代表符合补助资格，服务助手不代替正式审核。</p>`}

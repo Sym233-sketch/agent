@@ -22,7 +22,7 @@ function createDiscovery({db,changed,send,body,resident},options={}){
  function prune(){let dirty=false;const now=clock();for(const p of Object.values(db.policyInterests)){const kept=p.events.filter(e=>now-e.at<=90*86400000).slice(-200);if(kept.length!==p.events.length){p.events=kept;dirty=true}}if(dirty)changed();return dirty}
  const preferences=r=>db.policyInterests[r.id]||{enabled:true,events:[],favorites:[],dismissed:[]};
  const metadata=(d,r)=>{const {text,...m}=d,p=preferences(r);return{...m,category:category(d),categoryName:CATEGORIES[category(d)]||'公共政策',favorite:p.favorites.includes(d.key),dismissed:p.dismissed.includes(d.key),guidance:guidance(d)}};
- function ranked(r){const pref=preferences(r),now=clock();return catalog.filter(d=>!pref.dismissed.includes(d.key)).map(d=>{
+ function ranked(r){const pref=preferences(r),now=clock();return catalog.filter(d=>!d.reviewOnly&&!pref.dismissed.includes(d.key)).map(d=>{
  const c=category(d),base=profileScore(r,d),reasons=[...base.reasons],seen=new Set();let interest=0,explicit=pref.enabled&&pref.favorites.includes(d.key);
  if(pref.enabled){if(explicit){interest=6;reasons.push('你收藏了这份政策')}for(const e of [...pref.events].reverse()){const age=(now-e.at)/86400000;if(age<0||age>90)continue;let w=0;
  if(e.type==='search'&&interestMatch(d,e.query)){w=4;if(age<=30)explicit=true}if(e.key===d.key&&e.type==='view')w=1;if(e.key===d.key&&e.type==='dwell')w=2;if(!w)continue;
