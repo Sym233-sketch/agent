@@ -27,7 +27,7 @@ function detect(message){
 }
 function statedRegion(message){return String(message||'').match(/(?:我在|住在|家在|居住在|地区(?:改成|是)?|所在地(?:是)?|^)[\s：:]*([\p{Script=Han}]{2,8}市[\p{Script=Han}]{1,8}?(?:区|县))/u)?.[1]||null}
 const regionOf=c=>{const r=c.facts.district?.value;if(!r||/^(?:暂未|未知|未提供|演示|测试)/.test(r))return null;return statedRegion(r)||(/^[\p{Script=Han}]{2,8}(?:市|省|自治区|县|区)$/u.test(r)?r:null)};
-const metadata=d=>({key:d.key||d.catalogKey,title:d.title,url:d.url,issued:d.issued,scope:d.scope,sourceNote:d.sourceNote,verification:d.verification});
+const metadata=d=>({key:d.key||d.catalogKey,title:d.title,url:d.url,issued:d.issued,scope:d.scope,sourceNote:d.sourceNote,truncated:!!d.truncated,readingScope:d.readingScope,sourceCharacters:d.sourceCharacters,verification:d.verification});
 module.exports=function createDiscovery({catalog,search,read,clock=Date.now,fictionalDemo=false}){
  async function discover(c,message,{force=false}={}){
   const found=detect(message),previous=c.recommendations;if(!found&&!previous)return null;
@@ -44,7 +44,7 @@ module.exports=function createDiscovery({catalog,search,read,clock=Date.now,fict
    const result=await search(plan.research.query);if(!result){plan.research.status='deferred';plan.research.notice='本轮检索次数已用完；先列出已核对的全国政策，地方要求待继续检索。'}
    else{
     const candidates=(result.sources||[]).filter(s=>official(s.url)).slice(0,2);
-    for(const candidate of candidates){try{const d=await read(candidate.url);if(!official(d.url)||!d.text?.trim()||d.text.includes('\uFFFD'))continue;plan.research.sources.push({...metadata(d),documentId:d.id,excerpt:d.text.slice(0,6000),applicability:'已读取正文，地区、时效及具体条件仍待核实'})}catch{/* Retain trusted catalog entries when an official site cannot be read. */}}
+    for(const candidate of candidates){try{const d=await read(candidate.url,{publicSource:true});if(!official(d.url)||!d.text?.trim()||d.text.includes('\uFFFD'))continue;plan.research.sources.push({...metadata(d),documentId:d.id,excerpt:d.text.slice(0,6000),applicability:'已读取正文，地区、时效及具体条件仍待核实'})}catch{/* Retain trusted catalog entries when an official site cannot be read. */}}
     plan.research.status=plan.research.sources.length?'read':candidates.length?'unread':'no-results';
     plan.research.notice=plan.research.sources.length?'已检索并读取官方网页；地方条件仍须逐项核实。':candidates.length?'搜到候选网页，但正文未能读取；以下依据来自已核对的全国文件。':'本轮未找到可读取的官方结果；以下依据来自已核对的全国文件。';
    }
