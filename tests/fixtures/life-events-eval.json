@@ -1,0 +1,265 @@
+[
+  {
+    "message": "我是小学老师，我儿子明年上小学，有什么推荐？",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "planned"
+  },
+  {
+    "message": "我是小学教师，我女儿上小学了",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "enrolled"
+  },
+  {
+    "message": "我不是小学老师，我的孩子在上小学",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "enrolled"
+  },
+  {
+    "message": "我儿子要上小学，想了解报名",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "planned"
+  },
+  {
+    "message": "我女儿下学期上小学",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "planned"
+  },
+  {
+    "message": "孩子还没上小学，先看看入学手续",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "planned"
+  },
+  {
+    "message": "我孩子正在读一年级",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "enrolled"
+  },
+  {
+    "message": "我儿子上小学了，没人接送",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "enrolled"
+  },
+  {
+    "message": "我有孩子，我是小学教师",
+    "event": null
+  },
+  {
+    "message": "我是小学老师",
+    "event": null
+  },
+  {
+    "message": "我朋友的孩子上小学了",
+    "event": null
+  },
+  {
+    "message": "我同事是小学教师",
+    "event": null
+  },
+  {
+    "message": "假如我儿子上小学了，有什么政策",
+    "event": null
+  },
+  {
+    "message": "如果我女儿上小学了怎么办",
+    "event": null
+  },
+  {
+    "message": "我儿子已经小学毕业了",
+    "event": null
+  },
+  {
+    "message": "我儿子已经上初中了，不再上小学",
+    "event": null
+  },
+  {
+    "message": "我刚失业了",
+    "event": "employment",
+    "role": "self"
+  },
+  {
+    "message": "我最近待业，想了解就业支持",
+    "event": "employment",
+    "role": "self"
+  },
+  {
+    "message": "我想找工作",
+    "event": "employment",
+    "role": "self"
+  },
+  {
+    "message": "我不是失业，但是想找工作",
+    "event": "employment",
+    "role": "self"
+  },
+  {
+    "message": "我是小学老师，最近被裁员",
+    "event": "employment",
+    "role": "self"
+  },
+  {
+    "message": "我父亲想找工作",
+    "event": "employment",
+    "role": "parent"
+  },
+  {
+    "message": "我没失业，只是问问",
+    "event": null
+  },
+  {
+    "message": "我已找到工作，不是失业",
+    "event": null
+  },
+  {
+    "message": "如果我被裁员应该怎么办",
+    "event": null
+  },
+  {
+    "message": "我同事最近被裁员",
+    "event": null
+  },
+  {
+    "message": "我退休了",
+    "event": "eldercare",
+    "role": "self"
+  },
+  {
+    "message": "我父亲刚退休",
+    "event": "eldercare",
+    "role": "parent"
+  },
+  {
+    "message": "我母亲独居需要照护",
+    "event": "eldercare",
+    "role": "parent"
+  },
+  {
+    "message": "我爸妈没人照顾",
+    "event": "eldercare",
+    "role": "parent"
+  },
+  {
+    "message": "我父亲独居，推荐一下养老政策",
+    "event": "eldercare",
+    "role": "parent"
+  },
+  {
+    "message": "我没有退休",
+    "event": null
+  },
+  {
+    "message": "假设我退休了，收入怎么办",
+    "event": null
+  },
+  {
+    "message": "我邻居刚退休了",
+    "event": null
+  },
+  {
+    "message": "我抑郁了，想了解支持",
+    "event": "mental-support",
+    "role": "self"
+  },
+  {
+    "message": "我女儿有心理困扰",
+    "event": "mental-support",
+    "role": "child"
+  },
+  {
+    "message": "我本人最近情绪低落",
+    "event": "mental-support",
+    "role": "self"
+  },
+  {
+    "message": "我母亲有抑郁症",
+    "event": "mental-support",
+    "role": "parent"
+  },
+  {
+    "message": "我没有抑郁",
+    "event": null
+  },
+  {
+    "message": "我不需要心理咨询推荐",
+    "event": null
+  },
+  {
+    "message": "假如我有心理困扰怎么办",
+    "event": null
+  },
+  {
+    "message": "我同事抑郁了",
+    "event": null
+  },
+  {
+    "message": "我职业是教师",
+    "event": null
+  },
+  {
+    "message": "收入不想说",
+    "event": null
+  },
+  {
+    "message": "暂时不用，先停一下",
+    "event": null
+  },
+  {
+    "message": "我父亲退休了，我儿子上小学了",
+    "event": "eldercare",
+    "role": "parent",
+    "related": "primary-school"
+  },
+  {
+    "message": "我儿子上小学了，我母亲独居",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "enrolled",
+    "related": "eldercare"
+  },
+  {
+    "message": "儿子明年上小学，我想找工作",
+    "event": "primary-school",
+    "role": "child",
+    "phase": "planned",
+    "related": "employment"
+  },
+  {
+    "message": "我不想找工作",
+    "event": null
+  },
+  {
+    "message": "我不再找工作",
+    "event": null
+  },
+  {
+    "message": "我不需要就业推荐",
+    "event": null
+  },
+  {
+    "message": "我爸妈不是独居",
+    "event": null
+  },
+  {
+    "message": "我父母没有独居",
+    "event": null
+  },
+  {
+    "message": "我妈妈不需要照护",
+    "event": null
+  },
+  {
+    "message": "我儿子没有抑郁",
+    "event": null
+  },
+  {
+    "message": "我没有失业了",
+    "event": null
+  }
+]

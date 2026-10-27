@@ -156,5 +156,68 @@
     ],
     "url": "https://m.mof.gov.cn/zcfb/202610/t20261014_4002838.htm",
     "summary": "城乡义务教育免学杂费、免费教科书和家庭经济困难学生生活补助的经费制度依据。生活补助需核实家庭经济情况、寄宿情况及地方标准，不表示每位小学生均可领取补助。"
+  },
+  {
+    "key": "shanghai-school-enrollment-2026",
+    "title": "上海市教育委员会关于2026年上海市义务教育阶段学校招生入学工作的实施意见",
+    "url": "https://www.shanghai.gov.cn/shsywjy/20260603/7d527d1536da44169afc339d525a3a97.html",
+    "issuer": "上海市教育委员会",
+    "issued": "2026-03-24",
+    "number": "沪教委基〔2026〕9号",
+    "domain": "education",
+    "tags": [
+      "primary-school"
+    ],
+    "jurisdiction": {
+      "country": "CN",
+      "city": "上海市"
+    },
+    "yearScope": 2026,
+    "summary": "上海市2026年义务教育入学安排，具体区县受理条件与报名窗口需核对区级当年公告。仅适用于上海市，不适用于虚构地区。"
+  },
+  {
+    "key": "shanghai-elder-services-2026",
+    "title": "关于印发《上海市基本养老服务清单（2026年版）》的通知",
+    "url": "https://www.shanghai.gov.cn/gwk/search/content/6c5c547b701346cf99164f65ecfc1755",
+    "issuer": "上海市民政局等部门",
+    "issued": "2026-06-04",
+    "number": "沪民养老〔2026〕4号",
+    "domain": "elder",
+    "jurisdiction": {
+      "country": "CN",
+      "city": "上海市"
+    },
+    "summary": "上海市基本养老服务分项目规定服务对象与条件，不能仅凭满60岁认定可享受全部待遇。"
+  },
+  {
+    "key": "shanghai-putuo-student-aid-2026",
+    "title": "关于印发《普陀区中小幼、中等职业学校学生资助资金管理实施细则》的通知",
+    "url": "https://www.shanghai.gov.cn/nw12344/20260409/ac751a10231f4525918e6e9096e78aab.html",
+    "issuer": "上海市普陀区教育局等部门",
+    "issued": "2026-04-09",
+    "domain": "education",
+    "tags": [
+      "primary-school"
+    ],
+    "jurisdiction": {
+      "country": "CN",
+      "city": "上海市",
+      "district": "普陀区"
+    },
+    "summary": "普陀区学生资助管理和认定程序，具体资格需结合在籍在读及经济困难等条件由正式部门审核。"
+  },
+  {
+    "key": "shanghai-basic-public-services",
+    "title": "上海市基本公共服务项目清单",
+    "url": "https://www.shanghai.gov.cn/shsjbggfwxmqd/index.html",
+    "issuer": "上海市人民政府",
+    "issued": null,
+    "domain": "general",
+    "jurisdiction": {
+      "country": "CN",
+      "city": "上海市"
+    },
+    "summary": "上海市教育、就业、养老等基本公共服务项目与对象清单。分项目核对，未公开核实的时间、收费与资格保持未知。",
+    "reviewOnly": true
   }
 ]

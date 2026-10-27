@@ -31,7 +31,7 @@ function review({fields,c,profile,documents=[],day}){
   if(!family&&!own)add('applicantRole','warning','role-unknown','尚未明确是学生本人还是家长代办，请区分两个人的年龄。');
  }
  const query=school?'小学 入学 六周岁 课后服务 自愿 家长':String(get('service')?.value||'');
- const sources=retrieval.indexFor(documents).search(query,{limit:3}).map(hit=>({title:hit.document.title,url:hit.document.url,sha256:hit.document.sha256,scope:'全国背景参考，不代表虚构地区资格条件',quotes:hit.passages.map(p=>p.text.slice(0,450)).filter(q=>hit.document.text.includes(q))})).filter(s=>s.quotes.length);
+ const sources=retrieval.indexFor(documents).search(query,{limit:3,accept:d=>require('../policy-metadata.cjs').allowed(d,{region:c.demoContext?null:c.facts?.district?.value||profile.district})}).map(hit=>({title:hit.document.title,url:hit.document.url,sha256:hit.document.sha256,scope:require('../policy-metadata.cjs').jurisdiction(hit.document).level==='national'?'全国背景参考，不代表虚构地区资格条件':'官方背景参考，适用地区与真实资格仍需核实',quotes:hit.passages.map(p=>p.text.slice(0,450)).filter(q=>hit.document.text.includes(q))})).filter(s=>s.quotes.length);
  return{status:issues.some(i=>i.severity==='error')?'blocked':issues.length?'needs_review':'consistent',blocking:issues.filter(i=>i.severity==='error'),warnings:issues.filter(i=>i.severity!=='error'),checks,sources,retrieval:{mode:'local-policy-bm25',query,documentsSearched:documents.length},notice:'自动核对资料来源、服务对象与年龄/年级的一致性。逻辑异常不等于法律资格不符，未核实内容不自动补造。'};
 }
 module.exports={review,extract,isSchool,numeric,ageFromEvidence};

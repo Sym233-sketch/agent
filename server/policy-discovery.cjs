@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
-const retrieval=require('./policy-retrieval.cjs');
+const retrieval=require('./policy-retrieval.cjs'),policyMetadata=require('./policy-metadata.cjs');
 const CATEGORIES={education:'教育培训',elder:'养老照护',employment:'就业技能',general:'社会救助',mental:'心理支持',accessibility:'无障碍服务',legal:'法律援助'};
 const {category,profileScore,topicMatch,interestMatch}=require("../public/policy-matching.js"),guidance=require("./policy-guidance.cjs");
 const terms=q=>[...new Set(String(q).trim().toLowerCase().split(/[\s，,、；;]+/).filter(Boolean))].slice(0,8);
@@ -9,7 +9,7 @@ function queryScore(d,q){const qs=terms(q);if(!qs.length)return 1;const top=d.ti
 function loadCatalog(root=path.resolve(__dirname,'../resources/national-policies')){return fs.readdirSync(root).filter(f=>f.endsWith('.json')).map(f=>JSON.parse(fs.readFileSync(path.join(root,f),'utf8'))).filter(d=>d.key&&d.text&&/^https:\/\/([^/]+\.)?gov\.cn\//.test(d.url)&&crypto.createHash('sha256').update(d.text).digest('hex')===d.sha256)}
 
 function createDiscovery({db,changed,send,body,resident},options={}){
- const catalog=options.catalog||loadCatalog(),index=retrieval.indexFor(catalog),clock=options.clock||Date.now;db.policyInterests||={};
+ const catalog=policyMetadata.resolveVersions(options.catalog||loadCatalog()),index=retrieval.indexFor(catalog),clock=options.clock||Date.now;db.policyInterests||={};
  let searchCache={signature:'',documents:catalog,index};
  function searchable(){
   const extra=(db.agent?.documents||[]).filter(d=>d.publicSource===true&&!d.catalogKey&&d.text&&d.verification&&require('./agent/documents.cjs').official(d.url));
@@ -21,8 +21,8 @@ function createDiscovery({db,changed,send,body,resident},options={}){
  }
  function prune(){let dirty=false;const now=clock();for(const p of Object.values(db.policyInterests)){const kept=p.events.filter(e=>now-e.at<=90*86400000).slice(-200);if(kept.length!==p.events.length){p.events=kept;dirty=true}}if(dirty)changed();return dirty}
  const preferences=r=>db.policyInterests[r.id]||{enabled:true,events:[],favorites:[],dismissed:[]};
- const metadata=(d,r)=>{const {text,...m}=d,p=preferences(r);return{...m,category:category(d),categoryName:CATEGORIES[category(d)]||'公共政策',favorite:p.favorites.includes(d.key),dismissed:p.dismissed.includes(d.key),guidance:guidance(d)}};
- function ranked(r){const pref=preferences(r),now=clock();return catalog.filter(d=>!d.reviewOnly&&!pref.dismissed.includes(d.key)).map(d=>{
+ const metadata=(d,r)=>{const {text,...m}=d,p=preferences(r);return{...m,policyState:policyMetadata.status(d,{region:r.district}),category:category(d),categoryName:CATEGORIES[category(d)]||'公共政策',favorite:p.favorites.includes(d.key),dismissed:p.dismissed.includes(d.key),guidance:guidance(d)}};
+ function ranked(r){const pref=preferences(r),now=clock();return catalog.filter(d=>!d.reviewOnly&&!pref.dismissed.includes(d.key)&&policyMetadata.allowed(d,{region:r.district})).map(d=>{
  const c=category(d),base=profileScore(r,d),reasons=[...base.reasons],seen=new Set();let interest=0,explicit=pref.enabled&&pref.favorites.includes(d.key);
  if(pref.enabled){if(explicit){interest=6;reasons.push('你收藏了这份政策')}for(const e of [...pref.events].reverse()){const age=(now-e.at)/86400000;if(age<0||age>90)continue;let w=0;
  if(e.type==='search'&&interestMatch(d,e.query)){w=4;if(age<=30)explicit=true}if(e.key===d.key&&e.type==='view')w=1;if(e.key===d.key&&e.type==='dwell')w=2;if(!w)continue;
@@ -42,7 +42,7 @@ function createDiscovery({db,changed,send,body,resident},options={}){
  }
  async function handle(req,res,u){if(!u.pathname.startsWith('/api/policy-'))return false;const r=resident(req),pref=preferences(r);
   if(u.pathname==='/api/policy-dataset'&&req.method==='GET'){send(res,200,{scope:'全国',exportedAt:new Date(clock()).toISOString(),count:catalog.length,documents:catalog});return true}
-  if(u.pathname==='/api/policy-search'&&req.method==='GET'){const q=cleanQuery(u.searchParams.get('q')),c=u.searchParams.get('category')||'',page=Math.max(1,Math.min(1000,parseInt(u.searchParams.get('page'),10)||1));const search=searchable(),found=search.index.search(q,{limit:6,offset:(page-1)*6,accept:d=>(!c||category(d)===c)&&(!u.searchParams.has('favorites')||pref.favorites.includes(d.key))});const all=found.map(({document:d,score,passages,matchedTerms})=>({...metadata(d,r),searchScore:score,passages,matchedTerms}));send(res,200,{query:q,total:found.total??all.length,retrieval:{...search.index.stats,snapshots:catalog.length,officialWebPages:search.documents.length-catalog.length,scope:'检索校验快照和已读取的政府网页；时效、资格仍待核实，不表示全部政策已收录'},localTotal:search.documents.length,page,pageSize:6,items:all,categories:CATEGORIES,preferences:{enabled:pref.enabled,eventCount:pref.events.length},notice:'本地真实文件全文检索；具体条件及现行效力请向正式渠道核验'});return true}
+  if(u.pathname==='/api/policy-search'&&req.method==='GET'){const q=cleanQuery(u.searchParams.get('q')),c=u.searchParams.get('category')||'',page=Math.max(1,Math.min(1000,parseInt(u.searchParams.get('page'),10)||1));const search=searchable(),region=policyMetadata.inferRegion(q,u.searchParams.get('region')||r.district,search.documents),asOf=u.searchParams.get('asOf')||policyMetadata.today();if(!policyMetadata.validDay(asOf))throw Object.assign(Error('核对日期无效'),{status:400});const historical=u.searchParams.get('historical')==='true',found=search.index.search(q,{limit:6,offset:(page-1)*6,accept:d=>policyMetadata.allowed(d,{region,asOf,includeHistorical:historical})&&(!c||category(d)===c)&&(!u.searchParams.has('favorites')||pref.favorites.includes(d.key))});const all=found.map(({document:d,score,passages,matchedTerms})=>({...metadata(d,r),searchScore:score,passages,matchedTerms}));send(res,200,{query:q,region,asOf,includeHistorical:historical,total:found.total??all.length,retrieval:{...search.index.stats,snapshots:catalog.length,officialWebPages:search.documents.length-catalog.length,scope:'检索校验快照和已读取的政府网页；时效、资格仍待核实，不表示全部政策已收录'},localTotal:search.documents.length,page,pageSize:6,items:all,categories:CATEGORIES,preferences:{enabled:pref.enabled,eventCount:pref.events.length},notice:'本地真实文件全文检索；具体条件及现行效力请向正式渠道核验'});return true}
   if(u.pathname==='/api/policy-recommendations'&&req.method==='GET'){send(res,200,{items:refresh(r),mode:'needs-first-v2',coverage:{documents:catalog.length,localRulesVerified:false},preferences:{enabled:pref.enabled,eventCount:pref.events.length},notice:'先核对本人需求，再推荐；先行者参与领域不作为办事需要，本地条件待核实'});return true}
   if(u.pathname==='/api/policy-needs'&&req.method==='POST'){const a=await body(req),allowed=['needLife','needStudy','needCare','needJob','needAccess','needMental','needLegal'];if(!allowed.some(k=>typeof a[k]==='boolean'))throw Object.assign(Error('请选择希望了解的支持'),{status:400});r.facts||={};for(const k of allowed)if(typeof a[k]==='boolean'){r.facts[k]=a[k];if(k==='needMental')r.facts.mentalSupportDeclined=!a[k]}r.updatedAt=new Date(clock()).toISOString();changed();send(res,200,{ok:true,items:refresh(r)});return true}
   if(u.pathname==='/api/policy-interest'&&req.method==='POST'){send(res,200,record(r,await body(req)));return true}
@@ -52,8 +52,8 @@ function createDiscovery({db,changed,send,body,resident},options={}){
  }
  // Keep both agent tools and the government library on the same verified local catalog.
  db.agent||={};db.agent.documents||=[];let imported=false;
- for(const d of catalog){const old=db.agent.documents.find(x=>x.catalogKey===d.key);if(!old){db.agent.documents.push({id:crypto.randomUUID(),catalogKey:d.key,...d});imported=true}else if(old.sha256!==d.sha256||old.retrievedAt!==d.retrievedAt){Object.assign(old,d);imported=true}const p=db.policies.find(p=>p.catalogKey===d.key&&p.officialSource===d.url);if(!p){ensurePolicy(d);imported=true}}
+ for(const d of catalog){const old=db.agent.documents.find(x=>x.catalogKey===d.key);if(!old){db.agent.documents.push({id:crypto.randomUUID(),catalogKey:d.key,...d});imported=true}else if(old.sha256!==d.sha256||old.retrievedAt!==d.retrievedAt||old.supersededBy!==d.supersededBy||old.version!==d.version){Object.assign(old,d);imported=true}const p=db.policies.find(p=>p.catalogKey===d.key&&p.officialSource===d.url);if(!p){ensurePolicy(d);imported=true}}
  if(imported)changed();prune();
- return{catalog,searchable:()=>searchable().documents,retrieve:(query,options)=>searchable().index.search(query,options),get retrievalStats(){return searchable().index.stats},ranked,refresh,visible,record,handle,prune};
+ return{catalog,searchable:()=>searchable().documents,retrieve:(query,options={})=>{const s=searchable(),region=policyMetadata.inferRegion(query,options.region,s.documents);return s.index.search(query,{...options,accept:d=>policyMetadata.allowed(d,{...options,region})&&(!options.accept||options.accept(d))})},get retrievalStats(){return searchable().index.stats},ranked,refresh,visible,record,handle,prune};
 }
 module.exports={createDiscovery,loadCatalog,queryScore,profileScore,cleanQuery};
