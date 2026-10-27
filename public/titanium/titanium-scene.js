@@ -248,7 +248,7 @@ function create(host, { reduced }) {
     camera.position.set(Math.sin(cameraYaw) * distance, distance * manualPitch + 1.25, Math.cos(cameraYaw) * distance);
     camera.lookAt(look); camera.updateMatrixWorld();
     nodes.forEach((node, i) => {
-      const a = time * .047 + i * TAU / 6 + .32 + Math.sin(time * .025 + i * .7) * .025;
+      const a = time * .085 + i * TAU / 6 + .32 + Math.sin(time * .025 + i * .7) * .025;
       const y = mobile ? [3.6, .8, -2.3, 1.8, -.8, -2.65][i] + Math.sin(a * 1.4 + i) * .24 : node.item.y + Math.sin(a * 1.73 + i * .6) * .38 + Math.cos(time * .027 + i) * .14;
       targetPosition.set(Math.cos(a) * radiusX, y, Math.sin(a) * radiusZ + Math.cos(time * .036 + i) * .22);
       const active = !opened && (node.item.id === hovered || node.item.id === focused);
