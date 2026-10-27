@@ -1,5 +1,5 @@
 'use strict';
-const crypto=require('node:crypto');
+const crypto=require('node:crypto'),profileAge=require('../profile-age.cjs'),birthday=require('../birthday.cjs');
 const DEFINITION={id:'mincetong-virtual-service-v1',version:1,title:'民策通公共服务虚拟申报表',virtual:true,receivingOffice:'民策通虚拟受理台',notice:'站内虚拟申报演示，不向真实政府部门提交，不产生现实审批、支付或法律效力。',fields:[
  {id:'applicant',label:'申报称呼（已脱敏）',required:true},
  {id:'service',label:'申报事项',required:true},
@@ -17,17 +17,19 @@ const DEFINITION={id:'mincetong-virtual-service-v1',version:1,title:'民策通�
 ]};
 const UNKNOWN=/^(暂未|尚未|未提供|暂不|未知|演示社区|测试地区)/;
 function wantsApplication(message){return String(message||'').split(/[，,。；;！!?？\n]|但是|但/).some(s=>!/(不要|不用|不想|别|暂不|不能|无需|不提交|不申报|不准备)/.test(s)&&(/(?:帮我|替我|给我|直接|我要).*(?:提交|申报)/.test(s)||/(?:帮我|替我|给我).*(?:准备|整理|填好|填写).*(?:资料|材料|表格|申报)/.test(s)||/(?:提交|申报)(?:这份|一下|申请|材料|资料|表格)/.test(s)))}
+const trusted=f=>f&&typeof f.value==='string'&&f.value.trim()&&['self-report','profile','previous-case','service-record','matter-selection'].includes(f.source)&&typeof f.evidence==='string'&&f.evidence.trim()&&(f.source!=='self-report'||f.evidence.includes(f.value));
 const fail=(status,message)=>Object.assign(Error(message),{status});
-module.exports=function createApplications({data,changed,redact,clock=Date.now}){
+module.exports=function createApplications({data,changed,redact,clock=Date.now,getResident=()=>null}){
  data.applications||=[];data.virtualApplicationSequence||=0;
  const now=()=>new Date(clock()).toISOString(),own=(r,id)=>{const a=data.applications.find(a=>a.id===id&&a.residentId===r.id);if(!a)throw fail(404,'虚拟申报记录不存在');return a};
  function summary(a){return structuredClone({id:a.id,caseId:a.caseId,revision:a.revision,template:DEFINITION,status:a.status,virtual:true,fields:a.fields,materials:a.materials,missing:a.missing,receipt:a.receipt||null,createdAt:a.createdAt,updatedAt:a.updatedAt})}
- function forCase(c){const a=data.applications.find(a=>a.id===c.applicationId&&a.caseId===c.id&&a.residentId===c.residentId);return a?summary(a):null}
+ function forCase(c){const a=data.applications.find(a=>a.id===c.applicationId&&a.caseId===c.id&&a.residentId===c.residentId);if(a&&a.status!=='submitted'){const r=getResident(c.residentId);if(r)return prepare(r,c);refreshAge(a,null)}return a?summary(a):null}
+ function refreshAge(a,r){if(a.status==='submitted')return;const f=a.fields?.find(f=>f.id==='age');if(!f)return;const next=r?profileAge.field(r,birthday.today(clock())):f.value==='0'?{value:null,source:null,evidence:null}:null;if(next&&['value','source','evidence'].some(k=>f[k]!==next[k])){Object.assign(f,next);a.revision++;a.fingerprint=null;changed()}}
  function collect(r,c){const f=c.facts,context=c.serviceContext||(c.recommendations?{subject:c.recommendations.subject,recommendationId:c.id}:{}),values={},profile=(id,value)=>{if(value!==undefined&&value!==null&&!UNKNOWN.test(String(value)))values[id]={value:redact(String(value)).slice(0,1500),source:'profile',evidence:'已登记的本人服务档案'}};
-  profile('applicant',r.displayName?(r.displayName.includes('*')?r.displayName:r.displayName.slice(0,1)+'**'):null);profile('age',Number.isInteger(r.age)?r.age:null);profile('occupation',r.job);profile('district',r.district);
-  for(const id of ['service','district','needs','occupation','household','income','situation','preference','insurance','schedule'])if(f[id]?.value)values[id]={...f[id]};
+  profile('applicant',r.displayName?(r.displayName.includes('*')?r.displayName:r.displayName.slice(0,1)+'**'):null);values.age=profileAge.field(r,birthday.today(clock()));profile('occupation',r.job);profile('district',r.district);
+  for(const id of ['service','district','needs','occupation','household','income','situation','preference','insurance','schedule'])if(trusted(f[id]))values[id]={...f[id]};
   if(!values.service&&context.title)values.service={value:context.title,source:'service-record',evidence:'本人选择的主动服务事项'};
-  if(!values.needs){const known=f.care||f.employment||f.study||f.preference||f.situation||f.service;values.needs=known?{...known}:values.service?{...values.service}:null}
+  if(!values.needs){const known=[f.care,f.employment,f.study,f.preference,f.situation,f.service].find(trusted);values.needs=known?{...known}:values.service?{...values.service}:null}
   if(!values.district&&context.region&&!UNKNOWN.test(context.region))values.district={value:context.region,source:'service-record',evidence:'本人的服务登记地区'};
   if(!values.schedule&&context.dueDate)values.schedule={value:context.dueDate,source:'service-record',evidence:'本人登记的办理或预约日期'};
   values.beneficiary={value:context.recommendationId?(context.subject==='family'?'本人提及的家庭成员（资料未核实）':context.subject==='unspecified'?'咨询对象待核实':'本人'):context.subject==='family'?'已获授权家庭成员（未记录姓名）':'本人',source:'service-record',evidence:context.recommendationId?'本人选择的政策咨询或意愿登记':context.subject==='family'?'服务档案已注明家庭成员授权':'本人发起的虚拟申报'};
@@ -35,7 +37,7 @@ module.exports=function createApplications({data,changed,redact,clock=Date.now})
   const materials=[{id:'virtual-form',title:DEFINITION.title,status:'generated',kind:'virtual_form'},{id:'self-statement',title:'本人情况与服务意愿整理',status:values.needs?'generated':'pending',kind:'self_report'}];if(context.recordId||context.noticeId)materials.push({id:'service-reference',title:'已登记的主动服务线索',status:'included',kind:'own_service_record'});
   return{fields,missing,materials,fingerprint:crypto.createHash('sha256').update(JSON.stringify({fields,materials})).digest('hex')};
  }
- function prepare(r,c){if(c.residentId!==r.id)throw fail(404,'办理记录不存在');const values=collect(r,c);let a=data.applications.find(a=>a.id===c.applicationId&&a.residentId===r.id&&a.caseId===c.id);if(a&&a.fingerprint===values.fingerprint)return summary(a);
+ function prepare(r,c){if(c.residentId!==r.id)throw fail(404,'办理记录不存在');const values=collect(r,c);let a=data.applications.find(a=>a.id===c.applicationId&&a.residentId===r.id&&a.caseId===c.id);if(a&&a.fingerprint===values.fingerprint&&JSON.stringify(a.fields)===JSON.stringify(values.fields))return summary(a);
   if(!a||a.status==='submitted'){a={id:crypto.randomUUID(),residentId:r.id,caseId:c.id,revision:0,createdAt:now()};data.applications.push(a);c.applicationId=a.id}
   Object.assign(a,values,{revision:a.revision+1,status:values.missing.length?'draft':'ready',updatedAt:now()});c.applicationIntent=true;changed();return summary(a);
  }
@@ -44,7 +46,7 @@ module.exports=function createApplications({data,changed,redact,clock=Date.now})
   const day=new Date(clock()+8*3600000).toISOString().slice(0,10).replaceAll('-',''),sequence=++data.virtualApplicationSequence;
   a.status='submitted';a.updatedAt=now();a.receipt={id:'XN'+day+String(sequence).padStart(6,'0'),applicationId:a.id,status:'received_virtual',virtual:true,receivingOffice:DEFINITION.receivingOffice,submittedAt:now(),message:'民策通虚拟受理台已接收本次虚拟申报。',notice:DEFINITION.notice};changed();return{application:summary(a),duplicate:false};
  }
- function mine(r){return data.applications.filter(a=>a.residentId===r.id).slice().reverse().map(summary)}
+ function mine(r){return data.applications.filter(a=>a.residentId===r.id).slice().reverse().map(a=>{refreshAge(a,r);return summary(a)})}
  function government(){return{virtual:true,receivingOffice:DEFINITION.receivingOffice,items:data.applications.filter(a=>a.status==='submitted').slice().reverse().map(a=>({id:a.id,receiptId:a.receipt.id,status:'received_virtual',virtual:true,service:DEFINITION.title,applicant:(a.fields.find(f=>f.id==='applicant')?.value||'居民').slice(0,1)+'**',submittedAt:a.receipt.submittedAt})),notice:'仅显示站内虚拟申报回执摘要，未向真实政府部门提交。'}}
  return{template:DEFINITION,prepare,submit,mine,government,forCase,own,summary};
 };
