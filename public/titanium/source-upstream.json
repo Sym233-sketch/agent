@@ -1,0 +1,14 @@
+{
+  "repository": "https://github.com/Sym233-sketch/agent",
+  "upstream": "2b8c05953cfdb69c587801ef4f8259412113889c",
+  "resident": "public/user.js",
+  "entry": "public/user.html",
+  "includes": [
+    "service-desk",
+    "contextual-care",
+    "birthday",
+    "policy-discovery",
+    "onboarding"
+  ],
+  "photographs": "../album/photos/sources.json"
+}

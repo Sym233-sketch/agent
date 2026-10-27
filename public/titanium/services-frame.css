@@ -1,0 +1,60 @@
+:root{color-scheme:light;--bg:#f3f6fb;--ink:#223850;--muted:#64758b;--line:#d8e2ef;--panel:#fff;--accent:#355b8d}
+body{background:#f3f6fb;color:#263b56;font-family:"Microsoft YaHei UI","PingFang SC",system-ui,sans-serif}
+.ambient,.orbit-sculpture{display:none}
+.shell{max-width:1120px;padding:24px 32px 40px}
+.masthead{border-color:#d4dfed;padding:18px 32px;color:#2d4b71}
+.brand,.brandmark,.masthead a{color:#2d4b71}
+.brandmark{background:#e0e9f5;border-color:#c5d3e5}
+.hero{min-height:0;padding:15px 0 25px;grid-template-columns:1fr;margin-bottom:0}
+.hero h1{font-size:32px;line-height:1.5;letter-spacing:0;color:#263f61}
+.hero h1 span{background:none;color:#506b90;-webkit-text-fill-color:currentColor}
+.hero p{font-size:13px;color:#607894;margin-top:12px}
+.eyebrow{color:#7088a8;font-size:9px;letter-spacing:.14em}
+.primary{background:#2d4d76;color:white;border-color:#2d4d76;border-radius:11px;box-shadow:none}
+.quiet{color:#45678f;background:#e8eff8;border-color:#cfdded;border-radius:11px}
+.stats{gap:12px;margin:8px 0 25px}
+.stat{background:#e9eff8;border:1px solid #d8e2f0;border-radius:15px;color:#42658f;padding:17px}
+.stat strong{font-size:27px;color:#304f79}
+.stat span{font-size:11px;color:#607b9d}
+.tabs{border-color:#d8e2ee;margin-bottom:22px}
+.tabs button{color:#71849c;font-size:12px}
+.tabs button.active{color:#2e527e;background:#e5edf8;box-shadow:inset 0 -2px #456e9f}
+.agent-grid{gap:13px}
+.agent-card{background:#fff;border:1px solid #d5e0ef;border-radius:19px;box-shadow:0 6px 20px #28497605;padding:20px}
+.agent-card:hover{border-color:#94aecf;background:#faffff;transform:translateY(-3px);box-shadow:0 13px 25px #2948730d}
+.agent-card h2,.agent-card h3{color:#2d4a71;font-size:17px}
+.agent-card p,.agent-card li{color:#6b7f99;font-size:12px;line-height:1.8}
+.agent-icon{background:#edf2fa;border-color:#d0def0}
+.agent-count{color:#738eaf;background:#edf3fb}
+.text-link,.scenario-actions button{color:#386195}
+.small-button{color:#385f8d;background:#eef3fa;border:1px solid #c9d8ea;border-radius:9px}
+.small-button:hover{background:#e0eaf7;color:#234d80;border-color:#9eb8d9}
+.agent-card button{color:#3d6898}
+.agent-icon{color:color-mix(in srgb,var(--color) 35%,#29445f)}
+.section-heading h2{color:#2c4c75}
+.service-category-picker{border:1px solid #d3dfed;border-radius:13px;background:#edf2f9;margin:0 0 22px;padding:0 16px}
+.service-category-picker summary{cursor:pointer;color:#496b93;font-size:12px;padding:14px 0}
+.service-category-picker summary span{float:right;color:#8195ad;font-size:10px}
+.service-category-picker[open]{padding-bottom:15px}
+.service-category-picker .agent-grid{margin-top:8px}
+.scenario{background:#fff;border-color:#d7e2f0;border-radius:15px;color:#2f4b70}
+.scenario h3,.section-head h2{color:#29476e}
+.scenario p{color:#6b7e98;font-size:12px}
+.scenario-icon{background:#edf3fa;color:#527ba7}
+.scenario-meta span,.pill{background:#eaf0f9;color:#5e7d9f;border-color:#d3dfef}
+.account-note{background:#e8eff9;color:#607c9f;border-color:#d2dfef}
+.empty,.empty-state{background:#eaf0f9;color:#6b82a1;border-color:#d1dfee}
+.channels{border-color:#d9e3f0;color:#7287a3}
+.channel{background:#ecf2fa;border-color:#d6e2f1}
+footer{color:#7d90a9;border-color:#d7e2ef;font-size:10px}
+dialog{color:#304d73;background:#f8faff;border:1px solid #b9cce5;border-radius:22px;max-height:88svh}
+dialog::backdrop{background:#0a172aaa;backdrop-filter:blur(7px)}
+dialog input,dialog select,dialog textarea{background:#fff;color:#2c476a;border-color:#c8d8eb}
+.icon-button{color:#5f7fa7;background:#e7eef8}
+.embedded .masthead,.embedded .channels,.embedded footer,.embedded .hero .eyebrow{display:none}
+.embedded .hero h1{font-size:29px}
+.embedded .hero h1 br{display:none}
+.embedded .hero{padding-top:2px}
+.embedded-group #stats{display:none}
+@media(max-width:700px){.shell{padding:22px 17px 30px}.masthead{padding:17px}.hero h1,.embedded .hero h1{font-size:24px}.hero p{font-size:12px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:23px}.agent-grid{grid-template-columns:1fr}.agent-card{padding:20px}.tabs{gap:4px}.tabs button{font-size:11px;padding:11px 13px}.scenario{padding:16px}.hero-actions{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
