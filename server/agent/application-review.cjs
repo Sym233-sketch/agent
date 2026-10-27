@@ -1,6 +1,6 @@
 'use strict';
 const retrieval=require('../policy-retrieval.cjs'),profileAge=require('../profile-age.cjs');
-const isSchool=c=>/^school-/.test(c.serviceContext?.matterId||'')||c.recommendations?.event==='primary-school'||/小学|课后服务|学籍/.test(c.facts?.service?.value||c.serviceContext?.title||'');
+const isSchool=c=>/^school-/.test(c.serviceContext?.matterId||'')||c.recommendations?.event==='primary-school'||/小学|义务教育|课后服务|学籍/.test(c.facts?.service?.value||c.serviceContext?.title||'');
 function numeric(value){if(value==null||value==='')return null;if(value==='未满1周岁')return 0;return /^\d{1,3}$/.test(String(value))?Number(value):NaN}
 const AGE_TOKEN='(\\d{1,3}|[零〇一二两三四五六七八九十百]{1,6})';
 function ageNumber(value){if(/^\d{1,3}$/.test(value))return Number(value);if(!/^(?:[零〇一二两三四五六七八九]|[一二两三四五六七八九]?十[一二两三四五六七八九]?|一百(?:[零〇][一二两三四五六七八九]|[一二两三四五六七八九]十[一二两三四五六七八九]?)?)$/.test(value))return NaN;const digits={'零':0,'〇':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9};if(value==='零'||value==='〇')return 0;const clean=value.replace(/[零〇]/g,'');if(/[一二两三四五六七八九]{2}/.test(clean))return NaN;let total=0,digit=0;for(const ch of clean){if(ch==='十'||ch==='百'){total+=(digit||1)*(ch==='十'?10:100);digit=0}else if(Object.hasOwn(digits,ch))digit=digits[ch];else return NaN}return total+digit}

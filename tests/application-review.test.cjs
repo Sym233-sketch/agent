@@ -19,6 +19,7 @@ test('table edits are persisted, rechecked and protected by revision and ownersh
  assert.throws(()=>apps.submit(profile,conflict.id,{revision:conflict.revision,userConfirmed:true},c),/填写冲突/);assert.throws(()=>apps.edit(profile,conflict.id,{revision:initial.revision,confirm:true,fieldId:'beneficiaryAge',value:'8'},c),/已更新/);assert.throws(()=>apps.edit({id:'other'},conflict.id,{revision:conflict.revision,confirm:true,fieldId:'beneficiaryAge',value:'8'},c),/不存在/);
  const fixed=apps.edit(profile,conflict.id,{revision:conflict.revision,confirm:true,fieldId:'beneficiaryAge',value:'8'},c);assert.equal(fixed.review.blocking.length,0);assert.equal(fixed.fields.find(f=>f.id==='beneficiaryAge').source,'user-edit');assert.equal(apps.submit(profile,fixed.id,{revision:fixed.revision,userConfirmed:true},c).application.status,'submitted');assert.throws(()=>apps.edit(profile,fixed.id,{revision:fixed.revision,confirm:true,fieldId:'beneficiaryAge',value:'9'},c),/不能修改/);
 });
+test('school reminder entries also receive consistency checks',()=>{assert.equal(reviewer.isSchool({facts:{},serviceContext:{title:'义务教育报名'}}),true)});
 test('an edited applicant age cannot override a contradictory registered birthday',()=>{
  const c={facts:{},serviceContext:{},formOverrides:{age:field('age','9','user-edit')}},r=reviewer.review({fields:[field('age','9','user-edit')],c,profile:{birthDate:'1986-01-01'},documents,day:'2026-10-27'});assert.ok(r.blocking.some(x=>x.code==='birthday-mismatch'));
 });
