@@ -1,0 +1,52 @@
+/* A quiet gallery of actual photographs. Business screens keep their own layout. */
+body.tree-active{background:#0c0d0f;color:#eeede9}
+html:has(body.tree-active){scrollbar-gutter:auto}
+.tree-active .tree-scene{display:none}
+.tree-shell:before{background:radial-gradient(ellipse at 50% 54%,#25221f66,transparent 68%),#0c0d0f}
+.tree-header{height:82px;margin:0 4.5%;border:0}
+.tree-brand{font-size:19px;letter-spacing:.09em;font-weight:500}
+.tree-logomark,.tree-brand small,.tree-header-caption,.tree-help,.tree-profile>span:not(.tree-avatar){display:none!important}
+.tree-header-actions .tree-profile{width:40px;height:40px;padding:8px;justify-content:center;color:#c3c0b9;border:1px solid #e8e4d31c;border-radius:50%}
+.tree-header-actions .tree-profile svg{width:20px;height:20px}
+.tree-main{max-width:none;padding:0 3.3%}
+.tree-intro{height:62px;padding:3px 0 0;display:flex;justify-content:center;align-items:center;pointer-events:none}
+.tree-intro h1{font-size:24px;font-weight:400;letter-spacing:.08em;line-height:1.5;margin:0;color:#e4e1da;user-select:none}
+.tree-intro h1 span{color:inherit}
+.tree-eyebrow,.tree-intro p,.tree-intro-aside,.tree-footer,.tree-drag-hint,.tree-reset{display:none!important}
+.tree-stage.album-ready{height:calc(100svh - 144px);min-height:560px;max-height:none;perspective:none;cursor:auto}
+.tree-stage.album-ready .tree-world{display:none;pointer-events:none}
+.album-space{position:absolute;inset:0 0 28px;perspective:1250px;perspective-origin:50% 47%;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;transition:opacity .5s,filter .6s,transform .7s}
+.album-space.is-dragging{cursor:grabbing;touch-action:none}
+.album-orbit{position:absolute;inset:0;transform-style:preserve-3d}
+.album-card{position:absolute;left:50%;top:47%;width:var(--photo-w,238px);height:var(--photo-h,292px);margin:0;padding:9px 9px 0;border:1px solid #fff9;border-radius:2px;background:#eeeae1;color:#282927;box-shadow:0 2px 2px #0005,0 26px 55px #0006;cursor:pointer;user-select:none;transform-style:preserve-3d;will-change:transform;backface-visibility:hidden;outline-offset:8px!important;isolation:isolate}
+.album-card:before,.album-card:after{content:'';position:absolute;inset:1px -1px -2px 1px;background:#d3cfc6;border:1px solid #ffffff3b;border-radius:2px;transform:translateZ(-3px);pointer-events:none;z-index:-1}
+.album-card:after{inset:3px 0 -4px -1px;background:#a8a39a;transform:translateZ(-6px)}
+.album-card .album-photo{display:block;width:100%;height:calc(100% - 48px);overflow:hidden;background:#b7b2a8;box-shadow:inset 0 0 0 1px #0001}
+.album-photo img{width:100%;height:100%;display:block;object-fit:cover;object-position:var(--photo-position,40% 50%);pointer-events:none;user-select:none;-webkit-user-drag:none;filter:saturate(.83) contrast(.98)}
+.album-card strong{height:48px;display:flex;justify-content:center;align-items:center;font-size:16px;letter-spacing:.08em;font-weight:500;color:#242927;white-space:nowrap;text-shadow:none}
+.album-card.is-active{box-shadow:0 2px 3px #0005,0 34px 72px #0009}
+.album-card:focus-visible{outline:2px solid #e3cf9b!important}
+.album-card.photo-unavailable .album-photo{display:grid;place-items:center;background:#dad6cb}
+.album-card.photo-unavailable .album-photo:after{content:attr(data-fallback);color:#5b5b50;font-size:22px;letter-spacing:.18em}
+.album-card.photo-unavailable img{display:none}
+.tree-stage.album-ready .tree-map-tools{bottom:20px;left:auto;right:0;display:block}
+.tree-motion{width:36px;height:36px;padding:9px;border:0;background:none;opacity:.55;box-shadow:none;border-radius:50%}
+.tree-motion:hover,.tree-motion:focus-visible{opacity:1;background:#ffffff09}
+.tree-motion svg{width:16px;height:16px}
+.tree-focused .album-space{opacity:0;filter:blur(5px);transform:scale(.96);pointer-events:none}
+.tree-focused .tree-intro{opacity:0}
+.tree-still .album-space{transition:none}
+@media(max-width:759px){
+ .tree-header{height:72px;margin:0 22px}.tree-brand{font-size:18px}
+ .tree-main{padding:0 9px}.tree-intro{height:58px;padding-top:0}.tree-intro h1{font-size:21px;letter-spacing:.05em}
+ .tree-stage.album-ready{height:calc(100svh - 130px);min-height:570px;margin:0;padding:0}
+ .album-space{inset:0 0 36px;perspective:900px}
+ .album-card{padding:6px 6px 0}.album-card .album-photo{height:calc(100% - 34px)}
+ .album-card strong{height:34px;font-size:14px;letter-spacing:.02em}
+ .tree-stage.album-ready .tree-map-tools{bottom:13px;right:13px}.tree-motion{width:35px;height:35px}
+}
+@media(min-width:760px) and (max-height:760px){
+ .tree-header{height:66px}.tree-intro{height:48px}.tree-intro h1{font-size:22px}
+ .tree-stage.album-ready{height:calc(100svh - 114px);min-height:460px}
+}
+@media(prefers-reduced-motion:reduce){.album-space{transition:none}}

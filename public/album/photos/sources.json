@@ -1,0 +1,44 @@
+[
+  {
+    "id": "care",
+    "author": "Thomas Griggs",
+    "source": "https://unsplash.com/photos/two-elderly-hands-clasped-together-showing-connection-nX8uzTIfysY",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "benefits",
+    "author": "Seljan Salim",
+    "source": "https://unsplash.com/photos/family-walking-on-path-with-trees-at-sunset-El0yVRiFbxs",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "pilot",
+    "author": "Hannah Busing",
+    "source": "https://unsplash.com/photos/a-group-of-young-women-hugging-each-other-JbBG-qh4Ylg",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "messages",
+    "author": "Heike Mintel",
+    "source": "https://unsplash.com/photos/family-holding-hands-i_Gns0ELnLw",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "human",
+    "author": "Roman Kraft",
+    "source": "https://unsplash.com/photos/woman-and-man-holding-hands-0EVKn3-5JSU",
+    "license": "https://unsplash.com/license",
+    "position": "40% 50%"
+  },
+  {
+    "id": "search",
+    "author": "Jason Leung",
+    "source": "https://unsplash.com/photos/a-library-aisle-with-bookshelves-and-sunlight-through-window-xmeRBPunJR8",
+    "license": "https://unsplash.com/license",
+    "position": "50% 50%"
+  }
+]
