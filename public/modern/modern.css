@@ -1,0 +1,209 @@
+/* This theme starts after the original cinematic onboarding has unmounted. */
+body.modern-ui:not(.onboarding-active){--ink:#e8edf5;--muted:#9aa5b6;--line:#272e3a;--bg:#090c12;--cream:#121720;--green:#c5d6ef;--font-ui:'Segoe UI','Microsoft YaHei UI','Microsoft YaHei','PingFang SC',sans-serif;color-scheme:dark;background:#090c12;color:var(--ink);font:15px/1.65 var(--font-ui);min-height:100vh;accent-color:#a9c8f5}
+.modern-ui :is(button,input,select,textarea){font-family:var(--font-ui)}
+.modern-ui :is(button,a,input,select,textarea,summary):focus-visible{outline:2px solid #a9c8f5;outline-offset:4px}
+.modern-ui :is(input,select,textarea){color:#e5ebf4;background:#0c111a;border:1px solid #323d4d;border-radius:9px;font-size:15px;line-height:1.6}
+.modern-ui :is(input,textarea)::placeholder{color:#8591a4}
+.modern-ui input[type=checkbox]{accent-color:#b0c9ef}
+.modern-ui :is(h1,h2,h3,h4){color:#edf1f8;letter-spacing:-.035em}
+.modern-ui .app-sidebar{width:224px;padding:30px 18px 20px;background:#0c1018;border-color:#222a35;z-index:10}
+.modern-ui .app-sidebar .brand{font-size:22px;gap:11px;margin:0 10px 30px;color:#f0f3f9;letter-spacing:.03em}
+.modern-ui .brandmark{width:35px;height:36px;border-radius:9px;background:linear-gradient(140deg,#fff,#b5c1d3 48%,#788599);box-shadow:inset 0 1px 0 #fff8,0 4px 18px #0004;color:#18202c;font-size:24px;font-weight:650}
+.modern-ui .app-sidebar .brand small{color:#a2adbc!important;font-size:10px!important;letter-spacing:1.5px!important;font-weight:400}
+.modern-ui .resident-tag{margin:0 9px 30px;padding:10px 0 14px;border:0;border-bottom:1px solid #252c38;border-radius:0;background:none;color:#bac4d3;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.modern-ui .resident-tag span{font-size:10px;background:#1b2432;border:1px solid #303d50;color:#a6bedc;padding:1px 7px;border-radius:5px}
+.modern-ui .nav-label{font-size:11px;letter-spacing:.08em;color:#7d8a9c;padding:0 13px;margin-bottom:12px}
+.modern-ui .user-nav{display:flex;flex-direction:column;gap:6px}
+.modern-ui .user-nav :is(button,.service-launcher){position:relative;width:100%;display:flex;align-items:center;justify-content:flex-start;gap:12px;min-height:46px;padding:11px 13px;margin:0;border:1px solid transparent;border-radius:8px;background:transparent;color:#a6b1c2;font-size:14px;font-weight:400;text-align:left;filter:none;opacity:1;box-shadow:none;transition:background .18s,border-color .18s,color .18s}
+.modern-ui .user-nav :is(button,.service-launcher):hover{background:#171e2b;color:#f0f3f9;border-color:#293346;transform:none}
+.modern-ui .user-nav button.active{background:linear-gradient(100deg,#202b3d,#182131);border-color:#34425a;color:#e0eaff;font-weight:500;box-shadow:inset 0 1px 0 #ffffff09}
+.modern-ui .user-nav button.active:before{content:'';position:absolute;left:-19px;top:15px;width:2px;height:16px;background:#adc9f4;box-shadow:0 0 12px #b3d4ff88;border-radius:2px}
+.modern-ui .user-nav :is(button,.service-launcher) svg{width:19px;height:19px;stroke-width:1.45}
+.modern-ui .user-nav :is(button span,.service-launcher b){margin-left:auto;background:#2d3b51;color:#d9e8ff;border-radius:5px;padding:0 6px;font-size:11px;min-width:17px;text-align:center}
+.modern-ui .user-nav .service-launcher span{margin:0;padding:0;background:none;border:0;color:inherit;font-size:14px}
+.modern-ui .sidebar-support{margin: auto 8px 0;padding:25px 3px 20px;background:none;border-radius:0;border-bottom:1px solid #242d3a}
+.modern-ui .sidebar-support>svg{width:20px;height:20px;color:#adbfd8;margin-bottom:10px}
+.modern-ui .sidebar-support b{display:block;color:#c3cddc;font-size:13px;font-weight:500}
+.modern-ui .sidebar-support p{margin:7px 0 13px;color:#8f9db0;font-size:12px;line-height:1.8}
+.modern-ui .modern-help-button{background:none;border:0;padding:0;color:#bbcfed;font-size:12px;display:inline-flex;align-items:center;gap:9px}
+.modern-ui .modern-help-button svg{width:13px;height:13px}
+.modern-ui .sidebar-profile{margin:19px 8px 0;gap:10px;color:#c3cfdf;min-height:45px;width:calc(100% - 16px);font-size:13px}
+.modern-ui .sidebar-profile small{margin:3px 0 0;color:#8e9bad;font-size:10px}
+.modern-ui .avatar{width:33px;height:33px;border:1px solid #405069;border-radius:50%;background:linear-gradient(140deg,#263247,#172030);color:#c8d7ed;font-size:13px;box-shadow:inset 0 1px 0 #ffffff0a}
+.modern-ui .resident-main{margin-left:224px;min-height:100vh;background:radial-gradient(ellipse at 83% 0,#21334e30,transparent 43%),#090c12}
+.modern-ui .app-header{height:73px;padding:0 38px;position:relative;border-color:#232b37;background:#0b0f16d9;color:#97a5b8;font-size:12px}
+.modern-ui .app-header>div{gap:18px}
+.modern-ui .modern-breadcrumb{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.modern-ui .modern-breadcrumb svg{width:15px;height:15px;color:#94a4b9}
+.modern-ui .modern-breadcrumb b{font-weight:400;color:#d0d9e8}
+.modern-ui .modern-breadcrumb i{font-style:normal;color:#576477}
+.modern-ui .app-header .tag{color:#a7b2c1;font-size:10px;background:transparent;border:0;padding:0}
+.modern-ui .app-header .text-button{font-size:12px;color:#b7c5d9}
+.modern-ui .modern-command-button{display:flex;align-items:center;gap:10px;background:none;border:0;color:#9ba9be;font-size:12px;padding:6px}
+.modern-ui .modern-command-button svg{width:16px;height:16px}
+.modern-ui kbd{font:10px/1.5 'Segoe UI',sans-serif;color:#9ba8bb;border:1px solid #374151;border-radius:4px;padding:1px 5px;background:#151c27}
+.modern-ui .app-content{max-width:1410px;margin:auto;padding:34px 38px 22px;animation:modern-arrive .45s cubic-bezier(.2,.65,.3,1) both}
+.modern-ui .page-heading{margin-bottom:26px;align-items:center;gap:16px}
+.modern-ui .page-heading .eyebrow{font-size:11px;font-weight:400;letter-spacing:.05em;color:#98aac3}
+.modern-ui .page-heading h1{font-size:30px;font-weight:550;line-height:1.4;margin:6px 0 9px;letter-spacing:.01em;color:#edf2fb}
+.modern-ui .page-heading p{font-size:13px;line-height:1.8;color:#9eacbf}
+.modern-ui .modern-date{font-size:11px;color:#90a0b7;white-space:nowrap;display:flex;align-items:center;gap:9px}
+.modern-ui .modern-date:before{content:'';width:5px;height:5px;border-radius:50%;background:#b5c7e1;box-shadow:0 0 11px #9abdee55}
+.modern-ui .btn{border:1px solid #b1c1d8;background:linear-gradient(130deg,#e3eaf4,#b1c3dd);color:#172232;border-radius:8px;min-height:43px;padding:10px 18px;font-size:13px;font-weight:550;box-shadow:inset 0 1px 0 #fff7;transition:background .18s,box-shadow .18s,transform .18s}
+.modern-ui .btn:hover{transform:translateY(-1px);box-shadow:inset 0 1px 0 #fff7,0 3px 18px #96b3df18}
+.modern-ui .btn.light{background:#192231;border-color:#36455b;color:#cedcf1;box-shadow:inset 0 1px 0 #ffffff06}
+.modern-ui .btn.ghost{background:transparent;border-color:#354256;color:#b3c7e3;box-shadow:none}
+.modern-ui .text-button{color:#b1c9ee;font-size:13px}
+.modern-ui :is(.pill,.tag){font-size:11px;border:1px solid #354154;border-radius:5px;background:#1b2534;color:#b7c9e3;line-height:1.5}
+.modern-ui :is(.small-note,.message-foot,.chat-privacy,.agent-tool-trace){color:#9ba9bb;font-size:12px;line-height:1.8}
+.modern-ui .panel{border:1px solid #2a3443;border-radius:12px;background:#111722;box-shadow:inset 0 1px 0 #ffffff03}
+.modern-ui .policy-discovery{max-width:none}
+.modern-ui .modern-overview-lead{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 260px;min-height:198px;margin-bottom:22px;border:1px solid #334056;border-radius:14px;background:linear-gradient(115deg,#182231d9,#111927 70%,#172234);overflow:hidden;box-shadow:inset 0 1px 0 #ffffff09}
+.modern-ui .modern-overview-lead:before{content:'';position:absolute;top:0;left:25px;right:30%;height:1px;background:linear-gradient(90deg,transparent,#d4e4ff70,transparent);pointer-events:none}
+.modern-ui .policy-discovery .policy-search-panel{border:1px solid #2d394b;background:#111824;border-radius:12px;padding:24px;margin:0 0 24px;box-shadow:none}
+.modern-ui .modern-overview-lead .policy-search-panel{background:none;border:0;padding:27px 29px;margin:0;position:relative;z-index:1}
+.modern-ui .policy-search-panel form>label{font-size:16px;font-weight:500;color:#dce6f5;margin-bottom:14px}
+.modern-ui .policy-search-row{gap:9px;align-items:stretch;flex-wrap:nowrap}
+.modern-ui .policy-search-row input{margin:0;padding:13px 15px;border:1px solid #45536a;border-radius:8px;background:#080e17ad;color:#e6edf8;font-size:14px;min-height:49px;box-shadow:inset 0 2px 8px #0003}
+.modern-ui .policy-search-row .btn{min-height:49px;white-space:nowrap;padding:11px 21px}
+.modern-ui .modern-search-options{margin-top:13px;color:#9dacc2;font-size:11px}
+.modern-ui .modern-search-options>summary{cursor:pointer;list-style:none;width:fit-content;display:flex;gap:8px;align-items:center;padding:3px 0;font-size:11px;color:#a5b5cc}
+.modern-ui .modern-search-options>summary:before{content:'+';font-size:14px;color:#c5d3e7;line-height:1}
+.modern-ui .modern-search-options[open]>summary:before{content:'−'}
+.modern-ui .modern-search-options>summary::-webkit-details-marker{display:none}
+.modern-ui .policy-discovery .policy-search-filters{gap:11px;margin-top:15px;font-size:12px;color:#a4b3c7}
+.modern-ui .policy-search-filters label,.modern-ui .policy-interest-controls label{font-size:12px;color:#b3bfd0}
+.modern-ui .policy-search-filters select{min-width:120px;border-color:#39485e;background:#121c2a;color:#c7d5e9;padding:6px 9px;font-size:12px}
+.modern-ui .policy-interest-controls{border-color:#324056;margin-top:14px;padding-top:14px;gap:12px}
+.modern-ui .policy-interest-controls .text-button{font-size:11px}
+.modern-ui .modern-search-options .small-note{font-size:11px;line-height:1.8;color:#a3b2c9;margin:13px 0 0}
+.modern-ui .modern-orbit{position:relative;align-self:center;display:grid;place-items:center;min-height:196px;border-left:1px solid #6e86a91a;margin:0}
+.modern-ui .modern-orbit :is(svg,img){width:300px;max-width:115%;height:194px;stroke:none;animation:modern-float 9s ease-in-out infinite}
+.modern-ui .modern-orbit figcaption{position:absolute;bottom:11px;font-size:9px;letter-spacing:.18em;color:#a1b2ca}
+.modern-ui .modern-quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:0 0 25px}
+.modern-ui .modern-quick{position:relative;display:flex;align-items:center;gap:15px;padding:19px 18px;border:1px solid #2b3444;border-radius:11px;background:linear-gradient(120deg,#151c28,#101620);color:#d5dfed;text-align:left;text-decoration:none;min-height:84px;box-shadow:inset 0 1px 0 #ffffff03;transition:transform .18s,border-color .18s,background .18s}
+.modern-ui .modern-quick:hover{border-color:#566b89;background:#1a2433;transform:translateY(-2px)}
+.modern-ui .modern-quick>svg:first-child{height:23px;width:23px;color:#afc2dd;stroke-width:1.25}
+.modern-ui .modern-quick:nth-child(2)>svg:first-child{color:#d0c4ad}
+.modern-ui .modern-quick:nth-child(3)>svg:first-child{color:#a6c9c7}
+.modern-ui .modern-quick b{display:block;font-size:14px;font-weight:500;margin-bottom:3px}
+.modern-ui .modern-quick small{font-size:11px;color:#94a3b8;line-height:1.6}
+.modern-ui .modern-quick>.modern-arrow{margin-left:auto;width:15px;height:15px;color:#7f90aa}
+.modern-ui .modern-dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:19px;align-items:stretch;margin-bottom:28px}
+.modern-ui .policy-needs{margin:0;padding:24px 25px;border:1px solid #303b4c;background:linear-gradient(120deg,#151d2b,#111824);border-radius:12px;box-shadow:inset 0 1px 0 #ffffff04}
+.modern-ui .policy-needs .eyebrow{font-size:10px;color:#9aafce;letter-spacing:.03em}
+.modern-ui .policy-needs h2{font-size:20px;font-weight:500;line-height:1.5;margin:6px 0 9px;color:#e1e8f5}
+.modern-ui .policy-needs :is(p,small){font-size:12px;line-height:1.8;color:#a8b6cb}
+.modern-ui .policy-need-options{margin:17px 0 14px;display:flex;flex-wrap:wrap;gap:9px}
+.modern-ui .policy-need-options button{border:1px solid #3a465a;border-radius:7px;padding:9px 12px;gap:9px;background:#0e1623;color:#bfcfe6;font-size:12px;min-height:41px;line-height:1.4;transition:background .15s,border-color .15s,color .15s}
+.modern-ui .policy-need-options button:hover{background:#233149;border-color:#6a82a4;transform:none;box-shadow:none;color:#e8f0ff}
+.modern-ui .policy-need-options button[aria-pressed=true]{background:#293e5b;border-color:#99b7df;color:#edf5ff}
+.modern-ui .policy-need-options button>span:last-child{color:#8b9fbc;font-size:12px}
+.modern-ui .modern-guide{padding:23px 22px;border:1px solid #2b3544;border-radius:12px;background:#101722}
+.modern-ui .modern-guide h2{font-size:14px;font-weight:500;margin:0 0 19px;color:#d2dcea;letter-spacing:.03em}
+.modern-ui .modern-guide ol{list-style:none;margin:0;padding:0;counter-reset:guide}
+.modern-ui .modern-guide li{position:relative;padding:0 0 17px 33px;counter-increment:guide;color:#c0cde0;font-size:12px;line-height:1.6}
+.modern-ui .modern-guide li:before{content:counter(guide,decimal-leading-zero);position:absolute;left:0;top:0;font:10px/22px 'Segoe UI',sans-serif;color:#b2c5e1;width:22px;text-align:center;border:1px solid #3b4b62;border-radius:50%;background:#172334}
+.modern-ui .modern-guide li:not(:last-child):after{content:'';position:absolute;left:11px;top:24px;bottom:3px;border-left:1px solid #344157}
+.modern-ui .modern-guide li small{display:block;color:#8fa0b8;font-size:10px;line-height:1.6;margin-top:3px}
+.modern-ui .modern-guide .text-button{font-size:11px;padding:6px 0 0;background:none;border:0;text-align:left;color:#b7ccef}
+.modern-ui .policy-discovery h2{color:#dce5f2}
+.modern-ui .policy-recommendations{margin-bottom:27px}
+.modern-ui .modern-section-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px}
+.modern-ui .modern-section-heading h2{font-size:17px;font-weight:500;margin:0;letter-spacing:.02em}
+.modern-ui .modern-section-heading .text-button{background:none;border:0;font-size:11px;padding:5px 0}
+.modern-ui .policy-results{gap:15px}
+.modern-ui .policy-result-card,.modern-ui .policy-result-card.is-personal{border:1px solid #2d3848;border-radius:11px;padding:22px;background:linear-gradient(125deg,#151c28,#111722);box-shadow:inset 0 1px 0 #ffffff04;gap:12px;position:relative;transition:border-color .18s}
+.modern-ui .policy-result-card:hover{border-color:#52637b}
+.modern-ui .policy-result-card.is-personal:before{content:'';position:absolute;top:-1px;left:24px;right:65%;height:1px;background:linear-gradient(90deg,#9fbde8aa,transparent)}
+.modern-ui .policy-result-card h3{color:#e0e8f6;font-size:16px;font-weight:500;line-height:1.7;letter-spacing:0}
+.modern-ui .policy-result-card p{font-size:12px;line-height:1.9;color:#aab8cc}
+.modern-ui .policy-result-card small,.modern-ui .policy-card-meta{font-size:10px;line-height:1.8;color:#a3b0c4}
+.modern-ui .policy-card-meta{gap:10px}
+.modern-ui .policy-card-meta .tag{font-size:10px;padding:3px 7px;background:#233247;border-color:#405571;color:#bed3ee}
+.modern-ui .policy-result-card .policy-reason{padding:10px 12px;background:#1c293a;border:0;border-left:2px solid #6b8bb9;border-radius:0 5px 5px 0;color:#bacfe9;font-size:11px}
+.modern-ui .policy-next-steps{font-size:12px;color:#b9c8dd;line-height:1.85;padding-left:19px}
+.modern-ui .policy-next-steps li+li{margin-top:6px}
+.modern-ui .policy-conditions{font-size:11px;color:#a2b2c8}
+.modern-ui .policy-card-actions{gap:12px;border-top:1px solid #293548;margin-top:auto;padding-top:15px}
+.modern-ui .policy-card-actions .btn{min-height:35px;font-size:11px;padding:7px 12px}
+.modern-ui .policy-card-actions :is(a,.text-button){font-size:11px;color:#b5c9e7}
+.modern-ui .policy-empty{padding:25px;border:1px dashed #40516b;border-radius:10px;background:#131c29;font-size:13px;color:#a9bbd3}
+.modern-ui .policy-results-heading{margin:0 0 13px}
+.modern-ui .policy-results-heading h2{font-size:18px;margin:0}
+.modern-ui .policy-results-heading span{color:#a1afc3;font-size:11px}
+.modern-ui .policy-pagination{gap:18px;font-size:12px;color:#afc0d8}
+.modern-ui .policy-pagination .btn{font-size:12px;min-height:37px}
+.modern-ui .modern-discovery-extras{border-top:1px solid #303e53;margin-top:23px;padding-top:20px}
+.modern-ui .modern-discovery-extras>summary{cursor:pointer;font-size:13px;color:#b5c9e6;padding:5px 0;list-style-position:inside}
+.modern-ui .modern-discovery-extras[open]>summary{margin-bottom:20px}
+.modern-ui .modern-discovery-extras .policy-needs{margin:19px 0 23px}
+.modern-ui .modern-overview [aria-label='政策搜索结果']{display:none}
+.modern-ui .message-layout{grid-template-columns:250px minmax(0,1fr);gap:18px}
+.modern-ui .inbox{padding:18px 14px;min-height:485px}
+.modern-ui .inbox-heading{margin:0 3px 18px}
+.modern-ui .inbox-heading h3{font-size:14px;color:#d4deed;font-weight:500}
+.modern-ui .inbox-search{background:#0a111c;border:1px solid #344258;border-radius:7px;padding:10px 12px;font-size:12px;color:#c6d6ec;margin-bottom:17px}
+.modern-ui .thread{border:1px solid transparent;background:transparent;border-radius:8px;padding:14px 11px;color:#c3d2e7;margin-bottom:6px}
+.modern-ui .thread.active{background:#1e2b3e;border-color:#3e536f}
+.modern-ui .thread:hover{background:#1a2638}
+.modern-ui .thread h4{font-size:13px;color:#cddcee}
+.modern-ui .thread :is(p,small){color:#94a8c4;font-size:11px}
+.modern-ui .thread .thread-icon{background:#30425d;color:#bfd4f4}
+.modern-ui .chat-panel{overflow:hidden;min-height:485px}
+.modern-ui .chat-head{border-bottom:1px solid #2e3b4e;background:#151e2b;padding:21px 23px}
+.modern-ui .chat-head h3{font-size:15px;color:#d9e7f8}
+.modern-ui .chat-head small{font-size:10px;color:#9caec5}
+.modern-ui .agent-avatar{background:#2a3c57;color:#c7dcfa;border:1px solid #4a617f}
+.modern-ui .chat-area{background:linear-gradient(#111925,#0d1521);padding:24px;min-height:325px;max-height:540px;scroll-behavior:auto}
+.modern-ui .chat-day{color:#7f93af;font-size:11px}
+.modern-ui .bubble-label{color:#91a7c5;font-size:10px}
+.modern-ui .bubble{background:#1b293c;border:1px solid #354761;color:#d1dff1;font-size:13px;line-height:1.9;box-shadow:none;border-radius:0 10px 10px 10px;padding:13px 16px}
+.modern-ui .bubble-row.user .bubble{background:#2e4260;border-color:#546d91;color:#edf4ff;border-radius:10px 0 10px 10px}
+.modern-ui .composer{background:#121c2a;border-top:1px solid #2f3c51;padding:18px 23px}
+.modern-ui .composer input{background:#0c1522;border-color:#405675;color:#d7e5f9}
+.modern-ui .chat-privacy{font-size:10px;color:#96a9c4}
+.modern-ui .policy-file{background:#152338;border-color:#3b506d;color:#c6d8f1;box-shadow:none}
+.modern-ui .policy-file :is(h4,b,strong){color:#d2e4fd}
+.modern-ui .policy-file :is(p,small){color:#a6bad6}
+.modern-ui .match-panel{background:#1a283b;border-color:#3a506d;color:#bfd0e8}
+.modern-ui .match-panel :is(p,small){color:#acc0dc}
+.modern-ui .modern-empty{min-height:480px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:45px;text-align:center;background:radial-gradient(ellipse at 50% 28%,#233a5c38,transparent 60%)}
+.modern-ui .modern-empty-graphic{display:grid;place-items:center;width:82px;height:82px;border:1px solid #4e6280;border-radius:24px;background:linear-gradient(140deg,#2b3b52,#101c2c);color:#b9cee9;transform:rotate(-8deg);box-shadow:inset 1px 1px 0 #ffffff12,0 15px 35px #0003;margin-bottom:27px}
+.modern-ui .modern-empty-graphic svg{width:34px;height:34px;stroke-width:1;transform:rotate(8deg)}
+.modern-ui .modern-empty h2{font-size:19px;margin:0 0 11px;font-weight:500;color:#dce7f8}
+.modern-ui .modern-empty p{font-size:12px;line-height:1.9;color:#9db0ca;max-width:330px;margin:0 0 24px}
+.modern-ui .pilot-hero{position:relative;padding:30px;border:1px solid #3b4b62;border-radius:12px;background:linear-gradient(115deg,#1b293c,#111a29);min-height:240px;overflow:hidden}
+.modern-ui .pilot-hero h2{font-size:29px;line-height:1.55;color:#d9e5f7}
+.modern-ui .pilot-hero p{color:#a1b4cf;font-size:13px}
+.modern-ui :is(.pilot-card,.pilot-step){background:#141e2d;border:1px solid #34465e;border-radius:10px;color:#c2d3eb}
+.modern-ui :is(.pilot-card,.pilot-step) :is(h2,h3){color:#d2e2f7}
+.modern-ui :is(.pilot-card,.pilot-step) :is(p,small){color:#a3b6d0}
+.modern-ui .topic-chips :is(span,label){color:#b8cce7;background:#22344d;border-color:#455f81}
+.modern-ui .user-footer{border-top:1px solid #242e3d;margin:30px 0 0;padding:18px 0 0;gap:15px;display:flex;justify-content:space-between;font-size:10px;color:#8495ae}
+.modern-ui #userToast{background:#26374f;border:1px solid #526a8d;color:#e2eeff;border-radius:9px;box-shadow:0 8px 40px #0006}
+.modern-ui>button.btn{background:#20314a;border-color:#526b90;color:#d0e1fa;box-shadow:0 6px 25px #0005}
+.modern-ui #userDialog{color-scheme:dark;background:#131d2c;border:1px solid #526682;border-radius:14px;color:#cadbf1;box-shadow:0 30px 100px #0008;max-width:min(760px,calc(100vw - 32px));padding:33px;max-height:86vh;overflow:auto}
+.modern-ui #userDialog::backdrop{background:#03070dc9;backdrop-filter:blur(6px)}
+.modern-ui #userDialog :is(h1,h2,h3){color:#e3edfc}
+.modern-ui #userDialog h2{font-size:24px;line-height:1.6;font-weight:500;letter-spacing:0}
+.modern-ui #userDialog p{font-size:14px;line-height:1.9;color:#b2c3dc}
+.modern-ui #userDialog :is(label,.small-note,.agent-form-row small){color:#adbfda}
+.modern-ui #userDialog :is(.profile-details>div,.condition-row,.material-item,.human-card,.policy-local-document){background:#18263a;border-color:#38506e;color:#c4d8f4}
+.modern-ui #userDialog .profile-details :is(small,b){color:#c6d7ef}
+.modern-ui #userDialog a{color:#bdd5fa;text-decoration:underline;text-underline-offset:4px}
+.modern-ui #userDialog .policy-local-document pre{color:#c7d7ec;border-color:#3a506e;font-size:14px;line-height:2}
+.modern-ui #userDialog .dialog-x{background:#243650;color:#bdd2ef;border-color:#3f597c}
+.modern-ui #userDialog .checkrow{color:#bfd0e8}
+.modern-ui #userDialog .agent-draft-notice{background:#23364f;color:#c6dbf7;border-color:#4e6b93}
+.modern-ui .modern-help-list{display:grid;gap:15px;padding:0;list-style:none;margin:24px 0}
+.modern-ui .modern-help-list li{padding:16px 18px;background:#1c2a3e;border:1px solid #3c526f;border-radius:8px}
+.modern-ui .modern-help-list b{font-size:14px;display:block;color:#d9e7fb;margin-bottom:4px}
+.modern-ui .modern-help-list span{font-size:12px;color:#aabedb}
+@keyframes modern-arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modern-float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+@media(min-width:1550px){.modern-ui .app-content{padding-top:43px}.modern-ui .modern-overview-lead{grid-template-columns:minmax(0,1fr) 320px}.modern-ui .modern-dashboard-grid{grid-template-columns:minmax(0,1fr) 290px}.modern-ui .page-heading h1{font-size:34px}}
+@media(max-width:1180px){.modern-ui .app-sidebar{width:205px;padding-inline:15px}.modern-ui .resident-main{margin-left:205px}.modern-ui .app-content{padding:28px 27px 22px}.modern-ui .app-header{padding-inline:27px}.modern-ui .app-header .tag{display:none}.modern-ui .modern-overview-lead{grid-template-columns:minmax(0,1fr) 200px}.modern-ui .modern-orbit :is(svg,img){width:250px;max-width:125%}.modern-ui .modern-dashboard-grid{grid-template-columns:minmax(0,1fr) 210px;gap:14px}.modern-ui .modern-guide{padding:22px 17px}.modern-ui .modern-quick{padding:17px 14px;gap:11px}.modern-ui .modern-quick small{font-size:10px}.modern-ui .policy-needs{padding:23px}.modern-ui .message-layout{grid-template-columns:220px minmax(0,1fr)}}
+@media(max-width:980px){.modern-ui .app-sidebar{width:188px;padding-inline:12px}.modern-ui .resident-main{margin-left:188px}.modern-ui .app-sidebar .brand{margin-left:7px;font-size:21px}.modern-ui .app-content{padding:26px 24px 20px}.modern-ui .app-header{padding-inline:24px}.modern-ui .modern-dashboard-grid{grid-template-columns:1fr}.modern-ui .modern-guide{display:none}.modern-ui .modern-overview-lead{grid-template-columns:minmax(0,1fr) 150px}.modern-ui .modern-orbit :is(svg,img){width:215px;max-width:145%}.modern-ui .modern-orbit figcaption{font-size:8px}.modern-ui .modern-overview-lead .policy-search-panel{padding:24px}.modern-ui .modern-quick-actions{gap:10px}.modern-ui .modern-quick{flex-wrap:wrap;gap:10px;padding:16px 13px}.modern-ui .modern-quick>.modern-arrow{position:absolute;right:11px;top:18px;width:12px}.modern-ui .modern-quick b{font-size:13px}.modern-ui .modern-quick small{font-size:10px}.modern-ui .modern-quick>div{width:100%}.modern-ui .modern-command-button kbd{display:none}.modern-ui .message-layout{grid-template-columns:1fr}.modern-ui .inbox{min-height:0;display:block}.modern-ui #threadList{display:block!important}.modern-ui .thread{width:100%}.modern-ui .policy-results{grid-template-columns:1fr}.modern-ui .page-heading h1{font-size:28px}.modern-ui .modern-date{display:none}}
+@media(max-width:700px){.modern-ui .app-sidebar{position:relative;width:100%;inset:auto;padding:18px 19px 13px;background:#0c111a;border-right:0;border-bottom:1px solid #2b3544}.modern-ui .app-sidebar .brand{margin:0 0 19px;font-size:21px;gap:10px}.modern-ui .brandmark{height:31px;width:31px;font-size:21px}.modern-ui .brand small{display:none!important}.modern-ui :is(.resident-tag,.nav-label,.sidebar-support,.sidebar-profile){display:none}.modern-ui .user-nav{display:flex;flex-direction:row;gap:5px;margin:0;width:100%}.modern-ui .user-nav :is(button,.service-launcher){flex:1;width:auto;min-width:0;min-height:47px;justify-content:center;flex-direction:column;gap:5px;font-size:10px;padding:8px 3px;border-radius:7px;line-height:1.4;white-space:nowrap}.modern-ui .user-nav :is(button,.service-launcher) svg{width:17px;height:17px}.modern-ui .user-nav .service-launcher span{font-size:10px}.modern-ui .user-nav button.active:before{display:none}.modern-ui .user-nav :is(button span,.service-launcher b){position:absolute;top:3px;right:2px;min-width:12px;font-size:8px;padding:0 3px}.modern-ui .user-nav .service-launcher span{position:static;margin:0;padding:0;background:none}.modern-ui .resident-main{margin:0}.modern-ui .app-header{height:52px;padding:0 20px}.modern-ui .app-header>div{gap:8px}.modern-ui .app-header>.modern-breadcrumb{font-size:10px;gap:8px}.modern-ui .app-header .text-button{display:none}.modern-ui .app-header .avatar{width:26px;height:26px;font-size:10px}.modern-ui .modern-command-button{font-size:11px;gap:5px;padding:4px}.modern-ui .app-content{padding:25px 19px 20px}.modern-ui .page-heading{gap:10px;margin-bottom:21px;align-items:start}.modern-ui .page-heading .eyebrow{font-size:10px}.modern-ui .page-heading h1{font-size:26px;line-height:1.5;margin:5px 0 7px}.modern-ui .page-heading p{font-size:12px;line-height:1.8}.modern-ui .page-heading>.btn{font-size:10px;padding:7px 9px;min-height:36px;margin-top:17px}.modern-ui .modern-overview-lead{display:block;min-height:0;border-radius:11px;margin-bottom:16px}.modern-ui .modern-overview-lead .policy-search-panel{padding:23px 20px}.modern-ui .policy-search-panel form>label{font-size:15px;margin-bottom:13px}.modern-ui .policy-search-row{gap:8px}.modern-ui .policy-search-row input{font-size:12px;min-height:45px;padding:12px;min-width:0}.modern-ui .policy-search-row .btn{font-size:11px;min-height:45px;padding:10px 12px}.modern-ui .modern-orbit{display:none}.modern-ui .modern-quick-actions{gap:8px;margin-bottom:22px}.modern-ui .modern-quick{min-height:102px;padding:14px 11px;gap:10px;border-radius:8px}.modern-ui .modern-quick>svg:first-child{width:21px;height:21px}.modern-ui .modern-quick b{font-size:12px}.modern-ui .modern-quick small{font-size:9px;line-height:1.7;display:block}.modern-ui .modern-quick>.modern-arrow{display:none}.modern-ui .modern-dashboard-grid{margin-bottom:25px}.modern-ui .policy-needs{padding:22px 19px;border-radius:10px}.modern-ui .policy-needs h2{font-size:19px;line-height:1.5}.modern-ui .policy-needs :is(p,small){font-size:11px}.modern-ui .policy-need-options{gap:8px;margin:17px 0 13px}.modern-ui .policy-need-options button{font-size:11px;padding:10px;min-height:41px;gap:8px}.modern-ui .modern-section-heading h2{font-size:16px}.modern-ui .policy-result-card,.modern-ui .policy-result-card.is-personal{padding:20px 18px}.modern-ui .policy-result-card h3{font-size:15px}.modern-ui .policy-card-actions{gap:11px}.modern-ui .policy-card-actions .btn{min-height:37px}.modern-ui .policy-card-actions :is(a,.text-button){font-size:10px}.modern-ui .policy-search-filters{align-items:flex-start!important}.modern-ui .policy-discovery .policy-search-panel{padding:20px 18px}.modern-ui .user-footer{font-size:9px;line-height:1.8;flex-direction:column;gap:5px;padding-top:16px;margin-top:24px}.modern-ui .message-layout{gap:15px}.modern-ui .modern-empty{min-height:380px;padding:35px 22px}.modern-ui .modern-empty h2{font-size:17px}.modern-ui .modern-empty p{font-size:11px}.modern-ui .chat-head{padding:17px 16px}.modern-ui .chat-head>.tag{font-size:9px}.modern-ui .chat-area{padding:19px 16px}.modern-ui .composer{padding:17px 16px}.modern-ui .pilot-hero{padding:25px 21px}.modern-ui .pilot-hero h2{font-size:24px}.modern-ui .pilot-hero p{font-size:12px}.modern-ui #userDialog{padding:29px 22px;max-height:88vh}.modern-ui #userDialog h2{font-size:21px}.modern-ui #userDialog p{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.modern-ui .app-content,.modern-ui .modern-orbit :is(svg,img){animation:none}.modern-ui :is(.btn,.modern-quick,.user-nav button,.policy-result-card,.policy-need-options button){transition:none}.modern-ui :is(.btn,.modern-quick):hover{transform:none}}

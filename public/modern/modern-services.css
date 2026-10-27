@@ -1,0 +1,65 @@
+:root{--bg:#090c12;--panel:#121a27;--ink:#e3eaf5;--muted:#a1afc3;--line:#303c4e;--accent:#b9d0f0;font-family:'Segoe UI','Microsoft YaHei UI','Microsoft YaHei','PingFang SC',sans-serif;background:#090c12}
+body{background:#090c12;font-size:14px;line-height:1.7}
+.ambient{background:radial-gradient(ellipse at 80% 3%,#344d7229,transparent 48%)}
+.ambient-orbit{border-color:#829bc012}
+.ambient-grid{opacity:.35;background-size:100px 100px}
+.masthead{padding:26px 44px;border-bottom:1px solid #252f3e}
+.brandmark{background:linear-gradient(140deg,#f2f6fc,#b2c3dc 48%,#788ca7);color:#1a2433;border-radius:9px;box-shadow:inset 0 1px 0 #fff9}
+.brand small{color:#9fb0c8;font-size:12px}
+.masthead-actions{font-size:12px;color:#aebed5}
+.system-state i{background:#b7cee9;box-shadow:0 0 10px #b5ceef33}
+.shell{max-width:1320px;padding:0 44px}
+.hero{padding:32px 0 26px;min-height:255px;grid-template-columns:minmax(0,1fr) 350px;gap:25px}
+.eyebrow{font-size:10px;letter-spacing:.15em;color:#9aafce}
+.hero h1{font-size:34px;font-weight:500;line-height:1.5;letter-spacing:.02em;margin:9px 0 13px;color:#e5edfa}
+.hero p{font-size:13px;line-height:1.9;max-width:530px;color:#a4b5ce}
+.hero-actions{margin-top:21px;gap:12px}
+.primary{background:linear-gradient(130deg,#e0e9f6,#adc4e3);border-color:#b5c8e4;color:#172234;font-size:13px;border-radius:7px;box-shadow:inset 0 1px 0 #fff9;min-height:43px;padding:10px 17px}
+.quiet{font-size:12px;color:#b7cde9;border-color:#3f526e;border-radius:7px;min-height:43px;padding:9px 16px}
+.orbit-sculpture{height:225px;width:350px;transform:none;filter:none;margin:0;display:grid;place-items:center}
+.orbit-sculpture :is(svg,img){width:350px;height:225px;stroke:none;animation:service-float 9s ease-in-out infinite}
+.orbit-sculpture:before,.orbit-sculpture:after{display:none}
+.stats{border:1px solid #303e53;border-radius:10px;overflow:hidden;background:#111b2a;box-shadow:inset 0 1px 0 #ffffff05;margin:12px 0 27px}
+.stat{padding:18px 23px;border-color:#303e53}
+.stat strong{font-size:25px;line-height:1.5;font-weight:450;color:#d9e7fb}
+.stat span{font-size:11px;color:#9eb2cf}
+.tabs{border-color:#2c3a4e;margin-bottom:27px;gap:25px}
+.tabs button{padding:13px 2px;font-size:13px;color:#93a9c8}
+.tabs button.active{color:#d1e4ff;border-color:#b5d2f7}
+.tabs button span{background:#2e4261;color:#d4e5fc;font-size:10px}
+.agent-card{padding:26px;border-color:#303e54;border-radius:11px;background:linear-gradient(130deg,#172235,#101925);box-shadow:inset 0 1px 0 #ffffff04;transition:border-color .18s,transform .18s}
+.agent-card:hover{border-color:#7189ad;transform:translateY(-2px)}
+.agent-card:before{background:linear-gradient(90deg,#bed4f399,transparent);height:1px}
+.agent-card h2{font-size:19px;font-weight:500;color:#d9e8fd}
+.agent-card p{font-size:12px;line-height:1.9;color:#a5bad8}
+.agent-card button{font-size:12px;color:#bdd7fa}
+.scenario-list{gap:13px}
+.scenario{background:#142036;border-color:#354b6b;border-radius:9px;padding:20px}
+.scenario h3{font-size:15px;font-weight:500;color:#d3e4fc}
+.scenario p{font-size:12px;color:#a6bddc;line-height:1.8}
+.scenario button{font-size:12px;color:#c3ddff;border-color:#506c93}
+.record,.notice,.task{border-color:#354962;background:#152235;border-radius:10px}
+.record h3,.notice h3,.task h3{font-size:16px;font-weight:500;color:#d2e5ff}
+.record p,.notice p,.task p{font-size:12px;line-height:1.9;color:#a8bedb}
+.notice-date{color:#c0d8f9}
+.empty{border-color:#3c526f;border-radius:11px;background:#101b2b;padding:50px 25px}
+.empty h2{font-size:20px;font-weight:500;color:#d9eaff}
+.empty p{font-size:13px;line-height:1.9;color:#a4bddd}
+.channels{border-color:#2e4059;margin-top:31px;padding-top:23px}
+.channels h2{font-size:14px;font-weight:500;color:#b9d0ef}
+.channel{font-size:11px;background:#17273d;color:#a3bbdc;border-color:#3f5778}
+.channel.online{background:#213a50;color:#c1daee;border-color:#55738d}
+.account-note{background:#1b2c44;color:#b7cdeb;border-color:#4a6489}
+footer{font-size:10px;line-height:1.9;color:#8fa6c5;border-color:#2c3d55}
+dialog{background:#152237;border-color:#4a6487;color:#c6dcf8;border-radius:13px;box-shadow:0 30px 100px #0009;max-height:88vh;overflow:auto}
+dialog::backdrop{background:#03070dd9;backdrop-filter:blur(6px)}
+dialog :is(input,select,textarea){color-scheme:dark;background:#0d192b;border-color:#4c678b;color:#d1e5ff;border-radius:7px;font-size:14px}
+dialog :is(h2,h3){font-weight:500;color:#daeaff}
+dialog p,dialog label{font-size:13px;line-height:1.9;color:#b0c7e7}
+.icon-button{color:#c4dbfa;background:#253b59;border-color:#506f96}
+.example-card{background:#213753;border-color:#526f94;color:#bed6f6}
+.toast{background:#2b4263;color:#dcecff;border:1px solid #627fa5}
+@keyframes service-float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+@media(max-width:900px){.hero{grid-template-columns:minmax(0,1fr) 240px}.orbit-sculpture{width:240px}.orbit-sculpture :is(svg,img){width:285px;max-width:125%}.masthead,.shell{padding-inline:28px}.hero h1{font-size:30px}.stat{padding:16px}.agent-card{padding:23px}}
+@media(max-width:650px){.masthead{padding:20px;border-bottom:1px solid #2d405a}.masthead .brand small,.masthead .system-state{display:none}.masthead-actions{font-size:11px}.shell{padding:0 20px}.hero{display:block;padding:29px 0 23px;min-height:0}.hero h1{font-size:28px}.hero p{font-size:12px}.orbit-sculpture{display:none}.eyebrow{font-size:9px}.hero-actions{gap:10px;margin-top:19px}.primary,.quiet{font-size:12px;padding:9px 13px}.stats{margin:4px 0 20px}.stat{padding:14px 11px}.stat strong{font-size:22px}.stat span{font-size:10px}.tabs{gap:21px;overflow:auto}.tabs button{font-size:12px;white-space:nowrap}.agent-card{padding:22px}.agent-card h2{font-size:18px}.agent-card p{font-size:12px}.scenario{padding:19px}.empty{padding:37px 22px}.empty h2{font-size:18px}.empty p{font-size:12px}footer{font-size:9px}dialog{max-width:calc(100vw - 28px);padding:25px 21px}}
+@media(prefers-reduced-motion:reduce){.orbit-sculpture :is(svg,img){animation:none}.agent-card{transition:none}.agent-card:hover{transform:none}}
