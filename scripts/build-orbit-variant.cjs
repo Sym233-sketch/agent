@@ -1,0 +1,10 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path');
+const base=path.join(__dirname,'..','public','reels'),target=path.join(__dirname,'..','public','orbit');
+fs.mkdirSync(target,{recursive:true});
+for(const name of ['user.js','services.html','services-frame.css','services-frame.js','tree.css'])fs.copyFileSync(path.join(base,name),path.join(target,name));
+const tree=fs.readFileSync(path.join(base,'tree.js'),'utf8').replaceAll('MincetongReels','MincetongOrbit').replaceAll('mincetong-reels-ready','mincetong-orbit-ready').replaceAll('reels-ready','orbit-ready').replaceAll('data-reel-id','data-orbit-id');
+fs.writeFileSync(path.join(target,'tree.js'),tree);
+const html=fs.readFileSync(path.join(base,'user.html'),'utf8').replace('href="reels.css"','href="orbit.css"').replace('src="reels-scene.js"','src="orbit-scene.js"');
+fs.writeFileSync(path.join(target,'user.html'),html);
+console.log('Built independent /orbit/ entry. Previous versions were not modified.');
