@@ -1,0 +1,30 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path');
+const base=path.join(__dirname,'..','public','atelier'),target=path.join(__dirname,'..','public','reels');
+fs.mkdirSync(target,{recursive:true});
+for(const name of ['user.js','services.html','services-frame.css','services-frame.js','tree.css'])fs.copyFileSync(path.join(base,name),path.join(target,name));
+let controller=fs.readFileSync(path.join(target,'user.js'),'utf8');
+const entry='if(profile){if(profile.proactive)';
+if(controller.split(entry).length!==2)throw Error('Review resident preview entry.');
+controller=controller.replace(entry,"if(!profile&&new URLSearchParams(location.search).get('preview')==='1'){draft.name='演示访客';draft.identity='DEMO-ID-001';draft.proactive=false;joined=false;topics=[];finishEnroll();}else "+entry);
+fs.writeFileSync(path.join(target,'user.js'),controller);
+let html=fs.readFileSync(path.join(base,'user.html'),'utf8');
+html=html.replace('href="tree.css">','href="tree.css"><link rel="stylesheet" href="reels.css">').replace('</body>','<script type="module" src="reels-scene.js"></script></body>');
+fs.writeFileSync(path.join(target,'user.html'),html);
+let source=fs.readFileSync(path.join(base,'tree.js'),'utf8');
+const start=source.indexOf('  function createScene(){'),end=source.indexOf('  function human()',start);
+if(start<0||end<start)throw Error('Review the presentation adapter before rebuilding.');
+source=source.slice(0,start)+`  function createScene(){
+    scene=window.MincetongReels?.create(host,{reduced});
+    scene?.step(!current||current==='hall'?0:2);
+  }
+`+source.slice(end);
+source=source.replaceAll('scene?.destroy();createScene();','scene?.refresh?.();');
+source=source.replace("highlight('');scene?.step(0);scene?.burst();", "highlight('');scene?.reset?.();scene?.step(0);scene?.burst();");
+source=source.replace('host.prepend(sceneShell);createScene();',"host.prepend(sceneShell);window.addEventListener('mincetong-reels-ready',()=>{scene?.destroy();createScene();},{signal});createScene();");
+source=source.replace("if(event.pointerType!=='mouse'", "if(stage.classList.contains('reels-ready'))return;\n      if(event.pointerType!=='mouse'");
+source=source.replace("if(reduced())return;\n      const r=stage", "if(reduced()||stage.classList.contains('reels-ready'))return;\n      const r=stage");
+source=source.replace("let a=null;const b=sheet.getBoundingClientRect();", "let a=null;const b=sheet.getBoundingClientRect();\n    const model=scene?.getBounds(button?.dataset.leaf);\n    if(model)return {transform:`translate(${model.left-b.left}px,${model.top-b.top}px) scale(${model.width/b.width},${model.height/b.height})`,opacity:.25,borderRadius:'24px'};");
+source=source.replace('lastLeaf?.focus({preventScroll:true});', "host.querySelector('[data-reel-id=\"'+lastLeaf?.dataset.leaf+'\"]')?.focus({preventScroll:true});");
+fs.writeFileSync(path.join(target,'tree.js'),source.trimEnd()+'\n');
+console.log('Built /reels/ without changing /atelier/ or original UI files.');
