@@ -106,5 +106,55 @@
     "issued": "2023-05-21",
     "domain": "elder",
     "summary": "从本地基本养老服务清单了解照护、关爱与支持。服务对象和标准按项目区分，年满60岁不等于自动领取所有津贴。"
+  },
+  {
+    "key": "school-aftercare",
+    "title": "教育部办公厅等四部门联合部署规范义务教育课后服务有关工作",
+    "issuer": "教育部办公厅等四部门",
+    "issued": "2023-12-28",
+    "domain": "education",
+    "tags": [
+      "primary-school"
+    ],
+    "url": "https://app.www.gov.cn/govdata/gov/202312/28/510655/article.html",
+    "summary": "义务教育课后服务遵循自愿参加原则；具体课程、时间、收费公示及费用减免需向本校核实。"
+  },
+  {
+    "key": "school-status-2025",
+    "title": "教育部关于印发《中小学生学籍管理办法》的通知",
+    "issuer": "教育部",
+    "issued": "2025-01-03",
+    "domain": "education",
+    "tags": [
+      "primary-school"
+    ],
+    "url": "https://www.gov.cn/zhengce/zhengceku/202502/content_7002620.htm",
+    "summary": "学校负责学生学籍信息采集、核验和更新，家长可向学校核对资料。不得在本平台收集孩子证件号或学籍号代替学校办理。"
+  },
+  {
+    "key": "school-enrollment-2026",
+    "title": "教育部办公厅关于开展中小学阳光招生专项行动（2026年）的通知",
+    "issuer": "教育部办公厅",
+    "issued": "2026-04-02",
+    "domain": "education",
+    "tags": [
+      "primary-school"
+    ],
+    "url": "https://www.shanghai.gov.cn/gjjywjy/20260410/5068f03a788547d9bb0365994581e483.html",
+    "summary": "2026年中小学招生入学工作的全国规范要求。具体学区、报名窗口、材料及录取安排须核对所在区县当年公告，不能按全国文件直接确定学校。",
+    "originalURL": "https://www.moe.gov.cn/srcsite/A06/s3321/202604/t20260403_1432844.html",
+    "sourceNote": "上海市政府网站转载教育部全国通知，不是上海市的报名办理规则。"
+  },
+  {
+    "key": "school-finance-2026",
+    "title": "关于印发《城乡义务教育补助经费管理办法》的通知",
+    "issuer": "财政部、教育部",
+    "issued": "2026-09-24",
+    "domain": "education",
+    "tags": [
+      "primary-school"
+    ],
+    "url": "https://m.mof.gov.cn/zcfb/202610/t20261014_4002838.htm",
+    "summary": "城乡义务教育免学杂费、免费教科书和家庭经济困难学生生活补助的经费制度依据。生活补助需核实家庭经济情况、寄宿情况及地方标准，不表示每位小学生均可领取补助。"
   }
 ]

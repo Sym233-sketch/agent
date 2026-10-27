@@ -11,7 +11,7 @@ function generate(count=3000,seed=20261026){
  });
 }
 function seed(db){db.residents||=[];const existing=new Set(db.residents.map(r=>r.id));let added=0;for(const r of generate())if(!existing.has(r.id)){db.residents.push(r);added++}return added}
-function matchProfile(r){return{displayName:r.displayName,district:r.district,job:r.job,facts:r.facts,topics:r.topics,proactive:r.proactive,joined:r.joined,synthetic:r.synthetic===true,...(r.synthetic?{background:r.background}:{})}}
+function matchProfile(r){return{displayName:r.displayName,age:require('./profile-age.cjs').value(r)??(r.synthetic?require('./profile-age.cjs').value({age:r.background?.age}):null),district:r.district,job:r.job,facts:r.facts,topics:r.topics,proactive:r.proactive,joined:r.joined,synthetic:r.synthetic===true,...(r.synthetic?{background:r.background}:{})}}
 function rank(r,text='',domain='general'){
  const reasons=[],hits=[],terms=[['education',/教育|培训|学生|学校|教培/,/教师|学生|家长|教培/.test(r.job)||r.facts?.needStudy,'教育参与者或从业者'],['elder',/养老|老年|助餐|照护/,r.facts?.senior==='yes'||r.facts?.needCare,'养老或照护服务需求'],['employment',/就业|求职|转岗|技能|失业/,r.facts?.needJob,'就业或技能服务需求'],['general',/救助|生活|支出|困难/,r.facts?.needLife,'已表达生活支持需求'],['mental',/心理|精神卫生|心理健康/,r.topics?.includes('心理支持'),'已表达心理支持需求']];
  for(const [d,re,ok,reason]of terms)if(ok&&(re.test(text)||(d!=='general'&&d===domain))){reasons.push(reason);hits.push(text.match(re)?.[0]||'')}
