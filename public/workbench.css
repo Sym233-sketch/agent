@@ -7,3 +7,23 @@
 .finding-bottom .research-trigger{background:none;color:#6b8862;padding-inline:0;font-size:9px;white-space:nowrap}.finding-bottom>span:first-of-type{flex:1;min-width:0}.research-context{background:#f1f5e7;border-radius:10px;padding:14px;overflow-wrap:anywhere}.research-source{border:1px solid #dbe5ce;padding:15px;border-radius:10px;margin-top:12px}.research-source a{color:#547a4d;overflow-wrap:anywhere}.research-source blockquote{margin:9px 0;padding-left:12px;border-left:2px solid #b3c99c;color:#657955;white-space:pre-wrap}.research-meta{display:grid;grid-template-columns:1fr 160px;gap:12px;margin:12px 0}.research-actions{display:flex;gap:10px;align-items:center;margin-top:15px}.research-result{white-space:pre-wrap}.research-note{font-size:11px;color:#96a18a}
 
 .research-result{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.research-result.expanded{display:block}.research-expand{border:0;background:none;color:#688852;font-size:10px;padding:0;cursor:pointer}.research-source blockquote{font-size:11px;line-height:1.8}.research-source small{color:#a3ad95}.research-source{margin-top:10px;padding:12px 15px}
+
+/* Reviewed publication and a separate, staff-confirmed delivery. */
+.publish-card{min-height:0;max-height:100%;overflow:auto;padding:clamp(16px,2.4vh,30px)}
+.publish-card .context-label{margin-top:10px;margin-bottom:5px}.publish-card .publish-title{font-size:11px;margin:5px 0 10px;overflow-wrap:anywhere;color:var(--muted)}
+.publish-scope{display:grid;grid-template-columns:90px minmax(0,1fr);gap:8px 12px;align-items:center;margin:12px 0}.publish-scope .context-label{margin:0}.publish-card .consent{font-size:12px;line-height:1.65}.publish-card .notice-bar{line-height:1.65;font-size:12px;margin:12px 0}
+.match-context{overflow:auto}.match-context #matchNotice{font-size:12px;line-height:1.7;overflow-wrap:anywhere}#matchedPolicyScope{font-size:12px;line-height:1.6;color:var(--muted)}
+.match-bottom{flex-wrap:wrap;gap:9px}.match-confirm{flex-basis:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}.match-confirm .consent{margin:0;font-size:12px;line-height:1.6}.match-confirm .primary{flex-shrink:0}.match-bottom #matchedDeliveryResult{flex-basis:100%;margin:0;font-size:12px;line-height:1.6;color:var(--green)}
+.person-card blockquote{font-size:11px;line-height:1.5;max-height:4.5em;overflow:auto;margin:8px 0;padding-left:8px;border-left:2px solid var(--line)}.person-card .pill{font-size:10px}
+@media(max-height:760px){.publish-card{padding:15px}.publish-card .context-label{margin-top:6px}.publish-card .publish-data{margin:10px 0}.publish-card .notice-bar{margin:8px 0}.publish-card .mode-options{margin:8px 0}.match-confirm{gap:6px}.match-confirm .consent{font-size:11px}}
+
+.publish-card{display:grid;grid-template-columns:76px minmax(0,1fr);gap:8px 12px;align-content:start}
+.publish-card>h2,.publish-card>.mode-options,.publish-card>.publish-scope,.publish-card>.publish-data,.publish-card>.notice-bar,.publish-card>.consent,.publish-card>#publishButton,.publish-card>#publishResult{grid-column:1/-1}
+.publish-card>.context-label{margin:0;align-self:center}.publish-card>.publish-title{display:none}
+.publish-card .mode-option{padding:9px}.publish-card .notice-bar{white-space:normal;overflow:visible;margin:2px 0;font-size:11px}
+.publish-scope{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto;margin:0;gap:4px 12px}
+.publish-scope label[for="policyDomain"]{grid-column:1;grid-row:1}.publish-scope #policyDomain{grid-column:1;grid-row:2}
+.publish-scope label[for="deadline"]{grid-column:2;grid-row:1}.publish-scope #deadline{grid-column:2;grid-row:2}
+.publish-card .publish-data{margin:0;line-height:1.6}.publish-card .consent{font-size:11px;line-height:1.65}
+@media(max-height:760px){.publish-slide{padding-top:0;padding-bottom:0}.publish-card{gap:7px 10px}.publish-card .field{padding:8px 10px}.publish-card .mode-options{margin:0}.publish-card .publish-data{margin:0}}
+@media(max-width:740px){.publish-slide{grid-template-columns:minmax(0,1fr)}.publish-hero{display:none}.publish-card{width:100%}}

@@ -22,6 +22,17 @@ async function review(input,{reuseLanguage=false}={}){const selected=getFiles(in
  if(selected.some(f=>files.get(f.id)!==f||versions.find(v=>v.fileId===f.id)?.version!==f.version))throw Error('审稿期间文件发生修改，请对最新版本重新审稿');
  for(const issue of issues){const f=selected.find(f=>f.id===issue.source?.fileId);if(f?.format==='pdf'){const p=f.pages.find(p=>(issue.source.offset??0)>=p.start&&(issue.source.offset??0)<=p.end);if(p)issue.source.page=p.number}}
  const report={id:id(),createdAt:new Date().toISOString(),issues:issues.map(i=>({...i,severity:i.severity||'warning'})),checks,warnings,totals,language,consistency:{claims:consistency.claims,comparisons:consistency.comparisons,scope:consistency.scope},fileVersions:versions,fileIds:selected.map(f=>f.id),checkedRelations:checks.length};reports.set(report.id,report);if(reports.size>30)reports.delete(reports.keys().next().value);return report}
+function publicationSnapshot(input){
+ clean();
+ const error=(status,message)=>{throw Object.assign(Error(message),{status})},report=reports.get(input.reportId);
+ if(!report)error(409,'请先完成本次材料审核，审查结果已过期或不存在');
+ if(input.reviewConfirmed!==true)error(400,'请先人工核对审查意见和未覆盖范围');
+ const selected=getFiles(report.fileIds),file=selected.find(f=>f.id===input.fileId&&f.kind==='word');
+ if(!file)error(400,'请选择本次审核中的政策正文，财报不能单独发布');
+ if(selected.some(f=>report.fileVersions.find(v=>v.fileId===f.id)?.version!==f.version)||report.language.validForCurrentVersion===false)error(409,'材料已修改，请重新审核当前版本后再确认发布');
+ if(file.text.trim().length<15||file.text.length>150000)error(400,'政策正文须为15至150000个字符，不会截短后发布');
+ return{title:file.title,body:file.text,review:{reportId:report.id,fileId:file.id,fileVersion:file.version,reviewedAt:report.createdAt,confirmedAt:new Date().toISOString(),sourceHash:crypto.createHash('sha256').update(file.text).digest('hex'),languageStatus:report.language.status,coverage:report.language.coverage||null,pendingIssues:report.issues.filter(i=>!i.applied).length,warnings:report.warnings,manuallyConfirmed:true}};
+}
 function clean(){for(const [key,f]of files)if(Date.now()-f.touched>3600000)files.delete(key)}
 async function handle(req,res,u){if(!u.pathname.startsWith('/api/files/')&&!u.pathname.startsWith('/api/workbench/'))return false;clean();try{
 if(u.pathname==='/api/files/convert'&&req.method==='POST'){if(files.size>=12)throw Error('最多保留12个文件，请先移除不用的文件');let parts=[],size=0;for await(const chunk of req){size+=chunk.length;if(size>12*1024*1024)throw Error('单个文件不能超过12MB');parts.push(chunk)}const name=decodeURIComponent(String(req.headers['x-file-name']||'').slice(0,1000));if(!name)throw Error('缺少文件名');const buffer=Buffer.concat(parts),f=await convert(buffer,name);files.set(f.id,{...f,buffer,touched:Date.now()});send(res,201,f);return true}
@@ -32,5 +43,5 @@ if(u.pathname==='/api/workbench/research'&&req.method==='POST'){const a=await bo
 const match=u.pathname.match(/^\/api\/files\/([a-f\d-]+)(?:\/(export|original))?$/);if(match){const f=getFiles([match[1]])[0];if(req.method==='DELETE'){files.delete(f.id);send(res,200,{ok:true});return true}if(match[2]==='original'){if(f.format!=='pdf')throw Error('当前仅提供 PDF 原件预览');res.writeHead(200,{'Content-Type':'application/pdf','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(f.buffer);return true}if(match[2]==='export'){let buffer;if(f.kind==='word')buffer=await docx(f.text);else{const XLSX=require('../vendor/xlsx.full.min.cjs'),wb=XLSX.read(f.buffer,{type:'buffer',cellFormula:true});for(const s of f.sheets)for(const [cell,c]of Object.entries(s.cells))if(wb.Sheets[s.name][cell]){wb.Sheets[s.name][cell].v=c.v;delete wb.Sheets[s.name][cell].w}buffer=XLSX.write(wb,{type:'buffer',bookType:'xlsx'})}res.writeHead(200,{'Content-Type':f.kind==='word'?'application/vnd.openxmlformats-officedocument.wordprocessingml.document':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','Cache-Control':'no-store'});res.end(buffer);return true}}
 send(res,404,{error:'文件接口不存在'});return true
 }catch(e){send(res,400,{error:e.message});return true}}
-return{handle,review};};
+return{handle,review,publicationSnapshot};};
 module.exports.docx=docx;module.exports.sampleSheet=sampleSheet;
