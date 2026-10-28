@@ -1,8 +1,8 @@
-(()=>{'use strict';
+(()=>{'use strict';if(window.MINCETONG_SERVICE_REDIRECT)return;
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const paths={spark:'m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z',card:'M4 5h16v14H4ZM4 9h16M8 14h3m3 0h2',wallet:'M4 6h14v3m-14-3 12-3v3M4 6v14h16V9H4m11 4h5v4h-5Z',heart:'M12 20S2 14 3 8c1-5 7-5 9-1 2-4 8-4 9 1 1 6-9 12-9 12Z',home:'m3 10 9-7 9 7M5 9v12h14V9m-10 12v-7h6v7',leaf:'M20 4C8 2 3 9 7 15c6 5 14-1 13-11ZM4 21l11-11'};
 const icon=name=>'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+(paths[name]||paths.spark)+'"/></svg>';
-let catalog=null,mine={records:[],notices:[],tasks:[]},gov={tasks:[],counts:{}},tab=new URLSearchParams(location.search).get('tab')==='assistant'?'assistant':'catalog',group='',busy=false,toastTimer;
+const compactType=new URLSearchParams(location.search).get('compact'),productEmbedded=compactType==='journey';if(['journey','government'].includes(compactType))document.documentElement.dataset.productEmbedded=compactType;let catalog=null,mine={records:[],notices:[],tasks:[]},gov={tasks:[],counts:{}},tab=['catalog','notices','records','assistant'].includes(new URLSearchParams(location.search).get('tab'))?new URLSearchParams(location.search).get('tab'):'catalog',group='',busy=false,toastTimer;
 let virtualGov={items:[]};let profile;try{profile=JSON.parse(sessionStorage.getItem('mince-resident-session-v1'))?.profile}catch{}
 let token=profile?.remote?.token||'';const government=new URLSearchParams(location.search).get('view')==='government';
 const scenario=id=>catalog.scenarios.find(s=>s.id===id),agent=id=>catalog.agents.find(a=>a.id===id),activeRecords=()=>mine.records.filter(r=>r.enabled&&!r.completedAt);
@@ -11,7 +11,7 @@ let recoveringSession;async function recoverSession(){if(recoveringSession)retur
 async function agentApi(path,options={},retry=true){const response=await fetch('/api/'+path,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{}),...options.headers},cache:'no-store'});const value=await response.json();if(response.status===401&&profile&&retry){await recoverSession();return agentApi(path,options,false)}if(!response.ok)throw Object.assign(Error(value.error||'办理服务暂未连上'),{status:response.status});return value}
 window.MINCETONG_DESK.configure({api:agentApi,ensure:async()=>{if(!token)throw Error('请先在居民端登记')},toast:message=>toast(message),dialog:html=>dialog('红通 · 虚拟申报演示',html),closeDialog:()=>$('#serviceDialog').close(),channel:'services'});
 function assistantView(){return token?'<div class="services-assistant">'+window.MINCETONG_DESK.view()+'</div>':empty('先有一份服务档案','登记后就能复用已提供的信息，边聊边准备虚拟申报。','<a class="primary" href="user.html">前往居民端 ↗</a>')}
-async function startApplication(context){if(!mustLogin())return;tab='assistant';render();await window.MINCETONG_DESK.start(context);$('#content').scrollIntoView({behavior:'smooth',block:'start'})}
+async function startApplication(context){if(!mustLogin())return;if(productEmbedded&&window.parent!==window){window.parent.postMessage({type:'mincetong:service-start',context},location.origin);return}tab='assistant';render();await window.MINCETONG_DESK.start(context);$('#content').scrollIntoView({behavior:'smooth',block:'start'})}
 function toast(message){clearTimeout(toastTimer);$('#toast').textContent=message;$('#toast').classList.add('show');toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),3500)}
 function dialog(title,html){$('#dialogEyebrow').textContent=title;$('#dialogContent').innerHTML=html;if(!$('#serviceDialog').open)$('#serviceDialog').showModal()}
 function empty(title,text,action=''){return '<div class="empty">'+icon('spark')+'<h2>'+esc(title)+'</h2><p>'+esc(text)+'</p>'+action+'</div>'}

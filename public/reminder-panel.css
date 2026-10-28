@@ -1,0 +1,24 @@
+html[data-product-embedded]{color-scheme:light;background:#f8f8f4}
+html[data-product-embedded] body{background:#f8f8f4;color:#48503f;min-height:0;font-size:13px;--ink:#46543b;--muted:#879476;--line:#dfe6d5;--accent:#9c4a3b;--text:#46543b}
+html[data-product-embedded] .ambient,html[data-product-embedded] .masthead,html[data-product-embedded] .hero,html[data-product-embedded] .stats,html[data-product-embedded] .channels,html[data-product-embedded] footer{display:none}
+html[data-product-embedded] .shell{width:100%;max-width:none;padding:5px 3px;margin:0}
+html[data-product-embedded] .tabs{margin:0 0 18px;gap:6px;border:0;padding:0;position:sticky;top:0;background:#f8f8f4;z-index:2;backdrop-filter:blur(12px)}
+html[data-product-embedded] .tabs button{font-size:11px;padding:11px 15px;border:1px solid #e1e7d8;color:#7b8b6b;background:#fff;border-radius:50px;white-space:nowrap}
+html[data-product-embedded] .tabs button.active{background:#e9eddf;color:#526342;border-color:#cbd6bc}
+html[data-product-embedded] [data-tab=assistant],html[data-product-embedded] #tryExample{display:none}
+html[data-product-embedded] .group-tabs{gap:7px;margin:16px 0}
+html[data-product-embedded] .group-tabs button{font-size:11px;color:#728361;background:#eaf0e2;border-color:#e0e8d5}
+html[data-product-embedded] #content .record,html[data-product-embedded] #content .notice,html[data-product-embedded] #content .agent-card,html[data-product-embedded] #content .task-card{background:#fff;border:1px solid #dce5cf;border-radius:16px;padding:18px;color:#556545;box-shadow:none}
+html[data-product-embedded] #content h2,html[data-product-embedded] #content h3{color:#516443;font-size:15px;font-weight:500}
+html[data-product-embedded] #content p{color:#8a987d;font-size:12px;line-height:1.9}
+html[data-product-embedded] .small-button{font-size:11px;background:#f2f5eb;color:#70885b;border-color:#dbe5ce;padding:8px 11px}
+html[data-product-embedded] .pill{color:#7b8d66;background:#eff3e6;border-color:#e1e9d4;font-size:10px}
+html[data-product-embedded] .empty{background:#fff;border:1px dashed #d9e3ca;padding:26px 15px;border-radius:18px}
+html[data-product-embedded] .primary{background:#a94a3c;color:#fff;border-color:#a94a3c;font-size:12px;padding:11px 18px;border-radius:25px}
+html[data-product-embedded] .catalog-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px}
+html[data-product-embedded] dialog{color:#4a5e3c;border:1px solid #dfe7d3;background:#fffdf7;max-width:calc(100vw - 16px);width:620px;padding:20px;border-radius:20px;max-height:94dvh}
+html[data-product-embedded] dialog label{color:#647c51;font-size:12px}
+html[data-product-embedded] dialog input,html[data-product-embedded] dialog select,html[data-product-embedded] dialog textarea{color:#4b603c;background:#f4f7ee;border:1px solid #d9e4cb;font-size:13px;min-height:40px}
+html[data-product-embedded] dialog p{color:#8c9b7d;font-size:11px}
+html[data-product-embedded] .toast{color:#fff;background:#536747}
+@media(max-width:600px){html[data-product-embedded] .catalog-grid{grid-template-columns:1fr}html[data-product-embedded] .tabs{overflow-x:auto}html[data-product-embedded] .tabs button{padding:9px 12px;font-size:10px}html[data-product-embedded] .actions{gap:6px}html[data-product-embedded] .small-button{font-size:10px;padding:8px}}

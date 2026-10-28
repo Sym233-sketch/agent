@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.join(__dirname, '..');
 let controller = fs.readFileSync(path.join(root, 'public/user.js'), 'utf8');
+if(controller.includes('MINCETONG_PRODUCT.shell'))throw Error('居民主入口已统一。此历史展示生成器不再适用于当前控制器；请直接维护展示适配器，勿覆盖 public/resident.html。');
 const start = controller.indexOf('function renderApp(){');
 const end = controller.indexOf('function messageView()', start);
 if (start < 0 || end < start) throw new Error('Review current resident presentation adapter.');
