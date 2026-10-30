@@ -10,3 +10,4 @@ This directory is the canonical working checkout for https://github.com/Sym233-s
 - Preserve both government/resident flows and the single-screen government workspace. Official-source research must retain verifiable citations and uncertainty; never silently apply policy changes.
 - Run relevant tests, `npm test`, and `npm run check` before uploading a release. Tests must not consume live API credit.
 - Use the existing remote and preserve remote commits. Inspect changes, commit completed work, and sync authorized updates to this repository. Never force-push or replace unrelated files.
+- 用户长期约定：每次完成本项目的修改后，都要执行适当检查、提交本次修改，并推送到 GitHub（`origin` 的当前对应分支），无需重复询问是否同步。若推送失败，应明确说明原因及尚未同步的提交；不得将凭据或私密数据上传。
