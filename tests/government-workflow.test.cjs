@@ -37,8 +37,8 @@ const profile = (name, extra = {}) => ({ displayName: name, job: '退休人员',
 test('reviewed publication preserves long text, automatically matches once, and only delivers after staff confirmation; receipts survive restart', async t => {
   const h = await harness(t);
   const resident = (await h.request('/api/residents', profile('养老参与者（虚构）'))).value;
-  await h.request('/api/residents', profile('未参加（虚构）', { joined: false }));
-  await h.request('/api/residents', profile('教育参与者（虚构）', { job: '教师', facts: { needStudy: true }, topics: ['教育服务'] }));
+  const nonMember = (await h.request('/api/residents', profile('未参加（虚构）', { joined: false }))).value;
+  const education = (await h.request('/api/residents', profile('教育参与者（虚构）', { job: '教师', facts: { needStudy: true }, topics: ['教育服务'] }))).value;
   const file = await h.upload('养老助餐服务方案（虚构）\n\n统一按排社区助餐。\n\n' + '老年服务内容，具体安排待核对。'.repeat(1800) + '\n\n长文末尾完整保留。');
   const missing = await h.request('/api/government/workflow/publish', { fileId: file.id, kind: 'consultation', domain: 'elder', deadline: deadline(), requestKey: 'no-review', reviewConfirmed: true });
   assert.equal(missing.status, 409);
@@ -52,9 +52,10 @@ test('reviewed publication preserves long text, automatically matches once, and 
   assert.equal((await h.request('/api/government/workflow/publish', { ...input, reviewConfirmed: false })).status, 400);
   const published = await h.request('/api/government/workflow/publish', input); assert.equal(published.status, 201);
   const id = published.value.policy.id, result = await h.ready(id);
-  assert.equal(result.status, 'ready'); assert.equal(result.candidates.length, 1); assert.equal(result.candidates[0].id, resident.id);
+  assert.equal(result.status, 'ready'); assert.equal(result.candidates.length, 2); assert.equal(result.candidates[0].id, resident.id);
+  assert.equal(result.candidates.find(c=>c.id===education.id).source,'participant');
   assert.ok(result.policy.body.length > 20000); assert.ok(result.policy.body.endsWith('长文末尾完整保留。')); assert.ok(result.policy.body.includes('统一安排'));
-  assert.equal(result.delivered, 3);
+  assert.equal(result.delivered, 0);
   const calls = (await h.request('/api/agent/status')).value.calls;
   assert.equal((await h.request('/api/government/workflow/publish', input)).value.duplicate, true);
   assert.equal((await h.request('/api/agent/status')).value.calls, calls);
@@ -62,21 +63,27 @@ test('reviewed publication preserves long text, automatically matches once, and 
   const delivery = { confirm: true, requestKey: 'send-one', revision: result.revision, recipientIds: [resident.id] };
   assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', { ...delivery, confirm: false })).status, 400);
   assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', { ...delivery, recipientIds: ['invented'] })).status, 409);
-  assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', delivery)).value.delivered, 0);
+  assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', delivery)).value.delivered, 1);
   assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', delivery)).value.duplicate, true);
+  const all={confirm:true,requestKey:'send-all',revision:result.revision,allParticipants:true};
+  assert.equal((await h.request('/api/government/workflow/'+id+'/deliver',all)).value.delivered,1);
+  assert.equal((await h.request('/api/government/workflow/'+id+'/deliver',all)).value.duplicate,true);
+  assert.ok((await h.request('/api/inbox',undefined,education.token)).value.messages.some(m=>m.policyId===id));
+  assert.equal((await h.request('/api/inbox',undefined,nonMember.token)).value.messages.some(m=>m.policyId===id),false);
   const inbox = (await h.request('/api/inbox', undefined, resident.token)).value.messages;
   const message = inbox.find(m => m.policyId === id); assert.ok(message); assert.equal('workflow' in message.policy, false);assert.equal('review' in message.policy,false);
   await h.request('/api/messages/' + message.id + '/read', {}, resident.token);
   await h.request('/api/messages/' + message.id + '/reply', { text: '虚构测试：建议增加助餐时间。', clientId: 'reply-one' }, resident.token);
   await h.restart();
   const after = (await h.request('/api/government')).value.policies.find(p => p.id === id);
-  assert.equal(after.receipts.length, 3); const receipt = after.receipts.find(r => r.residentId === resident.id); assert.ok(receipt.readAt); assert.equal(receipt.replies.length, 1);
+  assert.equal(after.receipts.length, 2); const receipt = after.receipts.find(r => r.residentId === resident.id); assert.ok(receipt.readAt); assert.equal(receipt.replies.length, 1);
   const stored = (await h.request('/api/government/workflow/' + id)).value;
   assert.equal(stored.status, 'ready'); assert.equal(stored.policy.body, result.policy.body);
   await h.request('/api/residents/me', profile('养老参与者（虚构）', { joined: false }), resident.token, 'PUT');
   const revoked = (await h.request('/api/government/workflow/' + id)).value;
   assert.equal(revoked.status, 'stale'); assert.equal(revoked.candidates.length, 0);
   assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', { ...delivery, requestKey: 'after-revocation' })).status, 409);
+  assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', { ...all, requestKey: 'all-after-revocation' })).status, 409);
 });
 
 test('matching screens all authorised participants beyond 120 without duplicate or hallucinated IDs, and does not call a model for an empty set', async () => {
@@ -156,6 +163,7 @@ const file=await h.upload('社区养老服务草案。拟完善老年人社区�
 const report=(await h.request('/api/workbench/review',{fileIds:[file.id]})).value;
 await h.restart();
 const published=await h.request('/api/government/workflow/publish',{fileId:file.id,reportId:report.id,kind:'consultation',domain:'elder',deadline:deadline(),requestKey:'restart-publish',reviewConfirmed:true});assert.equal(published.status,201,JSON.stringify(published.value));
+const ready=await h.ready(published.value.policy.id);assert.equal((await h.request('/api/government/workflow/'+published.value.policy.id+'/deliver',{confirm:true,requestKey:'restart-delivery',revision:ready.revision,allParticipants:true})).value.delivered,1);
 const inbox=(await h.request('/api/inbox',undefined,resident.token)).value;const message=inbox.messages.find(m=>m.policy.id===published.value.policy.id);assert.ok(message);
 await h.request('/api/messages/'+message.id+'/read',{},resident.token);
 await h.request('/api/messages/'+message.id+'/reply',{text:'建议增加晚间服务。',clientId:'receipt-reply'},resident.token);

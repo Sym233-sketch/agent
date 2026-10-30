@@ -12,7 +12,7 @@ function deadlineValid(value, now = Date.now()) {
 module.exports = function createPolicyWorkflow({ db, changed, agents, workbench, eligible, send, body }) {
   const running = new Map();
   const publicPolicy = p => ({ id: p.id, title: p.title, body: p.body, kind: p.kind, domain: p.domain, deadline: p.deadline, createdAt: p.createdAt, review: p.review });
-  const allowed = (r, p) => r.joined === true && eligible(r, { ...p, audience: 'matched', recipientIds: [] }).ok;
+  const allowed = (r, p) => r.joined === true && (p.kind === 'consultation' ? deadlineValid(p.deadline) : eligible(r, { ...p, audience: 'matched', recipientIds: [] }).ok);
   const fingerprint = () => hash(db.residents.filter(r => r.joined).map(r => ({id:r.id,...matchProfile(r)})).sort((a, b) => a.id.localeCompare(b.id)));
   for (const p of db.policies) if (p.workflow?.status === 'running') {
     p.workflow.status = 'interrupted'; p.workflow.error = '服务重启中断了检索，请重新检索；未执行递送。';
@@ -39,7 +39,12 @@ module.exports = function createPolicyWorkflow({ db, changed, agents, workbench,
       await Promise.resolve();
       try {
         const result = await agents.match({ text: p.body, domain: p.domain, deadline: p.deadline, kind: p.kind });
-        const candidates = [...new Map((result.candidates || []).filter(c => db.residents.some(r => r.id === c.id && allowed(r, p))).map(c => [c.id, { id: c.id, name: c.name, role: c.role, reason: c.reason, quote: c.quote, source: c.source || 'rules' }])).values()];
+        const residents = new Map(db.residents.map(r => [r.id, r]));
+        const candidates = [...new Map((result.candidates || []).filter(c => residents.has(c.id) && allowed(residents.get(c.id), p)).map(c => [c.id, { id: c.id, name: c.name, role: c.role, reason: c.reason, quote: c.quote, source: c.source || 'rules' }])).values()];
+        if (p.kind === 'consultation') {
+          const matched = new Set(candidates.map(c => c.id));
+          for (const r of db.residents) if (!matched.has(r.id) && allowed(r, p)) candidates.push({ id: r.id, name: r.displayName || '先行者', role: r.job || '已登记先行者', reason: '已加入先行者计划；未按当前领域匹配，请核对是否邀请。', quote: '', source: 'participant' });
+        }
         Object.assign(p.workflow, { status: before === fingerprint() ? 'ready' : 'stale', candidates, fingerprint: before,
           mode: result.mode, notice: result.notice || result.explanation || '',
           coverage: { totalCandidates: result.totalCandidates ?? db.residents.filter(r => r.joined).length, eligibleCandidates: result.eligibleCandidates ?? candidates.length,
@@ -69,9 +74,6 @@ module.exports = function createPolicyWorkflow({ db, changed, agents, workbench,
       audience: 'selected', recipientIds: [], createdAt: new Date().toISOString(), requestKey: key,
       workflow: { status: 'pending', requestHash, candidates: [], deliveries: [] } };
     db.policies.push(p); Object.defineProperty(db.requests, key, { value: p.id, enumerable: true, writable: true, configurable: true });
-    if (p.kind === 'consultation') for (const r of db.residents.filter(r => !r.synthetic)) {
-      db.messages.push({ id: crypto.randomUUID(), residentId: r.id, policyId: p.id, createdAt: new Date().toISOString(), readAt: null, reason: '测试直送，无需筛查', replies: [], deliverySource: 'test-direct' });
-    }
     changed();
     start(p); // Matching starts after saving the reviewed publication; this never sends a message.
     return status(p);
@@ -79,8 +81,12 @@ module.exports = function createPolicyWorkflow({ db, changed, agents, workbench,
   function deliver(p, input) {
     if (input.confirm !== true) fail(400, '请确认选定的人选后再递送');
     if (typeof input.requestKey !== 'string' || !input.requestKey.trim() || input.requestKey.length > 100) fail(400, '缺少有效的递送请求编号');
-    if (!Array.isArray(input.recipientIds) || !input.recipientIds.length || input.recipientIds.length > 5000 || input.recipientIds.some(id => typeof id !== 'string')) fail(400, '请至少选择一位检索结果中的先行者');
-    const ids = [...new Set(input.recipientIds)].sort(), requestHash = hash({ ids, revision: input.revision });
+    const allParticipants = input.allParticipants === true;
+    if (allParticipants && p.kind !== 'consultation') fail(400, '全体先行者仅适用于征求意见稿');
+    if (!allParticipants && (!Array.isArray(input.recipientIds) || !input.recipientIds.length || input.recipientIds.length > 5000 || input.recipientIds.some(id => typeof id !== 'string'))) fail(400, '请至少选择一位检索结果中的先行者');
+    const ids = [...new Set(allParticipants ? p.workflow.candidates.map(c => c.id) : input.recipientIds)].sort();
+    if (!ids.length) fail(400, '当前没有可递送的先行者');
+    const requestHash = hash({ ids, revision: input.revision, allParticipants });
     const previous = p.workflow.deliveries.find(d => d.requestKey === input.requestKey);
     if (previous) {
       if (previous.requestHash !== requestHash) fail(409, '同一请求编号的人选已变化，请重新确认');
@@ -89,11 +95,14 @@ module.exports = function createPolicyWorkflow({ db, changed, agents, workbench,
     if (status(p).status !== 'ready' || input.revision !== p.workflow.revision) fail(409, '检索结果已变化或尚未完成，请重新检索并核对');
     if (!deadlineValid(p.deadline)) fail(409, '本次征询已截止，未执行递送');
     const candidates = new Set(p.workflow.candidates.map(c => c.id));
-    if (ids.some(id => !candidates.has(id) || !db.residents.some(r => r.id === id && allowed(r, p)))) fail(409, '人选已退出计划、撤回消息授权或不在当前检索结果中，请重新核对');
+    const residents = new Map(db.residents.map(r => [r.id, r]));
+    if (ids.some(id => !candidates.has(id) || !residents.has(id) || !allowed(residents.get(id), p))) fail(409, '人选已退出计划、撤回消息授权或不在当前检索结果中，请重新核对');
+    const byId = new Map(p.workflow.candidates.map(c => [c.id, c]));
+    const deliveredIds = new Set(db.messages.filter(m => m.policyId === p.id).map(m => m.residentId));
     let delivered = 0;
     for (const id of ids) {
-      if (db.messages.some(m => m.policyId === p.id && m.residentId === id)) continue;
-      const candidate = p.workflow.candidates.find(c => c.id === id);
+      if (deliveredIds.has(id)) continue;
+      const candidate = byId.get(id);
       db.messages.push({ id: crypto.randomUUID(), residentId: id, policyId: p.id, createdAt: new Date().toISOString(), readAt: null,
         reason: candidate.reason, replies: [], deliverySource: 'staff-confirmed-pioneer-match' });
       delivered++;
