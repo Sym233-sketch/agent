@@ -403,3 +403,15 @@ body.product-app .desk-composer :is(#deskSend,.resident-send) span{grid-area:1/1
 .product-app .lane-conversation .lane-chat-compose textarea:focus-visible{outline:none;box-shadow:none}
 .product-app .desk-heading :is(#deskNew,.resident-new){display:inline-flex;align-items:center;justify-content:center;gap:7px;width:auto;height:36px;padding:8px 12px;font-size:12px;white-space:nowrap;border-radius:12px}
 .lane-new-chat{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto;padding:8px 12px;border:1px solid #b995df2a;background:#a77be70b;border-radius:12px;color:#cdb8e2;font:inherit;font-size:12px;white-space:nowrap;cursor:pointer}.lane-new-chat:hover{background:#a77be71c}.lane-new-chat:disabled{opacity:.45;cursor:wait}.lane-new-chat:focus-visible{outline:2px solid #b995df;outline-offset:3px}@media(max-width:420px){.lane-conversation-head{gap:8px}.lane-new-chat{padding:8px;font-size:11px}.lane-conversation-head>span:last-of-type{font-size:11px}}
+/* Enrollment controls must not inherit full-width text-field layout. */
+body.product-app .lane-enrollment{display:flex;flex-direction:column;align-items:flex-start;gap:20px;padding:24px;border:1px solid #b995df29;border-radius:18px;background:#1d152699;color-scheme:dark}
+body.product-app .lane-enrollment .lane-topics{display:flex;flex-wrap:wrap;gap:10px;width:100%}
+body.product-app .lane-enrollment label{display:inline-flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:9px;margin:0;font-size:14px;line-height:1.6;color:#ddcee9;cursor:pointer}
+body.product-app .lane-enrollment .lane-topics label{padding:10px 14px;border:1px solid #b995df30;border-radius:12px;background:#a77be70b}
+body.product-app .lane-enrollment .lane-topics label:has(input:checked){border-color:#b995df88;background:#a77be727;color:#f0e5fc}
+body.product-app .lane-enrollment input[type=checkbox]{position:static;display:block;flex:0 0 16px;width:16px;height:16px;min-width:16px;margin:0;padding:0;accent-color:#b78bea;box-shadow:none;transform:none}
+body.product-app .lane-enrollment .lane-consent{align-items:flex-start;max-width:100%}
+body.product-app .lane-enrollment .lane-consent input{margin-top:3px}
+body.product-app .lane-enrollment .lane-consent span{min-width:0;overflow-wrap:anywhere}
+body.product-app .lane-enrollment label:focus-within{outline:2px solid #b995df;outline-offset:3px}
+@media(max-width:600px){body.product-app .lane-enrollment{padding:18px;gap:18px}body.product-app .lane-enrollment .lane-topics{gap:8px}body.product-app .lane-enrollment .lane-topics label{padding:9px 11px;font-size:13px}}
