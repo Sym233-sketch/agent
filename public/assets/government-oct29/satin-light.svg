@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1100" viewBox="0 0 1800 1100" fill="none">
+  <defs>
+    <radialGradient id="govBg-air" cx="0" cy="0" r="1" gradientTransform="translate(1280 150) rotate(119) scale(1230 1650)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#42617f"/><stop offset=".43" stop-color="#162e49"/><stop offset="1" stop-color="#090f1b"/>
+    </radialGradient>
+    <linearGradient id="govBg-silk" x1="620" y1="700" x2="1390" y2="385" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#152238"/><stop offset=".24" stop-color="#3d566f"/><stop offset=".43" stop-color="#8da5bd"/>
+      <stop offset=".52" stop-color="#c1ceda"/><stop offset=".61" stop-color="#7794b0"/><stop offset=".82" stop-color="#2b4661"/><stop offset="1" stop-color="#172d45"/>
+    </linearGradient>
+    <linearGradient id="govBg-edge" x1="770" y1="1040" x2="1300" y2="80" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7b94b7" stop-opacity="0"/><stop offset=".36" stop-color="#c3d6ed" stop-opacity=".8"/>
+      <stop offset=".67" stop-color="#e8e5e3"/><stop offset="1" stop-color="#adc8e9" stop-opacity=".16"/>
+    </linearGradient>
+    <radialGradient id="govBg-warm" cx="0" cy="0" r="1" gradientTransform="translate(1740 -90) rotate(145) scale(840 580)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dcc6bb" stop-opacity=".5"/><stop offset=".5" stop-color="#a9a0b9" stop-opacity=".12"/><stop offset="1" stop-color="#a9a0b9" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="govBg-bottom" cx="0" cy="0" r="1" gradientTransform="translate(730 1160) rotate(-73) scale(700 970)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6685ad" stop-opacity=".43"/><stop offset="1" stop-color="#6685ad" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="govBg-shadow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="42"/></filter>
+    <filter id="govBg-diffuse" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="govBg-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2"/></filter>
+  </defs>
+  <rect width="1800" height="1100" fill="url(#govBg-air)"/>
+  <path d="M386 1220C982 1085 511 853 1008 530C1280 353 1535 203 1255-180H1680C1854 178 1605 437 1227 681C864 916 1148 1125 732 1230Z" fill="#020914" opacity=".8" filter="url(#govBg-shadow)"/>
+  <g filter="url(#govBg-soft)">
+    <path d="M367 1220C945 1076 480 821 964 506C1262 312 1465 183 1192-180H1589C1819 153 1548 413 1173 655C814 886 1091 1108 667 1230Z" fill="url(#govBg-silk)" opacity=".72"/>
+    <path d="M367 1220C945 1076 480 821 964 506C1262 312 1465 183 1192-180" stroke="url(#govBg-edge)" stroke-width="2.2"/>
+    <path d="M427 1220C1002 1068 545 831 1019 521C1298 339 1520 180 1240-180" stroke="#d6e3f1" stroke-opacity=".24" stroke-width="1"/>
+    <path d="M488 1220C1048 1060 609 842 1073 537C1356 351 1569 179 1290-180" stroke="#a0b9d5" stroke-opacity=".11" stroke-width="1"/>
+  </g>
+  <path d="M429 1220C1003 1068 545 831 1019 521C1298 339 1520 180 1240-180" stroke="url(#govBg-edge)" stroke-width="28" opacity=".24" filter="url(#govBg-diffuse)"/>
+  <path d="M-260 250C176 98 419 212 514 423C603 620 459 708 233 803C49 881-18 1059 85 1198" stroke="#6c88a6" stroke-opacity=".09" stroke-width="100" filter="url(#govBg-diffuse)"/>
+  <path d="M-260 250C176 98 419 212 514 423C603 620 459 708 233 803C49 881-18 1059 85 1198" stroke="#b0c9e6" stroke-opacity=".12" stroke-width="1"/>
+  <rect width="1800" height="1100" fill="url(#govBg-warm)"/>
+  <rect width="1800" height="1100" fill="url(#govBg-bottom)"/>
+</svg>
