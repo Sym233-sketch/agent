@@ -353,3 +353,24 @@ body.product-app .desk-composer :is(#deskSend,.resident-send):disabled:after { c
 .product-app .product-shell { overflow-x:clip; }
 .product-app .product-primary:not(:has(svg)):after { content:'↗'; font-size:20px; }
 .product-app .resident-sculpture-fallback i { border-color:#a780f0; border-left-color:#26123f; border-bottom-color:#643090; box-shadow:inset 2px 2px 7px #e6c9ff80,0 0 30px #985aff24; }
+
+/* Continuous conversation: readable, calm surfaces beyond the welcome stage. */
+body.product-app .service-desk[data-desk-empty="false"] .desk-conversation{background:linear-gradient(155deg,#171023f2,#100d1bf5);border:1px solid #b59ae52b;border-radius:26px;box-shadow:0 24px 80px #08040d45;overflow:hidden}
+body.product-app .service-desk[data-desk-empty="false"] .desk-transcript{height:clamp(380px,57vh,720px);padding:28px 24px;scroll-behavior:smooth;scroll-padding-block:24px;gap:22px}
+body.product-app .desk-message{max-width:88%;font-size:15px;line-height:1.95;letter-spacing:.015em}
+body.product-app .desk-message p{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0 0;color:#e3dced;font-weight:400;line-height:1.95}
+body.product-app .desk-message.assistant{align-self:flex-start;padding:18px 22px;border:1px solid #ad94cd24;border-radius:6px 23px 23px 23px;background:linear-gradient(135deg,#2b203b9c,#211a3080);box-shadow:0 6px 25px #05020a18}
+body.product-app .desk-message.user{align-self:flex-end;padding:15px 21px;border:1px solid #c4a2f34a;border-radius:23px 6px 23px 23px;background:linear-gradient(130deg,#7544a94d,#4d326c7d)}
+body.product-app .desk-message-label{font-size:11px;letter-spacing:.12em;color:#bda1d9}
+body.product-app .desk-composer{background:#17111fe8;border-top:1px solid #b597df24;padding:17px 22px}
+body.product-app .desk-composer textarea{font-size:15px;line-height:1.8;color:#f0e8fa;min-height:68px;background:transparent;border:0;resize:none}
+body.product-app .desk-composer textarea::placeholder{color:#9a88ae}
+body.product-app .desk-composer:focus-within{box-shadow:inset 0 2px 0 #bc8af058;transition:box-shadow .25s}
+body.product-app .desk-thinking{padding:15px 20px;border-radius:18px;background:#3523446b;color:#c9b5df}
+body.product-app .desk-preparation{border-radius:24px;background:linear-gradient(150deg,#1b1426,#15101f);border:1px solid #b79bd02b;color:#ddd1e8}
+body.product-app .desk-preparation :is(h2,dd){color:#e0d2ef}body.product-app .desk-preparation :is(p,small,dt){color:#ac9abb}
+body.product-app .desk-message a{color:#d7b3ff;text-underline-offset:4px}
+body.product-app #deskSend{transition:transform .2s,box-shadow .2s}body.product-app #deskSend:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 6px 24px #aa70ec3b}
+body.product-app .desk-message:focus-within{outline:1px solid #cba5ed55}
+@media(max-width:600px){body.product-app .service-desk[data-desk-empty="false"] .desk-transcript{padding:19px 12px;height:55svh}body.product-app .desk-message{max-width:94%;font-size:14px}body.product-app .desk-message.assistant,body.product-app .desk-message.user{padding:13px 16px}body.product-app .desk-composer{padding:13px}}
+@media(prefers-reduced-motion:reduce){body.product-app .desk-transcript{scroll-behavior:auto!important}body.product-app #deskSend{transition:none}}
