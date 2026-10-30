@@ -1,0 +1,253 @@
+/* Resident / Still & in motion. No external font, asset or animation dependency. */
+body.product-app {
+  --product-ink:#eeeae4; --product-muted:#96938e; --product-red:#d6c3a5;
+  --product-line:#ffffff12; --green:#d6c3a5; --ink:#eeeae4; --muted:#96938e;
+  --line:#ffffff15; --cream:#181817; --care-primary:#d6c3a5; --care-primary-dark:#bba385;
+  background:#0b0c0d; color:var(--ink); font:14px/1.65 -apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+}
+.product-app:before { content:''; position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at 52% -25%,#a5b7c91b,transparent 60%); }
+.product-app .product-shell { max-width:none; isolation:isolate; }
+.product-app .product-header { height:86px; padding:0 4%; background:transparent; border:0; z-index:20; }
+.product-app .product-brand { color:#eeeae4; gap:10px; }
+.product-app .product-brand>span { width:34px; height:34px; background:transparent; color:#ded8ce; border:1px solid #b8b4ac60; border-radius:50%; box-shadow:none; font-family:serif; font-size:19px; font-weight:400; }
+.product-app .product-brand b { font-size:17px; font-weight:500; letter-spacing:2px; }
+.product-app .product-brand small { font-size:8px; color:#817e79; font-weight:400; letter-spacing:2px; }
+.product-app .product-nav { background:#ffffff03; border:1px solid #ffffff0c; border-radius:40px; padding:4px; gap:4px; }
+.product-app .product-nav button { color:#878582; font-size:12px; min-height:35px; min-width:95px; padding:7px 21px; font-weight:400; }
+.product-app .product-nav button[aria-current] { color:#eae7e2; background:linear-gradient(#ffffff10,#ffffff06); box-shadow:inset 0 1px #ffffff13; }
+.product-app .product-nav button:hover { color:white; }
+.product-app .product-nav i { background:#d6c3a5; }
+.product-app .product-account { color:#9e9b96; font-size:11px; }
+.product-app .product-account span { background:#ffffff06; border:1px solid #ffffff15; color:#d3cec5; }
+.product-app .product-main { width:88%; max-width:1232px; min-height:calc(100svh - 156px); padding:20px 0 64px; animation:none; }
+.product-app .product-footer { border-top:1px solid #ffffff0b; color:#625f5b; font-size:10px; margin:0 4%; padding:20px 0; }
+.product-app .product-primary,.product-app .btn:not(.light):not(.ghost) { color:#25221d; background:linear-gradient(135deg,#e9e2d4,#c9b89a); border:1px solid #f2e7d570; border-radius:40px; box-shadow:inset 0 1px #fff7,0 5px 30px #dbbb7f12; }
+.product-app .product-primary { padding:14px 25px; font-size:13px; transition:transform .65s cubic-bezier(.22,1,.36,1),box-shadow .5s; }
+.product-app .product-primary:hover { box-shadow:inset 0 1px #fff,0 5px 45px #dfc68b30; }
+.product-app .product-link,.product-app .product-back,.product-app .text-button { color:#c3b299; }
+.product-app .product-secondary,.product-app .btn.light,.product-app .choice { color:#c7c0b5; background:#ffffff04; border:1px solid #ffffff18; border-radius:30px; }
+.product-app :is(button,a,input,textarea,select):focus-visible { outline:2px solid #cdb898; outline-offset:5px; }
+.product-app :is(input,textarea,select) { background:#ffffff05; border:1px solid #ffffff20; color:#e7e3da; }
+.product-app :is(input,textarea)::placeholder { color:#726f6b; }
+.product-app :is(input,textarea):focus { border-color:#a89678; box-shadow:0 0 0 3px #d2bd9610; }
+.product-app .product-eyebrow { color:#97928a; font-size:10px; letter-spacing:3px; }
+.product-app .product-eyebrow i,.product-app .product-status-dot { background:#c0b193; box-shadow:0 0 12px #e8cc8038; }
+/* The sculpture is actual geometry. Halo and its shadow stay separate from the material. */
+.resident-sculpture { position:relative; width:380px; height:270px; pointer-events:none; }
+.resident-sculpture canvas { position:relative; z-index:1; display:block; width:100%; height:100%; }
+.resident-sculpture-halo { position:absolute; inset:12% 14% 6%; border-radius:50%; background:radial-gradient(ellipse,#a3b9d61c,transparent 65%); filter:blur(22px); }
+.resident-sculpture:after { content:''; position:absolute; width:45%; height:10%; bottom:0; left:28%; border-radius:50%; background:#0008; filter:blur(18px); }
+.resident-sculpture-fallback { position:absolute; inset:15% 20%; display:none; perspective:600px; }
+.resident-sculpture[data-renderer=fallback] .resident-sculpture-fallback { display:block; }
+.resident-sculpture-fallback i { position:absolute; inset:0; border-radius:50%; border:18px solid #b4b8be; border-left-color:#333c48; border-bottom-color:#776f60; box-shadow:inset 2px 2px 5px #fff,0 0 24px #b0c0d21c; transform:rotateY(45deg) rotateZ(30deg); animation:resident-fold 12s ease-in-out infinite alternate; }
+.resident-sculpture-fallback i:nth-child(2) { rotate:60deg; animation-delay:-4s; }
+.resident-sculpture-fallback i:nth-child(3) { rotate:120deg; animation-delay:-8s; }
+/* A quiet, typographic opening instead of a dashboard of boxes. */
+.product-app .product-hero { display:flex; flex-direction:column; align-items:center; text-align:center; min-height:660px; padding:0 0 65px; position:relative; gap:0; }
+.product-app .product-hero-art { position:relative; width:auto; height:245px; max-width:none; aspect-ratio:auto; margin:0; opacity:1; }
+.product-app .product-hero-art .resident-sculpture { width:410px; height:280px; margin-top:-15px; }
+.product-app .product-hero-copy { padding:0; }
+.product-app .product-hero-copy .product-eyebrow { justify-content:center; margin:14px 0 22px; }
+.product-app .product-hero h1 { font-size:clamp(46px,5vw,68px); line-height:1.35; letter-spacing:-2px; font-weight:400; margin:0 0 22px; color:#e9e6df; }
+.product-app .product-hero h1 br { display:none; }
+.product-app .product-hero h1 em { font-style:normal; background:linear-gradient(100deg,#8d8982,#f2e7d5 58%,#c8bb9f); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.product-app .product-hero-copy>p { color:#8d8983; font-size:14px; line-height:1.9; letter-spacing:1px; margin:0 0 28px; }
+.product-app .product-hero-copy>p br { display:none; }
+.product-app .product-promise { justify-content:center; font-size:9px; letter-spacing:2px; color:#6e6a64; margin-top:23px; }
+.resident-hero-index { position:absolute; left:0; bottom:56px; color:#5f5c57; font-size:9px; letter-spacing:3px; writing-mode:vertical-rl; }
+.product-app .product-needs { padding:26px 0; border-color:#ffffff10; gap:40px; }
+.product-app .product-needs small { color:#bbb4a9; font-weight:400; }
+.product-app .product-needs>div>span { color:#67645e; }
+.product-app .product-quick button { background:transparent; border:1px solid #ffffff13; border-radius:14px; color:#aba69d; min-height:55px; transition:transform .6s cubic-bezier(.22,1,.36,1),background .4s,border-color .4s; }
+.product-app .product-quick button:hover { transform:translateY(-5px); border-color:#c2ae8555; background:#ffffff04; }
+.product-app .product-quick button span { color:#726a5d; }
+.product-app .product-next { background:#ffffff03; border:1px solid #ffffff0a; border-radius:16px; margin:25px 0 55px; }
+.product-app .product-next h2 { color:#b9b2a6; font-weight:400; }
+.product-app .product-next p { color:#736f66; }
+.product-app .product-section-heading h2 { color:#d4cdc2; font-size:25px; font-weight:400; }
+.product-app .product-policy { background:#121313; border:1px solid #ffffff12; border-radius:18px; }
+.product-app .product-policy h3 { color:#ded8ce; }
+.product-app .product-policy p,.product-app .product-policy details,.product-app .product-policy small { color:#8b857a; }
+.product-app .product-policy>div:first-child { color:#b4a58e; }
+.product-app .product-policy .product-link { border-color:#ffffff10; }
+.product-app .product-empty { background:transparent; border:1px dashed #ffffff18; }
+.product-app .product-empty>span { background:#ffffff05; color:#ada18a; }
+.product-app .product-empty h3 { color:#b9b0a1; }
+.product-app .product-empty p { color:#777167; }
+.product-app .product-quiet-tools { border-color:#ffffff10; }
+.product-app .product-quiet-tools button,.product-app .product-quiet-tools>span { color:#7f786d; }
+/* Conversation: the scene collapses into a focused, continuous message column. */
+.product-app[data-resident-view=hall] .product-main { width:88%; max-width:1160px; padding:0 0 25px; }
+.product-app .service-desk { --desk-ink:#e6dfd3; --desk-soft:#1d1c19; position:relative; padding:0; margin:0; }
+.product-app .desk-heading { position:absolute; top:16px; right:0; margin:0; z-index:5; }
+.product-app .desk-heading>div { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.product-app .desk-heading :is(#deskNew,.resident-new) { border:1px solid #ffffff15; border-radius:30px; padding:9px 15px; text-decoration:none; font-size:11px; color:#a7a094; background:#ffffff03; }
+.product-app .desk-workspace { display:block; }
+.product-app .desk-conversation { position:relative; display:flex; flex-direction:column; background:transparent; border:0; border-radius:0; box-shadow:none; min-height:calc(100svh - 160px); overflow:visible; backdrop-filter:none; }
+.product-app .desk-chat-head { padding:20px 0 14px; background:transparent; border:0; min-height:60px; gap:10px; }
+.product-app .desk-chat-head>div { display:none; }
+.product-app .desk-orb { width:6px; height:6px; background:#c9bda3; box-shadow:0 0 12px #d6c49c60; animation:resident-status 4s ease-in-out infinite; }
+.product-app .desk-online { margin:0; color:#837e74; font-size:10px; letter-spacing:1px; }
+.product-app .desk-preparation-toggle { margin-left:auto; margin-right:115px; border:1px solid #ffffff15; background:#ffffff03; color:#ada597; border-radius:30px; font-size:11px; padding:8px 15px; }
+.product-app .desk-preparation-toggle:hover,.product-app .desk-preparation-toggle[aria-expanded=true] { border-color:#c2ac7755; background:#c2ac770b; color:#ded4c3; }
+.product-app .desk-welcome { position:relative; display:grid; justify-items:center; padding:0; margin:auto 0 0; text-align:center; max-height:520px; opacity:1; overflow:hidden; transition:max-height 1s cubic-bezier(.22,1,.36,1),opacity .55s,margin .8s,padding .8s; }
+.product-app .desk-welcome .resident-sculpture { width:350px; height:235px; margin:0 0 5px; }
+.product-app .desk-welcome-kicker { color:#8e877b; font-size:10px; letter-spacing:4px; margin-bottom:15px; }
+.product-app .desk-welcome h2 { color:#eee8dd; font-size:clamp(32px,3.1vw,44px); line-height:1.55; letter-spacing:1px; font-weight:400; margin:0; }
+.product-app .desk-welcome h2 em { color:#b5aa95; font-style:normal; }
+.product-app .desk-welcome>p { color:#777268; font-size:12px; letter-spacing:1px; margin:17px 0 30px; }
+.product-app .service-desk[data-desk-empty=false] .desk-welcome { max-height:0; margin:0; opacity:0; pointer-events:none; }
+.product-app .desk-transcript { width:min(100%,760px); margin:0 auto; height:0; min-height:0; padding:0 3px; gap:28px; overflow:auto; scrollbar-width:thin; scrollbar-color:#514b40 transparent; animation:none; transition:height .9s cubic-bezier(.22,1,.36,1); }
+.product-app .service-desk[data-desk-empty=true] .desk-transcript { visibility:hidden; }
+.product-app .service-desk[data-desk-empty=false] .desk-transcript { height:calc(100svh - 365px); min-height:280px; padding:30px 3px; flex:1; }
+.product-app .desk-message { max-width:92%; animation:none; flex-shrink:0; }
+.product-app .desk-message p { color:#ccc5b9; font-size:14px; line-height:2.05; }
+.product-app .desk-message-label { color:#787166; font-size:9px; letter-spacing:1px; margin-bottom:10px; }
+.product-app .desk-message.user { color:#eee9e0; background:#ffffff07; border:1px solid #ffffff11; border-radius:20px 20px 5px 20px; padding:13px 20px; max-width:80%; }
+.product-app .desk-message.user p { color:#e1d9ca; }
+.product-app .desk-message.user .desk-message-label { display:none; }
+.product-app .desk-thinking { color:#aaa08e; border:0; background:transparent; }
+.product-app .desk-thinking span { background:#b5a27d; }
+.product-app .desk-thinking small { color:#8d8271; }
+.product-app .desk-composer { position:relative; isolation:isolate; width:min(100%,760px); margin:0 auto; order:3; padding:17px 20px 14px; border:1px solid #ffffff21; border-radius:22px; background:linear-gradient(145deg,#202121c7,#141515e8); box-shadow:inset 0 1px #ffffff09,0 20px 65px #0003; transition:border-color .4s,box-shadow .6s,background .5s; }
+.product-app .desk-composer:before { content:''; z-index:-1; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none; opacity:0; background:radial-gradient(260px circle at var(--light-x,50%) var(--light-y,50%),#d4c29a10,transparent); transition:opacity .5s; }
+.product-app .desk-composer:hover:before { opacity:1; }
+.product-app .desk-composer:focus-within { border-color:#b5a27d65; box-shadow:inset 0 1px #ffffff12,0 0 0 4px #b5a27d05,0 20px 65px #0004; }
+.product-app .desk-composer textarea { min-height:48px; max-height:160px; height:auto; margin:0; padding:0; background:transparent; border:0; border-radius:0; color:#e6dfd3; font-size:14px; line-height:1.8; resize:none; outline:0; box-shadow:none; }
+.product-app .desk-composer textarea:focus,.product-app .desk-composer textarea:focus-visible { border:0; box-shadow:none; outline:none; }
+.product-app .desk-composer textarea::placeholder { color:#777168; }
+.product-app .desk-composer>div { margin-top:4px; align-items:center; }
+.product-app .desk-composer small { color:#68645d; font-size:9px; max-width:78%; line-height:1.6; }
+body.product-app .desk-composer :is(#deskSend,.resident-send) { width:38px; height:38px; min-width:38px; padding:0; font-size:0; color:#28241e; background:linear-gradient(130deg,#e4dccc,#bbaa8a); border:1px solid #e4dccc70; border-radius:50%; box-shadow:inset 0 1px #fff7; transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s,opacity .3s; }
+body.product-app .desk-composer :is(#deskSend,.resident-send) span { font-size:23px; font-weight:300; }
+body.product-app .desk-composer :is(#deskSend,.resident-send):hover { transform:translateY(-2px); box-shadow:0 0 23px #d2b47730,inset 0 1px #fff; }
+body.product-app .desk-composer :is(#deskSend,.resident-send):disabled { opacity:.45; font-size:9px; width:auto; border-radius:30px; padding:0 12px; cursor:wait; }
+.product-app .desk-suggestions { width:min(100%,760px); align-self:center; order:4; padding:17px 0 0; margin:0 auto auto; display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:10px; }
+.product-app .desk-suggestions[hidden] { display:none; }
+.product-app .desk-suggestions button { position:relative; text-align:left; border:1px solid #ffffff0c; border-radius:13px; padding:14px 27px 14px 16px; background:#ffffff02; color:#8a8275; font-size:10px; line-height:1.8; transition:background .4s,transform .6s cubic-bezier(.22,1,.36,1),border-color .4s,color .4s; }
+.product-app .desk-suggestions button:after { content:'↗'; position:absolute; right:12px; top:12px; color:#5d564a; }
+.product-app .desk-suggestions button:hover { transform:translateY(-4px); background:#ffffff05; border-color:#c2b08735; color:#c9beaa; }
+.product-app .service-desk[data-desk-busy=true] .desk-composer { border-color:#c1a77645; box-shadow:0 0 28px #b69e6d09; }
+/* Documents are a drawer, opened deliberately, with room for the conversation. */
+.product-app .desk-preparation { position:fixed; right:20px; top:100px; width:min(390px,calc(100vw - 32px)); max-height:calc(100svh - 130px); overflow:auto; z-index:25; background:#1a1a18f2; border:1px solid #ffffff1b; border-radius:24px; padding:26px; box-shadow:-20px 30px 100px #0008,inset 0 1px #ffffff0a; backdrop-filter:blur(32px); opacity:0; visibility:hidden; transform:translateX(35px) scale(.98); transform-origin:100% 0; transition:transform .65s cubic-bezier(.22,1,.36,1),opacity .4s,visibility .4s; }
+.product-app .desk-details-open .desk-preparation { opacity:1; visibility:visible; transform:none; }
+.product-app .desk-preparation-close { position:absolute; top:15px; right:17px; border:0; background:transparent; color:#a69c89; padding:5px; font-size:22px; cursor:pointer; }
+.product-app .desk-prep-head { color:#b3a78f; border-color:#ffffff10; padding-right:15px; }
+.product-app .desk-preparation h2 { color:#d5ccbc; font-size:25px; font-weight:400; margin-top:30px; }
+.product-app .desk-preparation h3,.product-app .desk-next h3 { color:#c5b9a3; }
+.product-app .desk-prep-intro,.product-app .desk-boundary { color:#807768; }
+.product-app .desk-pill { background:#ffffff05; color:#a99c85; border:1px solid #ffffff10; }
+.product-app .desk-document-icon { color:#bbaa8a; }
+.product-app .desk-progress li { color:#756e61; border-color:#3f3a30; }
+.product-app .desk-progress li.is-done { color:#d0bd94; border-color:#b6a27c; }
+.product-app .desk-facts,.product-app .desk-next,.product-app .desk-review { background:#ffffff03; color:#b0a48e; border-color:#ffffff12; }
+.product-app .desk-facts dt { color:#8a7d67; }
+.product-app .desk-facts dd { color:#c7bda9; }
+.product-app .desk-empty-note { color:#776c57; }
+.product-app .desk-empty-note p { color:#877b66; }
+.product-app .desk-sources a,.product-app .desk-matter footer a { color:#bfac86; }
+.product-app .desk-recommendations { color:#b7aa90; }
+.product-app .desk-recommendations h3,.product-app .desk-matter h4 { color:#d5c8b2; }
+.product-app .desk-matter { background:#ffffff03; border-color:#ffffff14; color:#b8aa8f; }
+.product-app .desk-matter p,.product-app .desk-matter small { color:#a39377; }
+.product-app .desk-matter footer { border-color:#ffffff12; }
+.product-app .desk-matter button { background:#cdbb98; color:#29251e; border-color:#cdbb98; }
+.product-app .desk-error { background:#ad7c4e0b; border-color:#ad7c4e30; color:#c4a082; }
+/* Other resident views remain within the same material system. */
+.product-app .product-page-heading h1,.product-app .page-heading h1,.product-app .policy-heading h1 { color:#e0d7c7; }
+.product-app .product-page-heading p,.product-app .page-heading p { color:#8e8371; }
+.product-app .product-progress-summary,.product-app .product-case,.product-app .panel,.product-app .policy-file { background:#141514; border-color:#ffffff14; color:#b7aa93; }
+.product-app .product-progress-summary strong,.product-app .product-case h3 { color:#d1c3a8; }
+.product-app .product-case-icon { color:#b7a17d; background:#b7a17d0c; }
+.product-app .product-progress-summary span,.product-app .product-case p,.product-app .product-case small { color:#81745d; }
+.product-app .product-reminder-summary,.product-app .product-quiet-tools,.product-app .product-case-list { border-color:#ffffff10; }
+.product-app .product-reminder-summary h2 { color:#b9aa8c; }
+.product-app .chat-area { background:transparent; }
+.product-app .chat-head { border-color:#ffffff14; }
+.product-app .bubble { color:#c8bfae; border-color:#ffffff14; background:#ffffff03; }
+.product-app .bubble-row.user .bubble { background:#ffffff07; }
+.product-app .thread { color:#b2a58b; }
+.product-app .thread.active { background:#c2a66c0b; border-color:#c2a66c26; }
+.product-app .thread:hover { background:#ffffff04; }
+.product-app .agent-avatar { background:#958569; color:#f3eee5; }
+.product-app .tag,.product-app .pill { background:#ffffff05; color:#a7997d; border-color:#ffffff10; }
+.product-app .composer { background:transparent; border-color:#ffffff12; }
+.product-app .small-note,.product-app .message-foot,.product-app .chat-privacy,.product-app .eyebrow { color:#91836a; }
+.product-app #userDialog { background:#1d1d1b; border:1px solid #ffffff20; color:#d0c5af; box-shadow:0 30px 100px #0009; }
+.product-app #userDialog::backdrop { background:#050606b0; backdrop-filter:blur(12px); }
+.product-app #userDialog :is(h2,h3,b,dt) { color:#d7cab2; }
+.product-app #userDialog :is(p,small,dd,label) { color:#a49882; }
+.product-app .product-settings>button,.product-app .product-settings details { color:#b0a184; border-color:#ffffff15; }
+.product-app #userToast { background:#ded3bf; color:#2a251b; box-shadow:0 10px 40px #0004; }
+/* Welcome's existing interactive liquid scene stays intact. */
+.onboarding-active .ob-welcome-title .ob-line:last-child { color:#ded4c2; }
+.onboarding-active .ob-primary { box-shadow:inset 0 1px #ffffff25,0 10px 50px #c7b99710; }
+.resident-outgoing { animation:none!important; }
+@keyframes resident-fold { to { transform:rotateY(115deg) rotateZ(80deg); } }
+@keyframes resident-status { 50% { opacity:.4; box-shadow:0 0 4px #d6c49c20; } }
+@media(min-width:1600px) { .product-app .product-header { height:96px; } .product-app .desk-welcome .resident-sculpture { height:270px; width:410px; } }
+@media(max-height:800px) and (min-width:701px) {
+ .product-app .desk-welcome .resident-sculpture { height:175px; width:270px; }
+ .product-app .desk-welcome h2 { font-size:34px; }
+ .product-app .desk-welcome>p { margin:12px 0 22px; }
+ .product-app .desk-welcome-kicker { margin-bottom:10px; }
+ .product-app .desk-suggestions { padding-top:12px; }
+}
+@media(max-width:700px) {
+ .product-app .product-header { height:75px; min-height:75px; padding:0 6%; }
+ .product-app .product-brand>span { width:30px; height:30px; font-size:16px; }
+ .product-app .product-brand b { font-size:15px; }
+ .product-app .product-brand small { font-size:7px; }
+ .product-app .product-nav { bottom:14px; width:calc(100% - 40px); padding:5px; background:#242320e8; border-color:#ffffff15; backdrop-filter:blur(24px); box-shadow:0 5px 30px #0007; }
+ .product-app .product-nav button { min-width:0; padding:11px 7px; min-height:42px; font-size:12px; }
+ .product-app .product-nav button[aria-current] { background:#ffffff0b; }
+ .product-app .product-main { width:88%; padding-top:0; }
+ .product-app .product-hero { min-height:570px; padding:0 0 44px; }
+ .product-app .product-hero-art { position:relative; right:auto; top:auto; width:auto; height:230px; opacity:1; }
+ .product-app .product-hero-art .resident-sculpture { width:330px; height:250px; margin:0; }
+ .product-app .product-hero h1 { font-size:43px; letter-spacing:0; line-height:1.45; }
+ .product-app .product-hero h1 br { display:block; }
+ .product-app .product-hero-copy .product-eyebrow { font-size:8px; letter-spacing:2px; margin:4px 0 17px; }
+ .product-app .product-hero-copy>p { font-size:12px; margin-bottom:25px; }
+ .product-app .product-hero-copy>p br { display:block; }
+ .resident-hero-index { display:none; }
+ .product-app .product-needs { padding:22px 0; gap:18px; }
+ .product-app .product-needs>div:first-child { flex-direction:column; align-items:flex-start; gap:4px; }
+ .product-app .product-quick { gap:8px; }
+ .product-app .product-quick button { font-size:11px; padding:14px; }
+ .product-app .product-footer { font-size:8px; padding:16px 0; margin:0 6% 82px; }
+ .product-app[data-resident-view=hall] .product-main { width:88%; padding-bottom:0; }
+ .product-app .desk-conversation { min-height:calc(100svh - 180px); }
+ .product-app .desk-heading { top:12px; }
+ .product-app .desk-heading :is(#deskNew,.resident-new) { padding:8px 12px; font-size:10px; }
+ .product-app .desk-chat-head { min-height:50px; padding:15px 0; }
+ .product-app .desk-online { font-size:9px; }
+ .product-app .desk-preparation-toggle { font-size:10px; padding:7px 10px; margin-right:102px; }
+ .product-app .desk-welcome .resident-sculpture { width:270px; height:185px; margin:0 0 8px; }
+ .product-app .desk-welcome-kicker { font-size:8px; letter-spacing:3px; margin-bottom:14px; }
+ .product-app .desk-welcome h2 { font-size:29px; letter-spacing:0; }
+ .product-app .desk-welcome>p { font-size:10px; margin:15px 0 28px; }
+ .product-app .desk-composer { padding:15px 16px 12px; border-radius:18px; }
+ .product-app .desk-composer textarea { font-size:12px; min-height:44px; }
+ .product-app .desk-composer small { font-size:8px; max-width:80%; }
+ body.product-app .desk-composer :is(#deskSend,.resident-send) { width:34px; height:34px; min-width:34px; }
+ .product-app .desk-suggestions { padding-top:12px; gap:6px; grid-template-columns:1fr 1fr; }
+ .product-app .desk-suggestions button { font-size:9px; padding:10px 24px 10px 12px; border-radius:11px; }
+ .product-app .desk-suggestions button:first-child { grid-column:1/-1; }
+ .product-app .service-desk[data-desk-empty=false] .desk-transcript { min-height:200px; height:calc(100svh - 320px); padding:22px 0; }
+ .product-app .desk-message p { font-size:13px; }
+ .product-app .desk-message.user { padding:10px 15px; }
+ .product-app .desk-preparation { top:88px; right:12px; max-height:calc(100svh - 180px); padding:23px; border-radius:20px; }
+ .product-app .product-section-heading h2 { font-size:20px; }
+}
+@media(max-width:700px) and (max-height:740px) {
+ .product-app .desk-welcome .resident-sculpture { width:210px; height:130px; }
+ .product-app .desk-welcome h2 { font-size:26px; }
+ .product-app .desk-welcome>p { margin:10px 0 20px; }
+ .product-app .desk-welcome-kicker { margin-bottom:10px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .product-app *, .product-app *:before,.product-app *:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+}
+.product-app .desk-load-error { max-width:760px; margin:0 auto; padding:8px 14px; border:1px solid #b0906333; border-radius:12px; background:#b0906309; color:#bca27b; font-size:11px; }
+.product-app .desk-load-error[hidden] { display:none; }
