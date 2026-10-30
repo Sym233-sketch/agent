@@ -54,7 +54,7 @@ test('reviewed publication preserves long text, automatically matches once, and 
   const id = published.value.policy.id, result = await h.ready(id);
   assert.equal(result.status, 'ready'); assert.equal(result.candidates.length, 1); assert.equal(result.candidates[0].id, resident.id);
   assert.ok(result.policy.body.length > 20000); assert.ok(result.policy.body.endsWith('长文末尾完整保留。')); assert.ok(result.policy.body.includes('统一安排'));
-  assert.equal(result.delivered, 0);
+  assert.equal(result.delivered, 3);
   const calls = (await h.request('/api/agent/status')).value.calls;
   assert.equal((await h.request('/api/government/workflow/publish', input)).value.duplicate, true);
   assert.equal((await h.request('/api/agent/status')).value.calls, calls);
@@ -62,7 +62,7 @@ test('reviewed publication preserves long text, automatically matches once, and 
   const delivery = { confirm: true, requestKey: 'send-one', revision: result.revision, recipientIds: [resident.id] };
   assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', { ...delivery, confirm: false })).status, 400);
   assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', { ...delivery, recipientIds: ['invented'] })).status, 409);
-  assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', delivery)).value.delivered, 1);
+  assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', delivery)).value.delivered, 0);
   assert.equal((await h.request('/api/government/workflow/' + id + '/deliver', delivery)).value.duplicate, true);
   const inbox = (await h.request('/api/inbox', undefined, resident.token)).value.messages;
   const message = inbox.find(m => m.policyId === id); assert.ok(message); assert.equal('workflow' in message.policy, false);assert.equal('review' in message.policy,false);
@@ -70,7 +70,7 @@ test('reviewed publication preserves long text, automatically matches once, and 
   await h.request('/api/messages/' + message.id + '/reply', { text: '虚构测试：建议增加助餐时间。', clientId: 'reply-one' }, resident.token);
   await h.restart();
   const after = (await h.request('/api/government')).value.policies.find(p => p.id === id);
-  assert.equal(after.receipts.length, 1); assert.ok(after.receipts[0].readAt); assert.equal(after.receipts[0].replies.length, 1);
+  assert.equal(after.receipts.length, 3); const receipt = after.receipts.find(r => r.residentId === resident.id); assert.ok(receipt.readAt); assert.equal(receipt.replies.length, 1);
   const stored = (await h.request('/api/government/workflow/' + id)).value;
   assert.equal(stored.status, 'ready'); assert.equal(stored.policy.body, result.policy.body);
   await h.request('/api/residents/me', profile('养老参与者（虚构）', { joined: false }), resident.token, 'PUT');

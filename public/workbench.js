@@ -20,7 +20,7 @@ function renderFooter(){
  $('#slideNumber').textContent=String(state.page+1).padStart(2,'0');$('#slideName').textContent=['导入材料','材料审查','确认发布','检索与递送'][state.page];
  $('#prevSlide').disabled=state.page===0||state.busy;$('#nextSlide').disabled=state.busy||state.page===3||(state.page===0&&!state.files.length)||(state.page===2&&!state.publication);
  $('#nextSlide').innerHTML=(state.page===0?'查看材料审查':state.page===1?(policyFile()?'核对发布版本':'添加政策正文'):state.page===2?'查看先行者检索':'请核对人选后递送')+icon('right');
- $('#footerHint').textContent=state.busy?'正在处理，请稍候…':state.page===0?'支持 Word、Excel 与 PDF 自动转换。':state.page===1?'问题与原文对应；政策条件和金额改动须人工核实。':state.page===2?'保存审核快照后自动检索，不会自动递送。':'仅从已加入计划的相关居民中检索；递送前再次核对授权。';
+ $('#footerHint').textContent=state.busy?'正在处理，请稍候…':state.page===0?'支持 Word、Excel 与 PDF 自动转换。':state.page===1?'问题与原文对应；政策条件和金额改动须人工核实。':state.page===2?'确认群众征询后，将测试直送注册账号，并检索先行者。':'仅从已加入计划的相关居民中检索；递送前再次核对授权。';
 }
 $('#prevSlide').onclick=()=>page(state.page-1);$('#nextSlide').onclick=()=>{if(state.page===1&&!policyFile()){chooseFiles();return}page(state.page+1)};
 $$('[data-slide]').forEach(e=>e.onclick=()=>page(+e.dataset.slide));$$('[data-mode]').forEach(e=>e.onclick=()=>{const mode=e.dataset.mode;if(mode==='match'){if(state.publication)page(3);else toast('审核并确认发布后，将自动检索先行者；历史任务可在“服务跟进”查看。');return}state.mode=mode;if(state.files.length){const file=state.files.find(f=>f.kind===(mode==='finance'?'sheet':'word'));if(file)state.selectedFile=file.id;state.docPage=0;state.sheet=0;page(1)}else page(0)});
@@ -68,7 +68,7 @@ function renderMatch(){
  $('#matchPolicyName').textContent=p.title;$('#matchedPolicyScope').textContent=({education:'教育服务',elder:'养老照护',employment:'就业服务',general:'综合公共服务'}[p.domain])+' · 截止 '+p.deadline+'（北京时间）';
  const labels={pending:'等待自动检索',running:'正在自动检索',ready:task.mode==='live-llm'?'模型与授权标签核对':task.mode==='rules-fallback'?'模型未完成 · 标签候选':'授权标签匹配 · 模型未参与',error:'自动检索未完成',interrupted:'检索已中断',stale:'档案或授权变化 · 需重新检索'};
  $('#matchEngine').textContent=labels[task.status]||'等待检索';
- const c=task.coverage;$('#matchNotice').textContent=(task.error||task.notice||'发布后自动检索，确认人选后才递送。')+(c?' 已筛查 '+c.totalCandidates+' 位参与者；模型复核 '+c.reviewedCandidates+' 位候选。':'');
+ const c=task.coverage;$('#matchNotice').textContent=(task.error||task.notice||'注册账号已测试直送；先行者检索结果需确认后递送。')+(c?' 已筛查 '+c.totalCandidates+' 位参与者；模型复核 '+c.reviewedCandidates+' 位候选。':'');
  $('#matchCount').textContent=state.people.length;$('#selectedCount').textContent='已选择 '+state.selected.size+' 人';
  const size=innerWidth<=850?2:4,pages=Math.max(1,Math.ceil(state.people.length/size));state.peoplePage=Math.min(state.peoplePage,pages-1);
  $('#peoplePage').textContent=(state.people.length?state.peoplePage+1:0)+' / '+(state.people.length?pages:0);$('#peoplePrev').disabled=state.peoplePage===0;$('#peopleNext').disabled=state.peoplePage>=pages-1;$('#runMatch').disabled=state.matching||state.busy;
@@ -94,7 +94,7 @@ function renderPublish(){
  const f=policyFile(),report=state.report;$('#policyFileChoice').innerHTML=state.files.filter(f=>f.kind==='word').map(f=>'<option value="'+esc(f.id)+'">'+esc(f.name)+'</option>').join('');
  if(f){$('#policyFileChoice').value=f.id;$('#publishTitle').textContent=f.name;if(state.publishTitleFile!==f.id){$('#policyTitle').value=f.title;state.publishTitleFile=f.id}if(!guessed){$('#policyDomain').value=guessDomain(f.text,f.title+' '+f.name);guessed=true}}
  const stale=report?.language.validForCurrentVersion===false;const language=report?.language;
- $('label[for=deadline]').textContent=state.kind==='publication'?'递送截止日期':'征询截止日期';$('#deliveryAudience').textContent=state.kind==='publication'?'已参加且开启主动消息的相关居民':'已加入计划且与政策相关的居民';$('#deliveryVersion').textContent=f?'正文版本 '+(f.version+1)+' · '+f.text.length+' 字符':'尚无正文';
+ $('label[for=deadline]').textContent=state.kind==='publication'?'递送截止日期':'征询截止日期';$('#deliveryAudience').textContent=state.kind==='publication'?'已参加且开启主动消息的相关居民':'注册账号测试直送；虚构先行者另行匹配';$('#deliveryVersion').textContent=f?'正文版本 '+(f.version+1)+' · '+f.text.length+' 字符':'尚无正文';
  const label=language?.status==='live'?'模型已核查':language?.status==='partial'?'模型仅完成部分核查':language?.status==='error'?'模型核查失败':'模型未连接，仅完成程序核查';
  $('#deliveryNote').textContent=stale?'正文已修改，必须重新审核后才能发布。':label+'；'+(report?.issues.filter(i=>!i.applied).length||0)+' 项意见待人工核对。'+(language?.coverage?' 覆盖 '+language.coverage.reviewedCharacters+'/'+language.coverage.totalCharacters+' 字符。':'')+(report?.warnings.length?' 另有 '+report.warnings.length+' 项未覆盖范围提示，请查看审查依据。':'');
  $('#publishButton').disabled=state.busy||!$('#publishConsent').checked||!f||!report||stale||!!state.publication;
@@ -108,7 +108,7 @@ $('#publishButton').onclick=async()=>{
  const f=policyFile();if(!f||!state.report||state.busy||!$('#publishConsent').checked)return;
  busy(true);renderPublish();
  try{state.requestKey ||= crypto.randomUUID();const result=await api('government/workflow/publish',{fileId:f.id,reportId:state.report.id,title:$('#policyTitle').value,kind:state.kind,domain:$('#policyDomain').value,deadline:$('#deadline').value,reviewConfirmed:true,requestKey:state.requestKey});
-  updatePublication(result);$('#publishConsent').checked=false;busy(false);page(3);toast('已保存发布正文，正在自动检索先行者；尚未递送');
+  updatePublication(result);$('#publishConsent').checked=false;busy(false);page(3);toast(state.kind==='consultation'?'已向注册账号测试直送，并继续检索先行者':'已保存发布正文，正在自动检索先行者；尚未递送');
  }catch(e){toast('发布未完成：'+e.message)}finally{busy(false);if(state.page===2)renderPublish()}
 };
 async function openPublishedWorkflow(id){try{const result=await api('government/workflow/'+id);clearTimeout(matchPoll);updatePublication(result);state.selected=new Set();$('#deliveryConsent').checked=false;$('#dialog').close();page(3)}catch(e){toast(e.message)}}

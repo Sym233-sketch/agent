@@ -68,7 +68,11 @@ module.exports = function createPolicyWorkflow({ db, changed, agents, workbench,
     const p = { id: crypto.randomUUID(), ...snapshot, title, kind: input.kind, domain: input.domain, deadline: input.deadline,
       audience: 'selected', recipientIds: [], createdAt: new Date().toISOString(), requestKey: key,
       workflow: { status: 'pending', requestHash, candidates: [], deliveries: [] } };
-    db.policies.push(p); Object.defineProperty(db.requests, key, { value: p.id, enumerable: true, writable: true, configurable: true }); changed();
+    db.policies.push(p); Object.defineProperty(db.requests, key, { value: p.id, enumerable: true, writable: true, configurable: true });
+    if (p.kind === 'consultation') for (const r of db.residents.filter(r => !r.synthetic)) {
+      db.messages.push({ id: crypto.randomUUID(), residentId: r.id, policyId: p.id, createdAt: new Date().toISOString(), readAt: null, reason: '测试直送，无需筛查', replies: [], deliverySource: 'test-direct' });
+    }
+    changed();
     start(p); // Matching starts after saving the reviewed publication; this never sends a message.
     return status(p);
   }
