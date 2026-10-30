@@ -6,14 +6,14 @@ const createWorkflow = require('../server/policy-workflow.cjs');
 const createMatcher = require('../server/agent/pioneer-match.cjs');
 const { docx } = require('../server/workbench.cjs');
 
-async function harness(t) {
+async function harness(t, {seed=false}={}) {
   const socket = net.createServer(); await new Promise(r => socket.listen(0, '127.0.0.1', r));
   const port = socket.address().port; await new Promise(r => socket.close(r));
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mincetong-gov-workflow-'));
   let child;
   async function start() {
     child = spawn(process.execPath, ['tests/fixtures/government-model.cjs'], { cwd: path.resolve(__dirname, '..'),
-      env: { ...process.env, PORT: String(port), MINCETONG_PORT: String(port), MINCETONG_DATA_DIR: dir, MINCETONG_CLOUD: 'false', RENDER: 'false' }, stdio: ['ignore', 'pipe', 'pipe'] });
+      env: { ...process.env, PORT: String(port), MINCETONG_PORT: String(port), MINCETONG_DATA_DIR: dir, MINCETONG_CLOUD: 'false', RENDER: 'false', MINCETONG_SEED_PIONEERS: String(seed) }, stdio: ['ignore', 'pipe', 'pipe'] });
     await new Promise((resolve, reject) => { const timer = setTimeout(() => reject(Error('Test server startup timed out')), 10000);
       child.once('exit', code => { clearTimeout(timer); reject(Error('Test server exited: ' + code)); });
       child.stdout.on('data', data => { if (String(data).includes('Mincetong local:')) { clearTimeout(timer); resolve(); } }); });
@@ -148,4 +148,29 @@ test('legacy policy ingestion keeps a large Chinese JSON body intact and rejects
   const input={title:'大正文传输（虚构测试）',body:text,kind:'publication',domain:'elder',audience:'matched',requestKey:'legacy-long-body'};
   const saved=await h.request('/api/policies',input);assert.equal(saved.status,201);assert.equal(saved.value.policy.body,text);
   const over=await h.request('/api/policies',{...input,body:'政'.repeat(150001),requestKey:'overlong-body'});assert.equal(over.status,400);assert.match(over.value.error,/不会截短/);
+});
+
+test('reviewed files and reports survive restart before publication, with visible government delivery receipts',async t=>{
+const h=await harness(t),resident=(await h.request('/api/residents',profile('回执测试'))).value;
+const file=await h.upload('社区养老服务草案。拟完善老年人社区助餐与照护服务，欢迎先行者提出建议。');
+const report=(await h.request('/api/workbench/review',{fileIds:[file.id]})).value;
+await h.restart();
+const published=await h.request('/api/government/workflow/publish',{fileId:file.id,reportId:report.id,kind:'consultation',domain:'elder',deadline:deadline(),requestKey:'restart-publish',reviewConfirmed:true});assert.equal(published.status,201,JSON.stringify(published.value));
+const inbox=(await h.request('/api/inbox',undefined,resident.token)).value;const message=inbox.messages.find(m=>m.policy.id===published.value.policy.id);assert.ok(message);
+await h.request('/api/messages/'+message.id+'/read',{},resident.token);
+await h.request('/api/messages/'+message.id+'/reply',{text:'建议增加晚间服务。',clientId:'receipt-reply'},resident.token);
+const policy=(await h.request('/api/government')).value.policies.find(p=>p.id===published.value.policy.id);assert.ok(policy.receipts[0].readAt);assert.equal(policy.receipts[0].replies[0].text,'建议增加晚间服务。');
+});
+test('enabled synthetic population is restored idempotently and participates in automatic matching',async t=>{
+const h=await harness(t,{seed:true});let catalog=(await h.request('/api/catalog')).value;assert.equal(catalog.syntheticResidents,3000);
+const result=(await h.request('/api/agent/match',{text:'社区养老照护服务面向老年群体，征询服务改进建议。',kind:'consultation',domain:'elder',deadline:deadline()})).value;
+assert.equal(result.totalCandidates,3000);assert.ok(result.candidates.some(c=>c.name.includes('虚构')));
+await h.restart();catalog=(await h.request('/api/catalog')).value;assert.equal(catalog.syntheticResidents,3000);
+});
+
+test('government policy notices remain visible in the recipient inbox instead of being dropped by catalog filtering',async t=>{
+const h=await harness(t),r=(await h.request('/api/residents',profile('通知接收者',{proactive:true}))).value;
+const posted=await h.request('/api/policies',{title:'社区养老服务通知',body:'社区养老服务通知，面向相关居民提供照护咨询，请核实办理条件。',kind:'publication',domain:'elder',audience:'all',requestKey:'notice-visible'});assert.equal(posted.status,201);
+const inbox=(await h.request('/api/inbox',undefined,r.token)).value;const m=inbox.messages.find(m=>m.policy.id===posted.value.policy.id);assert.ok(m,'staff-authored publication must not be filtered as a non-catalog policy');
+const summary=await h.request('/api/resident-document?message='+m.id+'&format=agent',{} ,r.token);assert.equal(summary.status,200);assert.equal(summary.value.offer,'需要我帮您填写吗？');
 });

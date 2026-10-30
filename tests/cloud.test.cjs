@@ -98,7 +98,7 @@ test('optional cloud team login protects files and APIs, preserves resident toke
   assert.equal((await server.request('/api/inbox',{headers:{cookie,authorization:'Bearer '+resident.token}})).status,200);
   assert.equal((await server.request('/api/inbox',{headers:{cookie,authorization:'Bearer wrong'}})).status,401);
   await server.stop();server = await start(dir);
-  assert.equal((await server.request('/api/government',{headers})).json().residents[0].id,resident.id);
+  assert.equal((await server.request('/api/government',{headers})).json().residents.find(r=>r.id===resident.id).id,resident.id);
   assert.equal((await server.request('/api/inbox',{headers:{cookie,authorization:'Bearer '+resident.token}})).status,200);
   const logout = await server.request('/team-logout',{method:'POST',headers});
   assert.equal(logout.status,303);assert.match(logout.headers['set-cookie'][0],/Max-Age=0/);
