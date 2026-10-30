@@ -401,3 +401,5 @@ body.product-app .desk-composer :is(#deskSend,.resident-send):disabled:after{gri
 
 body.product-app .desk-composer :is(#deskSend,.resident-send) span{grid-area:1/1}
 .product-app .lane-conversation .lane-chat-compose textarea:focus-visible{outline:none;box-shadow:none}
+.product-app .desk-heading :is(#deskNew,.resident-new){display:inline-flex;align-items:center;justify-content:center;gap:7px;width:auto;height:36px;padding:8px 12px;font-size:12px;white-space:nowrap;border-radius:12px}
+.lane-new-chat{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto;padding:8px 12px;border:1px solid #b995df2a;background:#a77be70b;border-radius:12px;color:#cdb8e2;font:inherit;font-size:12px;white-space:nowrap;cursor:pointer}.lane-new-chat:hover{background:#a77be71c}.lane-new-chat:disabled{opacity:.45;cursor:wait}.lane-new-chat:focus-visible{outline:2px solid #b995df;outline-offset:3px}@media(max-width:420px){.lane-conversation-head{gap:8px}.lane-new-chat{padding:8px;font-size:11px}.lane-conversation-head>span:last-of-type{font-size:11px}}

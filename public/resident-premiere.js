@@ -23,7 +23,7 @@ function mount(view){
  const scenes=[...main.querySelectorAll('.product-hero-art,.desk-welcome')].map(el=>sculpture(el,signal));
  if(['home','hall'].includes(view))scenes.push(particles(signal));
  const lineIcon=path=>'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+path+'"/></svg>';
- const reset=main.querySelector('#deskNew');if(reset){reset.setAttribute('aria-label','换一件事');reset.innerHTML=lineIcon('M12 5v14M5 12h14');}
+ const reset=main.querySelector('#deskNew');if(reset){reset.setAttribute('aria-label','开始新对话');reset.title='开始新对话';reset.innerHTML=lineIcon('M12 5v14M5 12h14')+'<span>开始新对话</span>';}
  const prep=main.querySelector('#deskPreparationToggle');if(prep){prep.setAttribute('aria-label','准备稿');prep.innerHTML=lineIcon('M7 3h8l4 4v14H5V3h2Zm8 0v5h4M8 12h8M8 16h6');}
  const support=main.querySelector('[data-resident-support]');if(support)support.onclick=()=>{const open=main.querySelector('.product-home').classList.toggle('resident-support-open');support.setAttribute('aria-expanded',String(open));};
  const inputHint=main.querySelector('#deskMessage');if(inputHint)inputHint.placeholder='';
