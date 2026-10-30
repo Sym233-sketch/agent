@@ -1,0 +1,86 @@
+/* Shared interaction finish, with independent government and resident layouts. */
+:where(button,a,input,select,textarea,[tabindex]):focus-visible {
+  outline:3px solid #5499b0; outline-offset:4px;
+}
+button:disabled { cursor:not-allowed; }
+input,textarea,select { accent-color:#548779; }
+dialog { max-width:calc(100vw - 32px); max-height:calc(100dvh - 32px); }
+dialog::backdrop { background:rgb(12 25 27 / 48%); backdrop-filter:blur(3px); }
+dialog .dialog-head { position:sticky; top:0; z-index:2; background:inherit; }
+dialog .dialog-body { overscroll-behavior:contain; }
+.toast { max-width:min(560px,calc(100vw - 32px)); white-space:normal; overflow-wrap:anywhere; line-height:1.7; }
+
+/* Government: keep the desktop workspace within one screen. */
+body:has(.workspace) .crumb,
+body:has(.workspace) .footer-hint,
+body:has(.workspace) .section-head p { color:#526b6d; }
+body:has(.workspace) .step { min-height:42px; padding-inline:8px; border-radius:8px; }
+body:has(.workspace) .step.active { box-shadow:0 3px 10px rgb(90 45 35 / 15%); }
+body:has(.workspace) .dropzone { border:1.5px dashed #7d9f9d; box-shadow:0 12px 35px rgb(30 65 65 / 5%); }
+body:has(.workspace) .dropzone:focus-visible { outline:3px solid #5499b0; outline-offset:4px; }
+body:has(.workspace) .field { min-height:42px; border-radius:8px; padding:9px 12px; }
+body:has(.workspace) .field:focus { border-color:#548779; box-shadow:0 0 0 3px rgb(84 135 121 / 12%); }
+body:has(.workspace) .consent { line-height:1.8; }
+body:has(.workspace) .consent input { width:18px; height:18px; flex:none; }
+body:has(.workspace) .primary,
+body:has(.workspace) .secondary { min-height:42px; }
+body:has(.workspace) .icon-button { min-width:40px; min-height:40px; }
+body:has(.workspace) .dialog-body { overflow-wrap:anywhere; }
+
+/* Resident: quieter surfaces and legible controls on the current dark theme. */
+body.product-app .product-nav button { width:auto; display:flex; gap:8px; padding:10px 16px; color:#c3b4d3; }
+body.product-app .product-nav button::after { content:attr(aria-label); font-size:13px; white-space:nowrap; }
+body.product-app .product-nav button[aria-current] { background:#ad87db20; color:#f0e4ff; border:1px solid #b995df40; }
+body.product-app .desk-welcome { height:clamp(320px,55svh,540px); min-height:320px; }
+body.product-app .desk-welcome .resident-sculpture { width:min(75vw,900px); height:550px; min-height:0; left:70%; top:42%; opacity:.65; }
+body.product-app .desk-welcome h2 { font-size:clamp(32px,4vw,56px); margin-bottom:16px; }
+body.product-app .desk-welcome>p { display:block; margin:0 0 32px; color:#c3b4d3; font-size:15px; }
+body.product-app .desk-composer { width:min(100%,820px); padding:18px 64px 18px 20px; border:1px solid #b995df45; border-radius:20px; background:#1b1424ed; box-shadow:0 12px 40px #0003; }
+body.product-app .desk-composer textarea { min-height:76px; font-size:16px; }
+body.product-app .desk-composer>div { right:14px; bottom:16px; }
+body.product-app .desk-composer :is(#deskSend,.resident-send) { width:44px; height:44px; min-width:44px; }
+body.product-app .desk-composer textarea::placeholder { color:#b6a5c9; }
+.product-app .product-nav button { min-height:44px; border-radius:999px; }
+.product-app .product-nav button.active { box-shadow:inset 0 0 0 1px #d6c3a533; }
+.product-app .product-main { padding-bottom:max(32px,env(safe-area-inset-bottom)); }
+.product-app .product-case,
+.product-app .product-policy { border-radius:18px; transition:border-color .18s,background .18s; }
+.product-app .product-case:hover,
+.product-app .product-policy:hover { border-color:#b7b0a557; }
+.product-app .product-primary,
+.product-app .product-secondary,
+.product-app .product-quick button { min-height:44px; }
+.product-app .product-section-heading { gap:16px; flex-wrap:wrap; }
+.product-app .desk-composer textarea { min-height:76px; line-height:1.75; resize:vertical; max-height:220px; }
+.product-app .desk-composer textarea:focus { outline:2px solid #a8bebb; outline-offset:2px; }
+.product-app .product-case p,
+.product-app .product-empty p { line-height:1.85; }
+
+@media(max-width:760px) {
+  body.product-app .product-nav button { padding:9px 8px; gap:5px; }
+  body.product-app .product-nav button::after { font-size:11px; }
+  body.product-app .product-nav button svg { display:none; }
+  body.product-app .desk-welcome { height:45svh; min-height:280px; }
+  body.product-app .desk-welcome .resident-sculpture { width:620px; height:430px; left:65%; top:38%; opacity:.45; }
+  body.product-app .desk-welcome h2 { font-size:32px; }
+  body.product-app .desk-welcome>p { font-size:13px; max-width:260px; }
+  body.product-app .desk-composer { padding:16px 58px 16px 16px; border-radius:16px; }
+  .product-app .product-header { padding-inline:16px; gap:12px; }
+  .product-app .product-nav { max-width:100%; }
+  .product-app .product-nav button { padding-inline:14px; }
+  .product-app .product-main { padding-inline:18px; }
+  .product-app .product-case { padding:18px; gap:12px; }
+  .product-app .product-case :where(h2,h3,p,strong) { overflow-wrap:anywhere; }
+  .product-app .product-quick { gap:10px; }
+  .product-app .desk-composer textarea { font-size:16px; }
+  dialog { max-width:calc(100vw - 20px); max-height:calc(100dvh - 20px); }
+  body:has(.workspace) .workspace { padding-inline:12px; }
+  body:has(.workspace) .steps { gap:4px; overflow-x:auto; max-width:100%; }
+  body:has(.workspace) .step { flex:none; }
+  body:has(.workspace) .step:after { display:none; }
+  body:has(.workspace) .footer { gap:8px; }
+  body:has(.workspace) .footer-hint { display:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .product-app .product-case,.product-app .product-policy { transition:none; }
+}
