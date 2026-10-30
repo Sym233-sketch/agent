@@ -19,7 +19,7 @@ function preview(input){const kind=input.kind==='publication'?'publication':'con
 function govSummary(){return{demo:true,revision:db.revision,residents:db.residents.map(({token,birthDate,birthdayGreeting,...r})=>r),policies:db.policies.slice().reverse().map(p=>({...deliveredPolicy(p),workflowSummary:p.workflow?{status:p.workflow.status,candidates:p.workflow.candidates?.length||0}:null,receipts:db.messages.filter(m=>m.policyId===p.id).map(m=>({...m,displayName:db.residents.find(r=>r.id===m.residentId)?.displayName||'演示居民'}))}))}}
 const agents=require('./agent/server.cjs')({db,changed,send,body,resident,eligible},{policyOnly:true,fictionalDemo:process.env.MINCETONG_FICTIONAL_DEMO!=='false',getServices:()=>services,getDiscovery:()=>discovery});
 const discovery=require('./policy-discovery.cjs').createDiscovery({db,changed,send,body,resident});
-const residentDocument=require('./resident-document.cjs')({db,resident,catalog:discovery.catalog});
+const residentDocument=require('./resident-document.cjs')({db,resident,catalog:discovery.catalog,provider:agents.provider});
 const workbench=require('./workbench.cjs')({agents,send,body});
 const policyWorkflow=require('./policy-workflow.cjs')({db,changed,agents,workbench,eligible,send,body});
 const services=require('./service-agents.cjs').createServices({db,changed,send,body,resident,provider:agents.provider});
