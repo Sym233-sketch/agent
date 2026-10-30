@@ -20,3 +20,9 @@ The previous iteration changed colors without changing the interaction. This rev
 ## Guardrails
 
 No policy, resident matching, model provider or application approval semantics changed. Official citations, uncertainty, human assistance and owner confirmation remain in the existing workflows. No live model credit is used by automated tests. Existing registration scene remains intact.
+
+## Minimal purple revision
+
+The presentation surface now shows only its slogan. Brand, navigation, new-conversation and preparation controls use icons with accessible names. Supporting policy content is available through an explicit icon on Home; actual dialogue, errors and document confirmation remain available after interaction.
+
+The shader uses amethyst/lilac reflections and a slowly changing macro lens. A separately composited, sparse purple particle field drifts with eased pointer parallax. The field stops while the document is hidden, freezes for reduced motion, and is removed with the scene on route changes. Canvas edges dissolve into the background instead of leaving rectangular cuts. Mobile crops the artwork deliberately while retaining the input and icon controls.
