@@ -12,7 +12,7 @@ function extractTags(introduction,age,{mentalMatching=false}={}){
  const positive=pattern=>window.MincetongMatching.positive(value,pattern);
  let job='暂未提供';
  for(const [pattern,label] of [[/教培.*教师|培训.*教师/,'教培机构教师'],[/退休.*教师/,'退休教师'],[/退休/,'退休居民'],[/我(?:是|在读|目前是)?.*(?:学生|大学生)|在读|就读/,'在校学生'],[/教师|老师/,'教师'],[/求职|找工作|待业|失业/,'求职中'],[/灵活就业|自由职业|个体经营/,'灵活就业'],[/企业|上班|职员|员工/,'企业职员']])if(positive(pattern)){job=label;break;}
- return {job,matchingFacts:{student:job==='在校学生'?'yes':'unknown',senior:Number(age)>=60?'yes':'no',disability:'unknown',needLife:positive(/生活(?:开支|支出|困难)|经济困难|收入.*(?:不足|压力)/),needStudy:positive(/学习支持|助学|学费.*(?:压力|困难)|教育支持/),needCare:positive(/需要.*(?:照护|照料|助餐)|希望.*(?:照护|助餐)/),needJob:window.MincetongMatching.extractSupport(value).needJob,needMental:mentalMatching===true,needAccess:positive(/需要.*(?:无障碍|出行协助)/),source:'欢迎引导中本人填写的年龄与自述标签；非资格判断'}};
+ return {job,matchingFacts:{student:job==='在校学生'?'yes':'unknown',senior:Number(age)>=60?'yes':'no',disability:'unknown',needLife:positive(/生活(?:开支|支出|困难)|经济困难|收入.*(?:不足|压力)/),needStudy:positive(/学习支持|助学|学费.*(?:压力|困难)|教育支持/),needCare:positive(/需要.*(?:照护|照料|助餐)|希望.*(?:照护|助餐)/),needJob:window.MincetongMatching.extractSupport(value).needJob,needMental:mentalMatching===true,needAccess:positive(/需要.*(?:无障碍|出行协助)/),needChildcare:positive(/生育|育儿|托育|婴幼儿/),needHousing:positive(/住房|租房|保障房/),needHealth:positive(/医保|参保|医疗保障/),needPension:positive(/养老金|养老保险/),needBusiness:positive(/创业|开店|个体经营/),needRural:positive(/农业|农村|种植|农户/),source:'欢迎引导中本人填写的年龄与自述标签；非资格判断'}};
 }
 function mount({root,initial={},onComplete}){
  let step=0,busy=false,destroyed=false,submitted=false;

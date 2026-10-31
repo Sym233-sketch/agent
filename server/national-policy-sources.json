@@ -249,5 +249,69 @@
     "domain": "employment",
     "url": "https://www.gov.cn/zhengce/zhengceku/202603/content_7063305.htm",
     "summary": "2026年高校毕业生等青年就业政策和服务方向；具体对象、条件与地方执行口径需要核实。"
+  },
+  {
+    "key": "birth-support-2024",
+    "title": "关于加快完善生育支持政策体系推动建设生育友好型社会的若干措施",
+    "issuer": "国务院办公厅",
+    "issued": "2024-10-19",
+    "category": "childcare",
+    "domain": "general",
+    "url": "https://www.mee.gov.cn/zcwj/gwywj/202410/t20241029_1090284.shtml",
+    "summary": "生育、托育和家庭支持方向；地方补贴与申请资格另行核实。",
+    "sourceNote": "转载页面注明「本文有删减」，仅作政策方向参考，不作为条款全文或资格依据"
+  },
+  {
+    "key": "rental-housing-2021",
+    "title": "国务院办公厅关于加快发展保障性租赁住房的意见",
+    "issuer": "国务院办公厅",
+    "number": "国办发〔2021〕22号",
+    "issued": "2021-06-24",
+    "category": "housing",
+    "domain": "general",
+    "url": "https://app.www.gov.cn/govdata/gov/202107/02/473039/article.html",
+    "summary": "扩大保障性租赁住房供给；具体房源、对象、租金及申请条件以当地规定为准。"
+  },
+  {
+    "key": "medical-insurance-2024",
+    "title": "国务院办公厅关于健全基本医疗保险参保长效机制的指导意见",
+    "issuer": "国务院办公厅",
+    "number": "国办发〔2024〕38号",
+    "issued": "2024-07-26",
+    "category": "health",
+    "domain": "general",
+    "url": "https://www.nhsa.gov.cn/art/2024/8/1/art_104_13427.html",
+    "summary": "基本医疗保险参保服务与激励机制；缴费和待遇按参保地核实。"
+  },
+  {
+    "key": "personal-pension-2022",
+    "title": "国务院办公厅关于推动个人养老金发展的意见",
+    "issuer": "国务院办公厅",
+    "number": "国办发〔2022〕7号",
+    "issued": "2022-04-08",
+    "category": "pension",
+    "domain": "general",
+    "url": "https://app.www.gov.cn/govdata/gov/202204/21/484171/article.html",
+    "summary": "个人养老金制度方向；自愿参加，账户及税收事项需核对现行规则。"
+  },
+  {
+    "key": "entrepreneurship-2025",
+    "title": "人力资源社会保障部等7部门关于健全创业支持体系提升创业质量的意见",
+    "issuer": "人力资源社会保障部等7部门",
+    "issued": "2025-02-06",
+    "category": "entrepreneurship",
+    "domain": "employment",
+    "url": "https://app.www.gov.cn/govdata/gov/202502/26/524899/article.html",
+    "summary": "面向创业群体的培训、服务、孵化方向；补贴和办理条件按当地规定核对。"
+  },
+  {
+    "key": "rural-reform-2025",
+    "title": "中共中央 国务院关于进一步深化农村改革 扎实推进乡村全面振兴的意见",
+    "issuer": "中共中央、国务院",
+    "issued": "2025-01-01",
+    "category": "rural",
+    "domain": "general",
+    "url": "https://www.mee.gov.cn/zcwj/zyygwj/202502/t20250223_1102693.shtml",
+    "summary": "农业农村与乡村振兴政策方向；具体农户支持项目和地方标准须核实。"
   }
 ]
