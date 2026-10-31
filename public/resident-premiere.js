@@ -23,10 +23,10 @@ function mount(view){
  const scenes=[...main.querySelectorAll('.product-hero-art,.desk-welcome')].map(el=>sculpture(el,signal));
  if(['home','hall'].includes(view))scenes.push(particles(signal));
  const lineIcon=path=>'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+path+'"/></svg>';
- const reset=main.querySelector('#deskNew');if(reset){reset.setAttribute('aria-label','开始新对话');reset.title='开始新对话';reset.innerHTML=lineIcon('M12 5v14M5 12h14')+'<span>开始新对话</span>';}
+ const reset=main.querySelector('#deskNew');if(reset){reset.setAttribute('aria-label','换一件事');reset.innerHTML=lineIcon('M12 5v14M5 12h14');}
  const prep=main.querySelector('#deskPreparationToggle');if(prep){prep.setAttribute('aria-label','准备稿');prep.innerHTML=lineIcon('M7 3h8l4 4v14H5V3h2Zm8 0v5h4M8 12h8M8 16h6');}
  const support=main.querySelector('[data-resident-support]');if(support)support.onclick=()=>{const open=main.querySelector('.product-home').classList.toggle('resident-support-open');support.setAttribute('aria-expanded',String(open));};
- const inputHint=main.querySelector('#deskMessage');if(inputHint)inputHint.placeholder='说说你想办的事，例如：孩子入学需要准备什么？';
+ const inputHint=main.querySelector('#deskMessage');if(inputHint)inputHint.placeholder='';
  if(!reduced.matches&&changed){
   if(oldLayer){const layer=oldLayer;oldLayer=null;layer.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-14px)',filter:'blur(4px)'}],{duration:300,easing:ease}).finished.catch(()=>{}).finally(()=>layer.remove());}
   main.animate([{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'translateY(0)'}],{duration:850,easing:ease});
