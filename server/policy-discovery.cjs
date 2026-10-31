@@ -2,7 +2,7 @@
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const retrieval=require('./policy-retrieval.cjs'),policyMetadata=require('./policy-metadata.cjs');
 const CATEGORIES={education:'教育培训',elder:'养老照护',employment:'就业技能',general:'社会救助',mental:'心理支持',accessibility:'无障碍服务',legal:'法律援助',childcare:'生育托育',housing:'住房保障',health:'医保参保',pension:'个人养老金',entrepreneurship:'创业服务',rural:'农业农村'};
-const {category,profileScore,topicMatch,interestMatch}=require("../public/policy-matching.js"),guidance=require("./policy-guidance.cjs");
+const {category,profileScore,topicMatch,interestMatch}=require("./policy-matching.cjs"),guidance=require("./policy-guidance.cjs");
 const terms=q=>[...new Set(String(q).trim().toLowerCase().split(/[\s，,、；;]+/).filter(Boolean))].slice(0,8);
 function cleanQuery(q){return String(q||'').replace(/\b\d{7,19}\b/g,'[号码已省略]').trim().slice(0,80)}
 function queryScore(d,q){const qs=terms(q);if(!qs.length)return 1;const top=d.title+' '+d.summary;let score=0;for(const t of qs){let n=top.toLowerCase().includes(t)?5:d.text.toLowerCase().includes(t)?1:0;if(!n&&topicMatch(category(d),t))n=3;if(!n)return 0;score+=n}return score}

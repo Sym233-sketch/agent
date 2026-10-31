@@ -1,6 +1,6 @@
 'use strict';
 const lifeDiscovery=require('./service-discovery.cjs'),retrieval=require('../policy-retrieval.cjs'),factProvenance=require('./fact-provenance.cjs'),conversation=require('./conversation-state.cjs'),memory=require('./case-memory.cjs'),workflows=require('./workflow.cjs');
-const crypto=require('node:crypto'),prompts=require('./prompts.cjs'),matching=require('../../public/policy-matching.js'),guidance=require('../policy-guidance.cjs');
+const crypto=require('node:crypto'),prompts=require('./prompts.cjs'),matching=require('../policy-matching.cjs'),guidance=require('../policy-guidance.cjs');
 const demo=require('../demo-context.cjs'),applicationReview=require('./application-review.cjs');
 const LABELS={applicantAge:'申报人年龄',beneficiaryAge:'服务对象年龄',beneficiaryGrade:'学生年级',applicantRole:'申报人与服务对象关系',service:'希望办理的事',district:'所在市区',needs:'希望获得的帮助',situation:'本人介绍的情况',household:'家庭安排',income:'收入与费用情况',care:'照护或用餐需要',employment:'求职与工作意愿',study:'学习或教育需要',preference:'希望怎样安排',insurance:'参保地与参保情况',schedule:'时间安排',occupation:'职业身份'};
 const UNKNOWN=/^(暂未|尚未|未提供|暂不|未知|演示社区|测试地区)/;

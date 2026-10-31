@@ -2,7 +2,7 @@
 // Local lexical retrieval: Chinese terms + BM25 + reciprocal rank fusion.
 // No embedding API, generated policies, or inferred resident eligibility.
 const segmenter=new Intl.Segmenter('zh-CN',{granularity:'word'});
-const matching=require('../public/policy-matching.js'),guidance=require('./policy-guidance.cjs');
+const matching=require('./policy-matching.cjs'),guidance=require('./policy-guidance.cjs');
 const STOP=new Set('的 了 吗 呢 吧 啊 我 你 他 她 您 我们 什么 怎么 如何 有 什么 哪些 可以 需要 想 要 请 帮忙 一下 一个 这 那 和 与 及 或 是 在 为 对 将 关于 政策 规定 通知 文件 办理 推荐 了解'.split(' '));
 const INTENTS=[
  {pattern:/课后|放学|接孩子|接小孩|没人接|托管/,terms:['课后服务','学校','自愿']},
