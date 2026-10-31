@@ -219,5 +219,35 @@
     },
     "summary": "上海市教育、就业、养老等基本公共服务项目与对象清单。分项目核对，未公开核实的时间、收费与资格保持未知。",
     "reviewOnly": true
+  },
+  {
+    "key": "elder-meals-action",
+    "title": "积极发展老年助餐服务行动方案",
+    "issuer": "民政部等11部门",
+    "number": "民发〔2023〕58号",
+    "issued": "2023-10-20",
+    "domain": "elder",
+    "url": "https://www.mem.gov.cn/gk/zfxxgkpt/fdzdgknr/202311/t20231114_468483.shtml",
+    "summary": "国家层面的老年助餐服务建设方案；当地助餐点、费用与补贴仍需核实。"
+  },
+  {
+    "key": "employment-public-service-2025",
+    "title": "人力资源社会保障部等5部门关于进一步健全就业公共服务体系的意见",
+    "issuer": "人力资源社会保障部等5部门",
+    "number": "人社部发〔2025〕21号",
+    "issued": "2025-05-26",
+    "domain": "employment",
+    "url": "https://app.www.gov.cn/govdata/gov/202505/26/529861/article.html",
+    "summary": "推动公共就业服务覆盖和精准帮扶；不代表任一求职者自动取得补贴。"
+  },
+  {
+    "key": "youth-employment-2026",
+    "title": "人力资源社会保障部 财政部关于做好2026年高校毕业生等青年就业工作的通知",
+    "issuer": "人力资源社会保障部、财政部",
+    "number": "人社部发〔2026〕19号",
+    "issued": "2026-03-20",
+    "domain": "employment",
+    "url": "https://www.gov.cn/zhengce/zhengceku/202603/content_7063305.htm",
+    "summary": "2026年高校毕业生等青年就业政策和服务方向；具体对象、条件与地方执行口径需要核实。"
   }
 ]

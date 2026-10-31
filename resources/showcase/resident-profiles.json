@@ -1,0 +1,202 @@
+[
+  {
+    "id": "parent",
+    "label": "小学新生家长",
+    "displayName": "林女士（虚构·家长）",
+    "job": "小学新生家长",
+    "district": "全国测试样本（地区待确认）",
+    "age": 36,
+    "facts": {
+      "student": "yes",
+      "senior": "no",
+      "disability": "unknown",
+      "needStudy": true
+    },
+    "topics": [
+      "教育服务"
+    ],
+    "expectCategory": "education",
+    "expectKey": "school-aftercare",
+    "proactive": true,
+    "joined": false,
+    "birthDate": "1990-04-12",
+    "living": "与家人共同居住",
+    "income": "暂不提供",
+    "consent": true
+  },
+  {
+    "id": "elder",
+    "label": "助餐需求老人",
+    "displayName": "王先生（虚构·助餐）",
+    "job": "退休居民",
+    "district": "全国测试样本（地区待确认）",
+    "age": 72,
+    "facts": {
+      "student": "no",
+      "senior": "yes",
+      "disability": "unknown",
+      "needCare": true
+    },
+    "topics": [
+      "养老照护"
+    ],
+    "expectCategory": "elder",
+    "expectKey": "elder-meals-action",
+    "proactive": true,
+    "joined": false,
+    "birthDate": "1954-02-18",
+    "living": "独居",
+    "income": "暂不提供",
+    "consent": true
+  },
+  {
+    "id": "job",
+    "label": "求职中的居民",
+    "displayName": "赵女士（虚构·求职）",
+    "job": "求职中",
+    "district": "全国测试样本（地区待确认）",
+    "age": 42,
+    "facts": {
+      "student": "no",
+      "senior": "no",
+      "disability": "unknown",
+      "needJob": true
+    },
+    "topics": [
+      "就业服务"
+    ],
+    "expectCategory": "employment",
+    "expectKey": "employment-public-service-2025",
+    "proactive": true,
+    "joined": false,
+    "birthDate": "1984-05-02",
+    "living": "与家人共同居住",
+    "income": "暂不提供",
+    "consent": true
+  },
+  {
+    "id": "graduate",
+    "label": "青年毕业生",
+    "displayName": "陈同学（虚构·毕业）",
+    "job": "应届毕业生、正在求职",
+    "district": "全国测试样本（地区待确认）",
+    "age": 23,
+    "facts": {
+      "student": "no",
+      "senior": "no",
+      "disability": "unknown",
+      "needJob": true
+    },
+    "topics": [
+      "就业服务"
+    ],
+    "expectCategory": "employment",
+    "expectKey": "youth-employment-2026",
+    "proactive": true,
+    "joined": false,
+    "birthDate": "2003-03-21",
+    "living": "与家人共同居住",
+    "income": "暂不提供",
+    "consent": true
+  },
+  {
+    "id": "access",
+    "label": "无障碍服务需求",
+    "displayName": "周女士（虚构·无障碍）",
+    "job": "企业职员",
+    "district": "全国测试样本（地区待确认）",
+    "age": 34,
+    "facts": {
+      "student": "no",
+      "senior": "no",
+      "disability": "yes",
+      "needAccess": true
+    },
+    "topics": [
+      "无障碍服务"
+    ],
+    "expectCategory": "accessibility",
+    "expectKey": "accessible-environment",
+    "proactive": true,
+    "joined": false,
+    "birthDate": "1992-06-06",
+    "living": "与家人共同居住",
+    "income": "暂不提供",
+    "consent": true
+  },
+  {
+    "id": "legal",
+    "label": "法律援助咨询",
+    "displayName": "刘先生（虚构·法律）",
+    "job": "企业职员",
+    "district": "全国测试样本（地区待确认）",
+    "age": 39,
+    "facts": {
+      "student": "no",
+      "senior": "no",
+      "disability": "unknown",
+      "needLegal": true
+    },
+    "topics": [
+      "法律援助"
+    ],
+    "expectCategory": "legal",
+    "expectKey": "legal-aid",
+    "proactive": true,
+    "joined": false,
+    "birthDate": "1987-01-28",
+    "living": "与家人共同居住",
+    "income": "暂不提供",
+    "consent": true
+  },
+  {
+    "id": "life",
+    "label": "生活支持咨询",
+    "displayName": "吴女士（虚构·生活）",
+    "job": "企业职员",
+    "district": "全国测试样本（地区待确认）",
+    "age": 48,
+    "facts": {
+      "student": "no",
+      "senior": "no",
+      "disability": "unknown",
+      "needLife": true
+    },
+    "topics": [
+      "生活支持"
+    ],
+    "expectCategory": "general",
+    "expectKey": "social-assistance-2026",
+    "proactive": true,
+    "joined": false,
+    "birthDate": "1978-08-16",
+    "living": "与家人共同居住",
+    "income": "暂不提供",
+    "consent": true
+  },
+  {
+    "id": "shanghai-parent",
+    "label": "上海普陀区小学新生家长",
+    "displayName": "孙女士（虚构·普陀家长）",
+    "job": "小学新生家长",
+    "district": "上海市普陀区",
+    "age": 35,
+    "birthDate": "1991-03-11",
+    "living": "与家人共同居住",
+    "income": "暂不提供",
+    "facts": {
+      "student": "yes",
+      "senior": "no",
+      "disability": "unknown",
+      "needStudy": true
+    },
+    "topics": [
+      "教育服务"
+    ],
+    "proactive": true,
+    "joined": false,
+    "consent": true,
+    "expectCategory": "education",
+    "expectKey": "shanghai-putuo-student-aid-2026"
+  }
+]
